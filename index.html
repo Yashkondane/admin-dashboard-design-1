@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Dashboard - Member Directory Management Panel">
+  <title>Admin Dashboard — Member Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><span class="material-icons-round">hexagon</span></div>
+        <div class="brand-text">
+          <span class="brand-name">AdminPanel</span>
+          <span class="brand-sub">Management Suite</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <span class="nav-section-label">Main Menu</span>
+        <a href="#" class="nav-item"><span class="material-icons-round">dashboard</span><span class="nav-label">Dashboard</span></a>
+        <a href="#" class="nav-item active" data-page="members" id="nav-members">
+          <span class="material-icons-round">people</span><span class="nav-label">Members</span><span class="nav-count">15</span>
+        </a>
+        
+        <div class="nav-group">
+          <button class="nav-item nav-toggle" aria-expanded="false">
+            <span class="material-icons-round">credit_card</span><span class="nav-label">Plans &amp; Billing</span>
+            <span class="material-icons-round nav-arrow">expand_more</span>
+          </button>
+          <div class="nav-sub">
+            <a href="#" class="nav-sub-item">Membership Plans</a>
+            <a href="#" class="nav-sub-item">Plan Labels</a>
+            <a href="#" class="nav-sub-item">Invoice</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <button class="nav-item nav-toggle" aria-expanded="false">
+            <span class="material-icons-round">forum</span><span class="nav-label">Communication</span>
+            <span class="material-icons-round nav-arrow">expand_more</span>
+          </button>
+          <div class="nav-sub">
+            <a href="#" class="nav-sub-item">Broadcast History</a>
+            <a href="#" class="nav-sub-item">Email Templates</a>
+            <a href="#" class="nav-sub-item">News Templates</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <button class="nav-item nav-toggle" aria-expanded="false">
+            <span class="material-icons-round">assignment</span><span class="nav-label">Requests</span>
+            <span class="material-icons-round nav-arrow">expand_more</span>
+          </button>
+          <div class="nav-sub">
+            <a href="#" class="nav-sub-item">Profile Request</a>
+            <a href="#" class="nav-sub-item">Call Request</a>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <button class="nav-item nav-toggle" aria-expanded="false">
+            <span class="material-icons-round">settings</span><span class="nav-label">Settings</span>
+            <span class="material-icons-round nav-arrow">expand_more</span>
+          </button>
+          <div class="nav-sub">
+            <a href="#" class="nav-sub-item">Field Setting</a>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="user-avatar"><img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Admin" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="avatar-fallback">A</span></div>
+        <div class="user-info"><span class="user-name">Admin</span><span class="user-role">Super Admin</span></div>
+        <button class="user-menu-btn" aria-label="User menu"><span class="material-icons-round">unfold_more</span></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+
+    <!-- ===== DIRECTORY VIEW ===== -->
+    <div id="directory-view">
+      <div class="breadcrumbs">
+        <a href="#">Home</a>
+        <span class="sep">/</span>
+        <span class="current">Members</span>
+      </div>
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <button class="menu-toggle" id="menu-toggle" aria-label="Toggle sidebar"><span class="material-icons-round">menu</span></button>
+          <div class="page-header">
+            <h1 class="page-title">Member Directory</h1>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Quick search…" id="top-search-input"><kbd class="search-shortcut">⌘K</kbd></div>
+          <button class="icon-btn" id="notifications-btn" aria-label="Notifications" onclick="showToast('You have 3 new alerts.', 'success')"><span class="material-icons-round">notifications_none</span><span class="notif-dot"></span></button>
+          <button class="btn-refresh" id="refresh-btn" onclick="showToast('Data refreshed securely.', 'success')"><span class="material-icons-round">refresh</span><span>Refresh</span></button>
+        </div>
+      </header>
+
+      <!-- Stats -->
+      <section class="stats-grid">
+        <div class="stat-card"><div class="stat-top"><div class="stat-icon"><span class="material-icons-round">groups</span></div><div class="stat-trend up"><span class="material-icons-round">north_east</span><span>12%</span></div></div><div class="stat-bottom"><span class="stat-value">15</span><span class="stat-label">Total Members</span></div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-icon"><span class="material-icons-round">check_circle</span></div><div class="stat-trend up"><span class="material-icons-round">north_east</span><span>5%</span></div></div><div class="stat-bottom"><span class="stat-value">09</span><span class="stat-label">Active Members</span></div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-icon"><span class="material-icons-round">pause_circle</span></div><div class="stat-trend down"><span class="material-icons-round">south_west</span><span>8%</span></div></div><div class="stat-bottom"><span class="stat-value">03</span><span class="stat-label">Suspended</span></div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-icon"><span class="material-icons-round">workspace_premium</span></div><div class="stat-trend up"><span class="material-icons-round">north_east</span><span>18%</span></div></div><div class="stat-bottom"><span class="stat-value">11</span><span class="stat-label">Paid Plans</span></div></div>
+      </section>
+
+      <!-- Table Section -->
+      <section class="table-section">
+        <div class="table-toolbar">
+          <div class="toolbar-left"><div class="search-box"><span class="material-icons-round">search</span><input type="text" placeholder="Search by company, name, email or mobile…" id="table-search-input"></div></div>
+          <div class="toolbar-right">
+            <div class="filter-pills">
+              <button class="pill active" data-filter="all">All</button>
+              <button class="pill" data-filter="active">Active</button>
+              <button class="pill" data-filter="inactive">Inactive</button>
+              <button class="pill" data-filter="suspended">Suspended</button>
+            </div>
+            <button class="icon-btn-sm" title="Export CSV" onclick="showToast('Exporting member directory to CSV...', 'success')"><span class="material-icons-round">download</span></button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead><tr>
+              <th><button class="th-sort" onclick="toggleSort()">Join Date <span class="material-icons-round sort-icon">south</span></button></th>
+              <th>Company</th><th>Member</th><th>Location</th><th>Mobile</th><th>Email</th><th>Status</th><th>Plan</th><th></th>
+            </tr></thead>
+            <tbody id="members-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="table-info" id="table-info"></span>
+          <div class="pagination"><button class="page-btn active" data-page="1">1</button><button class="page-btn" data-page="2">2</button></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== PROFILE VIEW ===== -->
+    <div id="profile-view" class="profile-view hidden">
+      <!-- Filled by JS -->
+    </div>
+
+  </main>
+
+  <!-- Global Modal Container -->
+  <div id="modal-container" class="modal-overlay hidden">
+    <div class="modal-content" id="modal-content"></div>
+  </div>
+
+  <!-- Global Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
