@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — Member Directory</title>
+  <title>Admin Dashboard — Employees</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,8 +19,8 @@
       </div>
       <nav class="sidebar-nav">
         <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span class="nav-label">Dashboard</span></a>
-        <a href="index.html" class="nav-item active" id="nav-members"><span class="material-icons-round">people</span><span class="nav-label">Members</span></a>
-        <a href="employees.html" class="nav-item" id="nav-employees"><span class="material-icons-round">badge</span><span class="nav-label">Employees</span></a>
+        <a href="index.html" class="nav-item" id="nav-members"><span class="material-icons-round">people</span><span class="nav-label">Members</span></a>
+        <a href="employees.html" class="nav-item active" id="nav-employees"><span class="material-icons-round">badge</span><span class="nav-label">Employees</span></a>
         <a href="#" class="nav-item"><span class="material-icons-round">assignment_turned_in</span><span class="nav-label">Approvals</span></a>
         <a href="#" class="nav-item"><span class="material-icons-round">receipt_long</span><span class="nav-label">Invoices</span></a>
         <a href="#" class="nav-item"><span class="material-icons-round">bar_chart</span><span class="nav-label">Analytics</span></a>
@@ -49,37 +49,26 @@
       </div>
     </header>
 
-    <div id="directory-view">
+    <div id="employee-view" style="background: transparent;">
       <div class="page-title-row">
-        <h1 class="page-title">Member Directory</h1>
+        <h1 class="page-title">Employee</h1>
         <div class="page-title-actions">
           <div class="showing-select"><span>Showing</span><select id="rows-per-page"><option value="10" selected>10</option><option value="20">20</option></select></div>
           <button class="btn-outline"><span class="material-icons-round">filter_alt</span> Filter</button>
           <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
-          <button class="btn-primary" id="refresh-btn"><span class="material-icons-round">add</span> Add New Member</button>
+          <button class="btn-primary"><span class="material-icons-round">add</span> Add New Employee</button>
         </div>
       </div>
 
-      <section class="table-section">
-        <table class="data-table">
-          <thead><tr>
-            <th>Member <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Company <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Mobile <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Location <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Plan <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Status <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Action <span class="material-icons-round sort-icon">unfold_more</span></th>
-          </tr></thead>
-          <tbody id="members-tbody"></tbody>
-        </table>
-        
-        <div class="table-footer">
-          <button class="page-btn nav-text-btn" id="prev-page"><span class="material-icons-round">chevron_left</span> Previous</button>
-          <div class="pagination" id="pagination-controls"></div>
-          <button class="page-btn nav-text-btn" id="next-page">Next <span class="material-icons-round">chevron_right</span></button>
-        </div>
-      </section>
+      <div class="employee-grid" id="employee-grid">
+        <!-- Employee cards injected here via JS -->
+      </div>
+      
+      <div class="table-footer">
+        <button class="page-btn nav-text-btn" id="prev-page"><span class="material-icons-round">chevron_left</span> Previous</button>
+        <div class="pagination" id="pagination-controls"></div>
+        <button class="page-btn nav-text-btn" id="next-page">Next <span class="material-icons-round">chevron_right</span></button>
+      </div>
     </div>
 
     <div id="profile-view" class="profile-view hidden"></div>
@@ -87,6 +76,6 @@
 
   <div id="modal-container" class="modal-overlay hidden"><div class="modal-content" id="modal-content"></div></div>
   <div id="toast-container" class="toast-container"></div>
-  <script src="script.js"></script>
+  <script src="employees.js"></script>
 </body>
 </html>
