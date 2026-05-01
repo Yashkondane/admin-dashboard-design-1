@@ -16,7 +16,7 @@
   --purple-bg: #f3e8ff;
 
   --white: #FFFFFF;
-  --bg: #f8fafc;
+  --bg: #f4f4f4;
   --card-bg: #FFFFFF;
   
   --text: #1e293b;
@@ -24,7 +24,7 @@
   --text-soft: #8f9bba;
   --border: #e2e8f0;
 
-  --sidebar-w: 240px;
+  --sidebar-w: 220px;
   --radius: 12px;
   --radius-sm: 8px;
 
@@ -34,7 +34,7 @@
   --transition: 0.2s ease;
 }
 
-html { font-size: 14px; }
+html { font-size: 13.5px; }
 
 body {
   font-family: 'Nunito Sans', system-ui, -apple-system, sans-serif;
@@ -95,7 +95,7 @@ body {
 .main-content {
   margin-left: var(--sidebar-w);
   flex: 1;
-  padding: 32px 48px;
+  padding: 24px 32px;
   background: var(--bg);
   overflow-x: hidden;
   max-width: 1440px;
@@ -197,7 +197,7 @@ body {
 
 .data-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 .data-table th {
-  padding: 8px 12px; text-align: left; font-size: 0.85rem; font-weight: 700;
+  padding: 8px 10px; text-align: left; font-size: 0.85rem; font-weight: 700;
   color: var(--text-soft); border-bottom: 1px solid var(--border);
   transition: background 0.2s; white-space: nowrap;
 }
@@ -208,7 +208,7 @@ body {
 }
 
 .data-table td {
-  padding: 8px 12px; font-size: 0.85rem; font-weight: 700; color: var(--text-mid);
+  padding: 8px 10px; font-size: 0.85rem; font-weight: 700; color: var(--text-mid);
   border-bottom: 1px solid var(--border); white-space: nowrap;
 }
 .data-table tbody tr { 
