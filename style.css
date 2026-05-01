@@ -24,7 +24,7 @@
   --text-soft: #8f9bba;
   --border: #e2e8f0;
 
-  --sidebar-w: 240px;
+  --sidebar-w: 220px;
   --radius: 12px;
   --radius-sm: 8px;
 
@@ -34,7 +34,7 @@
   --transition: 0.2s ease;
 }
 
-html { font-size: 16px; }
+html { font-size: 13.5px; }
 
 body {
   font-family: 'Nunito Sans', system-ui, -apple-system, sans-serif;
@@ -94,10 +94,11 @@ body {
 /* ===== MAIN CONTENT ===== */
 .main-content {
   margin-left: var(--sidebar-w);
-  padding: 32px 48px;
-  width: calc(100% - var(--sidebar-w));
+  flex: 1;
+  padding: 24px 40px;
   min-height: 100vh;
   background: var(--bg);
+  overflow-x: hidden;
 }
 
 /* ===== TOP BAR ===== */
@@ -147,7 +148,13 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 24px;
 }
-.page-title { font-size: 2rem; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.page-title { font-size: 2.2rem; font-weight: 900; color: var(--text); letter-spacing: -1px; }
+
+#directory-view, #employee-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
 .page-title-actions { display: flex; align-items: center; gap: 16px; }
 
@@ -172,32 +179,57 @@ body {
 }
 .btn-primary .material-icons-round { font-size: 20px; }
 
+/* ===== DIRECTORY TABS ===== */
+.directory-tabs {
+  display: flex; gap: 8px; margin-bottom: 24px;
+}
+.dir-tab {
+  padding: 10px 20px; font-family: inherit; font-size: 0.95rem; font-weight: 700;
+  color: var(--text-mid); background: transparent; border: none; cursor: pointer;
+  border-radius: 8px; transition: all var(--transition);
+}
+.dir-tab:hover { color: var(--text); background: var(--bg); }
+.dir-tab.active { background: var(--blue); color: #fff; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+
 /* ===== TABLE SECTION ===== */
 .table-section { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
 
 .data-table { width: 100%; border-collapse: collapse; min-width: 900px; }
 .data-table th {
-  padding: 16px 20px; text-align: left; font-size: 0.85rem; font-weight: 700;
+  padding: 8px 12px; text-align: left; font-size: 0.85rem; font-weight: 700;
   color: var(--text-soft); border-bottom: 1px solid var(--border);
+  transition: background 0.2s; white-space: nowrap;
 }
-.data-table th .material-icons-round { font-size: 16px; vertical-align: middle; margin-left: 4px; color: var(--border); }
+.data-table th:hover:not(:last-child) { background: #f8fafc; color: var(--text); }
+.data-table th .material-icons-round { 
+  font-size: 13px; vertical-align: middle; margin-left: 4px; 
+  color: var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+}
 
 .data-table td {
-  padding: 16px 20px; font-size: 0.85rem; font-weight: 700; color: var(--text-mid);
+  padding: 8px 12px; font-size: 0.85rem; font-weight: 700; color: var(--text-mid);
   border-bottom: 1px solid var(--border); white-space: nowrap;
 }
-.data-table tbody tr { transition: background var(--transition); cursor: pointer; }
+.data-table tbody tr { 
+  transition: background var(--transition); cursor: pointer;
+  animation: rowFade 0.4s ease backwards;
+}
+@keyframes rowFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .data-table tbody tr:hover { background: #f8fafc; }
 
-.cell-member { display: flex; align-items: center; gap: 16px; }
-.member-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.cell-member { display: flex; align-items: center; gap: 10px; }
+.member-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
 .member-name { font-weight: 800; color: var(--text); }
 
 /* Status Badges exactly like Puzzler */
-.status-badge { display: inline-block; padding: 8px 16px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; text-align: center; min-width: 100px; }
+.status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-align: center; }
 .status-badge.active { background: var(--green-bg); color: #16a34a; }
-.status-badge.inactive { background: var(--red-bg); color: #dc2626; }
-.status-badge.suspended { background: var(--orange-bg); color: #d97706; }
+.status-badge.inactive, .status-badge.expire { background: var(--red-bg); color: #dc2626; }
+.status-badge.suspended { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+.status-badge.pending { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
 .status-badge.free { background: var(--border); color: var(--text-mid); }
 .status-badge.starter { background: var(--blue-light); color: var(--blue); }
 .status-badge.business { background: var(--purple-bg); color: var(--purple); }

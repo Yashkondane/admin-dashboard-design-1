@@ -54,7 +54,18 @@
         <h1 class="page-title">Member Directory</h1>
         <div class="page-title-actions">
           <div class="showing-select"><span>Showing</span><select id="rows-per-page"><option value="10" selected>10</option><option value="20">20</option></select></div>
-          <button class="btn-outline"><span class="material-icons-round">filter_alt</span> Filter</button>
+          <div style="position: relative; display: inline-block;">
+            <button class="btn-outline" onclick="event.stopPropagation(); toggleDropdown('filter')">
+              <span class="material-icons-round">filter_alt</span> Filter
+            </button>
+            <div class="dropdown-menu" id="dropdown-filter" style="right: 0; top: 100%; margin-top: 8px;">
+              <button class="dropdown-item" onclick="setFilter('all')">All</button>
+              <button class="dropdown-item" onclick="setFilter('pending')">Pending</button>
+              <button class="dropdown-item" onclick="setFilter('active')">Active</button>
+              <button class="dropdown-item" onclick="setFilter('expire')">Inactive (Expire)</button>
+              <button class="dropdown-item" onclick="setFilter('suspended')">Suspended</button>
+            </div>
+          </div>
           <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
           <button class="btn-primary" id="refresh-btn"><span class="material-icons-round">add</span> Add New Member</button>
         </div>
@@ -63,13 +74,16 @@
       <section class="table-section">
         <table class="data-table">
           <thead><tr>
-            <th>Member <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Company <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Mobile <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Location <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Plan <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Status <span class="material-icons-round sort-icon">unfold_more</span></th>
-            <th>Action <span class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('date')" style="cursor:pointer">Join Date <span id="sort-icon-date" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('company')" style="cursor:pointer">Company Name <span id="sort-icon-company" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('member')" style="cursor:pointer">Name <span id="sort-icon-member" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('location')" style="cursor:pointer">Location <span id="sort-icon-location" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('address')" style="cursor:pointer">Address <span id="sort-icon-address" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('mobile')" style="cursor:pointer">Mobile <span id="sort-icon-mobile" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('email')" style="cursor:pointer">Email <span id="sort-icon-email" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('status')" style="cursor:pointer">Status <span id="sort-icon-status" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('plan')" style="cursor:pointer">Plan Name <span id="sort-icon-plan" class="material-icons-round sort-icon">unfold_more</span></th>
+            <th onclick="toggleSort('action')" style="cursor:pointer">Action <span id="sort-icon-action" class="material-icons-round sort-icon">unfold_more</span></th>
           </tr></thead>
           <tbody id="members-tbody"></tbody>
         </table>
