@@ -356,7 +356,7 @@ function openProfile(id, tab = 'company') {
       <button class="profile-tab ${tab==='contacts'?'active':''}" onclick="switchTab(${id},'contacts')"><span class="material-icons-round">people</span> Contacts</button>
       <button class="profile-tab ${tab==='addresses'?'active':''}" onclick="switchTab(${id},'addresses')"><span class="material-icons-round">location_on</span> Addresses</button>
       <button class="profile-tab ${tab==='plan'?'active':''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">card_membership</span> Current Plan</button>
-      <button class="profile-tab ${tab==='assign'?'active':''}" onclick="switchTab(${id},'assign')"><span class="material-icons-round">assignment</span> Assign Plan</button>
+      <button class="profile-tab ${tab==='assign'?'active':''}" onclick="switchTab(${id},'assign')"><span class="material-icons-round">swap_horiz</span> Change Plan</button>
       <button class="profile-tab ${tab==='email'?'active':''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email</button>
       <button class="profile-tab ${tab==='history'?'active':''}" onclick="switchTab(${id},'history')"><span class="material-icons-round">history</span> Status History</button>
     </div>
@@ -455,7 +455,7 @@ function renderProfileTab(m, tab) {
             return `
             <div class="employee-card" style="position:relative">
               <div style="position:absolute; top:16px; right:16px; z-index:10;">
-                <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}')">
+                <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}', this)">
                   <span class="material-icons-round">more_vert</span>
                 </button>
                 <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="right:0;top:100%;margin-top:4px">
@@ -507,7 +507,7 @@ function renderProfileTab(m, tab) {
           ${addresses.map((a, ai) => `
             <div class="employee-card" style="position:relative; min-height: 160px;">
               <div style="position:absolute; top:16px; right:16px; z-index:10;">
-                <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}')">
+                <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)">
                   <span class="material-icons-round">more_vert</span>
                 </button>
                 <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}" style="right:0;top:100%;margin-top:4px">
@@ -521,7 +521,7 @@ function renderProfileTab(m, tab) {
                 </div>
                 <div class="employee-info">
                   <div class="employee-name" style="text-transform:uppercase; font-size:0.8rem;">${a.type} Address</div>
-                  <div style="font-weight:700; color:var(--text-soft); font-size:0.85rem;">${m.location}</div>
+                  <div style="font-weight:700; color:var(--text-soft); font-size:0.85rem;">${a.city || m.location}</div>
                 </div>
               </div>
               <div class="employee-contact" style="margin-bottom:0; border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 12px;">
@@ -536,6 +536,98 @@ function renderProfileTab(m, tab) {
       </div>
     `;
   } else if (tab === 'plan') {
+    return `
+      <div class="content-card">
+        <div class="profile-section-header" style="justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">card_membership</span></div>
+            <div>
+              <h3 class="profile-section-title">Current Plan</h3>
+              <p class="profile-section-desc">Active subscription details and expiry information.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; border:1px solid var(--border); border-radius:14px; overflow:hidden;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; background:#fff; border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Current Plan</div>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <span style="background:#0f172a;color:#fff;padding:4px 14px;border-radius:6px;font-weight:800;font-size:0.9rem;">Business</span>
+                <span style="border:1px solid #16a34a;color:#16a34a;padding:4px 12px;border-radius:6px;font-weight:700;font-size:0.85rem;display:inline-flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;"></span>Active</span>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Days Remaining</div>
+              <div style="font-size:3rem;font-weight:900;color:var(--blue);line-height:1;">82</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;">
+            <div style="padding:18px 24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:#fff;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Start Date</div>
+              <div style="font-size:1rem;font-weight:800;color:var(--text);font-family:monospace;">23 Apr 2026</div>
+            </div>
+            <div style="padding:18px 24px;border-bottom:1px solid var(--border);background:#fff;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Expiry Date</div>
+              <div style="font-size:1rem;font-weight:800;color:var(--text);font-family:monospace;">22 Jul 2026</div>
+            </div>
+            <div style="padding:18px 24px;border-right:1px solid var(--border);background:#fff;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Pricing</div>
+              <div style="font-size:1rem;font-weight:800;color:var(--text);">₹9999.00</div>
+            </div>
+            <div style="padding:18px 24px;background:#fff;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Auto Expiry</div>
+              <div style="font-size:1rem;font-weight:800;color:#16a34a;">Enabled</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+          <button class="btn-primary" style="border-radius:8px;" onclick="switchTab(${m.id},'assign')">
+            <span class="material-icons-round">swap_horiz</span> Change Plan
+          </button>
+        </div>
+
+        <div style="margin-top:28px;">
+          <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">// Plan Change History</div>
+          <div style="font-size:1rem;font-weight:900;color:var(--text);margin-bottom:16px;">Past plans (2)</div>
+          <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+              <thead>
+                <tr style="background:#f8fafc;">
+                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Plan</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Started</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Ended</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Pricing</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Replaced By</th>
+                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Changed By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-top:1px solid var(--border);">
+                  <td style="padding:12px 16px;"><span style="border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--text);">Business</span></td>
+                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Apr 2026</td>
+                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Apr 2026</td>
+                  <td style="padding:12px 16px;font-weight:700;color:var(--text);">₹2999.00</td>
+                  <td style="padding:12px 16px;"><span style="background:#0f172a;color:#fff;border-radius:6px;padding:3px 10px;font-weight:700;">Enterprise</span></td>
+                  <td style="padding:12px 16px;font-weight:600;color:var(--blue);">admin@example.com</td>
+                </tr>
+                <tr style="border-top:1px solid var(--border);">
+                  <td style="padding:12px 16px;"><span style="border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--text);">Business</span></td>
+                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Mar 2026</td>
+                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Apr 2026</td>
+                  <td style="padding:12px 16px;font-weight:700;color:var(--text);">₹9999.00</td>
+                  <td style="padding:12px 16px;"><span style="border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--text);">Business</span></td>
+                  <td style="padding:12px 16px;font-weight:600;color:var(--blue);">admin@example.com</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+
+  } else if (tab === '___placeholder___') {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
@@ -721,69 +813,86 @@ function renderProfileTab(m, tab) {
   } else if (tab === 'email') {
     return `
       <div class="content-card">
-        <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom: 20px;">
-          <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">mail</span></div>
-          <div>
-            <h3 class="profile-section-title">Send Email</h3>
-            <p class="profile-section-desc">Compose an email to ${m.member} or view communication logs.</p>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label style="display:block; font-size: 0.72rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Subject</label>
-          <input type="text" placeholder="Important: Your membership update" style="width:100%; padding:12px 16px; border:none; background:#f8fafc; border-radius:8px; font-size:0.95rem; font-weight:700; color:var(--text); outline:none; font-family:inherit; box-sizing:border-box;">
-        </div>
-        <div style="margin-bottom: 20px;">
-          <label style="display:block; font-size: 0.72rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Message</label>
-          <textarea placeholder="Write your message here..." rows="5" style="width:100%; padding:12px 16px; border:none; background:#f8fafc; border-radius:8px; font-size:0.9rem; font-weight:600; color:var(--text); outline:none; font-family:inherit; resize:vertical; box-sizing:border-box;"></textarea>
-        </div>
-        <button class="btn-primary" style="border-radius:8px; padding:12px 28px;" onclick="showToast('Email sent successfully', 'success')">
-          <span class="material-icons-round">send</span> Send Message
-        </button>
-
-        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
-          <div style="margin-bottom: 4px; font-size: 1rem; font-weight: 900; color: var(--text);">Communication History</div>
-          <div style="font-size:0.85rem; color:var(--text-soft); font-weight:600; margin-bottom:20px;">Past emails sent to this member.</div>
-
-          <div style="position:relative; padding-left: 28px;">
-            <div style="position:absolute; left:6px; top:8px; bottom:8px; width:2px; background:var(--border);"></div>
-
-            <div style="position:relative; margin-bottom:16px;">
-              <div style="position:absolute; left:-28px; top:12px; width:14px; height:14px; border-radius:50%; background:var(--blue); border:3px solid #fff; box-shadow:0 0 0 2px var(--blue);"></div>
-              <div style="border:1px solid var(--border); border-radius:10px; padding:16px 20px; background:#fff; display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                  <div style="font-size:0.95rem; font-weight:800; color:var(--text);">Subject: <span style="font-weight:700;">Welcome to the Platform</span></div>
-                  <div style="font-size:0.85rem; color:var(--text-soft); font-weight:600; margin-top:4px;">Automated welcome sequence initiated.</div>
-                </div>
-                <div style="font-size:0.8rem; color:var(--text-soft); font-weight:700; white-space:nowrap; margin-left:16px;">24 Nov 2025</div>
-              </div>
-            </div>
-
-            <div style="position:relative; margin-bottom:16px;">
-              <div style="position:absolute; left:-28px; top:12px; width:14px; height:14px; border-radius:50%; background:#94a3b8; border:3px solid #fff; box-shadow:0 0 0 2px #94a3b8;"></div>
-              <div style="border:1px solid var(--border); border-radius:10px; padding:16px 20px; background:#fff; display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                  <div style="font-size:0.95rem; font-weight:800; color:var(--text);">Subject: <span style="font-weight:700;">Please verify your email</span></div>
-                  <div style="font-size:0.85rem; color:var(--text-soft); font-weight:600; margin-top:4px;">Verification link sent to ${m.email || 'contact@example.com'}.</div>
-                </div>
-                <div style="font-size:0.8rem; color:var(--text-soft); font-weight:700; white-space:nowrap; margin-left:16px;">24 Nov 2025</div>
-              </div>
-            </div>
-
-            <div style="position:relative;">
-              <div style="position:absolute; left:-28px; top:12px; width:14px; height:14px; border-radius:50%; background:#94a3b8; border:3px solid #fff; box-shadow:0 0 0 2px #94a3b8;"></div>
-              <div style="border:1px solid var(--border); border-radius:10px; padding:16px 20px; background:#fff; display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                  <div style="font-size:0.95rem; font-weight:800; color:var(--text);">Subject: <span style="font-weight:700;">Your monthly invoice is ready</span></div>
-                  <div style="font-size:0.85rem; color:var(--text-soft); font-weight:600; margin-top:4px;">Invoice for Jul 2026 has been generated.</div>
-                </div>
-                <div style="font-size:0.8rem; color:var(--text-soft); font-weight:700; white-space:nowrap; margin-left:16px;">12 Jul 2026</div>
-              </div>
+        <div class="profile-section-header" style="justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div style="display:flex; gap:12px; align-items:flex-start;">
+            <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">mail</span></div>
+            <div>
+              <h3 class="profile-section-title">Email &amp; Communication</h3>
+              <p class="profile-section-desc">Sending to <strong>${m.email || 'contact@example.com'}</strong>. All communications are logged.</p>
             </div>
           </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:flex-start;">
+
+          <!-- LEFT: COMPOSE -->
+          <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+            <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:#f8fafc;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;">// Compose</div>
+            </div>
+            <div style="padding:20px;">
+              <div style="margin-bottom:14px;">
+                <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">Quick Templates</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                  <button onclick="document.getElementById('email-subj-${m.id}').value='Welcome to the Platform'; document.getElementById('email-body-${m.id}').value='Hi ${m.member},\n\nWelcome! Your account is now active.\n\n— Admin Team';" style="border:1px solid var(--border);background:#fff;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:inherit;">Welcome Email</button>
+                  <button onclick="document.getElementById('email-subj-${m.id}').value='Your plan is about to expire'; document.getElementById('email-body-${m.id}').value='Hi ${m.member},\n\nThis is a reminder that your current plan is expiring soon. Please renew to continue access.\n\n— Admin Team';" style="border:1px solid var(--border);background:#fff;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:inherit;">Plan Expiry Reminder</button>
+                  <button onclick="document.getElementById('email-subj-${m.id}').value='Account Under Review'; document.getElementById('email-body-${m.id}').value='Hi ${m.member},\n\nYour account is currently under review. We will notify you shortly.\n\n— Admin Team';" style="border:1px solid var(--border);background:#fff;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:inherit;">Account Under Review</button>
+                </div>
+              </div>
+              <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Subject</label>
+                <input id="email-subj-${m.id}" type="text" placeholder="e.g. Account verification required" style="width:100%;padding:10px 14px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:0.88rem;font-weight:700;color:var(--text);outline:none;font-family:inherit;box-sizing:border-box;">
+              </div>
+              <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Body</label>
+                <textarea id="email-body-${m.id}" rows="6" placeholder="Write your message here..." style="width:100%;padding:10px 14px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:0.88rem;font-weight:600;color:var(--text);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
+              </div>
+              <button class="btn-primary" style="width:100%;border-radius:8px;justify-content:center;" onclick="showToast('Email sent successfully','success')">
+                <span class="material-icons-round">send</span> Send Email
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT: HISTORY -->
+          <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden;">
+            <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:#f8fafc; display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;">// History (3)</div>
+              <button style="background:none;border:none;font-size:0.75rem;font-weight:800;color:var(--blue);cursor:pointer;font-family:inherit;" onclick="showToast('Refreshed','success')">REFRESH</button>
+            </div>
+            <div style="padding:0;">
+              <div style="padding:16px 20px; border-bottom:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                  <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your plan is about to expire</div>
+                  <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">23 Apr 2026, 18:19</div>
+                </div>
+                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
+                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6;">This is a reminder that your current plan is expiring soon. Please renew to continue accessing all features.<br>— Team Admin</div>
+              </div>
+              <div style="padding:16px 20px; border-bottom:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                  <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Welcome to the Platform</div>
+                  <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">24 Nov 2025, 09:00</div>
+                </div>
+                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
+                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6;">Welcome! Your account is now active and ready to use.<br>— Team Admin</div>
+              </div>
+              <div style="padding:16px 20px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                  <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your monthly invoice is ready</div>
+                  <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">12 Jul 2026, 14:00</div>
+                </div>
+                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
+                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6;">Invoice for Jul 2026 has been generated. Please review and make payment.<br>— Team Admin</div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     `;
+
+
+
   } else if (tab === 'history') {
     return `
       <div class="content-card">
@@ -1090,7 +1199,7 @@ function saveNewAddress(memberId) {
   if (!m.addresses) m.addresses = [];
   m.addresses.push({
     type: addrType,
-    detail: addrDetail,
+    detail: addrDetail + ', ' + document.getElementById('add-addr-city').value,
     city: document.getElementById('add-addr-city').value
   });
   closeModal();
@@ -1167,37 +1276,19 @@ document.getElementById('sidebar-toggle').addEventListener('click', () => {
   icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
 });
 
-document.querySelectorAll('.nav-toggle').forEach(toggle => {
-  toggle.addEventListener('click', e => {
-    e.preventDefault();
-    const group = toggle.closest('.nav-group');
-    const sub = group.querySelector('.nav-sub');
-    document.querySelectorAll('.nav-group.open').forEach(g => {
-      if (g !== group) {
-        g.classList.remove('open');
-        g.querySelector('.nav-sub').style.height = '0px';
-      }
-    });
-    if (group.classList.contains('open')) {
-      group.classList.remove('open');
-      sub.style.height = '0px';
-    } else {
-      group.classList.add('open');
-      sub.style.height = sub.scrollHeight + 'px';
-    }
+
+
+
+function toggleNavGroup(btn) {
+  const group = btn.closest('.nav-group');
+  const sub = group.querySelector('.nav-sub');
+  const isOpen = group.classList.contains('open');
+  document.querySelectorAll('.nav-group.open').forEach(g => {
+    if (g !== group) { g.classList.remove('open'); g.querySelector('.nav-sub').style.height = '0px'; }
   });
-});
-
-document.querySelectorAll('.nav-item:not(.nav-toggle):not(.logout-item)').forEach(item => {
-  item.addEventListener('click', e => {
-    if (item.getAttribute('href') === '#') {
-      e.preventDefault();
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
-    }
-  });
-});
-
-
+  if (isOpen) { group.classList.remove('open'); sub.style.height = '0px'; }
+  else { group.classList.add('open'); sub.style.height = sub.scrollHeight + 'px'; }
+}
 
 renderTable();
+

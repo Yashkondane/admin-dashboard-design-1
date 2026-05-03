@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — Member Directory</title>
+  <title>Admin Dashboard — Send Email</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
@@ -15,7 +15,6 @@
 
 <body>
   <aside class="sidebar" id="sidebar">
-    <!-- Collapse/Expand tab on right edge -->
     <button class="sidebar-toggle-tab" id="sidebar-toggle" title="Toggle sidebar">
       <span class="material-icons-round" id="sidebar-toggle-icon">chevron_left</span>
     </button>
@@ -37,7 +36,7 @@
         <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span class="nav-label">Dashboard</span></a>
 
         <!-- Members -->
-        <a href="index.html" class="nav-item active" id="nav-members">
+        <a href="index.html" class="nav-item" id="nav-members">
           <span class="material-icons-round">people</span>
           <span class="nav-label">Members</span>
           <span class="nav-badge">15</span>
@@ -58,14 +57,14 @@
         </div>
 
         <!-- Communication -->
-        <div class="nav-group">
+        <div class="nav-group open">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
             <span class="material-icons-round">chat_bubble_outline</span>
             <span class="nav-label">Communication</span>
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
-          <div class="nav-sub">
-            <a href="email.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Send Email</a>
+          <div class="nav-sub" style="height: auto;">
+            <a href="email.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Send Email</a>
             <a href="notifications.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Notifications</a>
           </div>
         </div>
@@ -112,7 +111,7 @@
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
         <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
-            placeholder="Search" id="top-search-input"></div>
+            placeholder="Search Contacts" id="top-search-input"></div>
       </div>
       <div class="top-bar-right">
         <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
@@ -127,73 +126,72 @@
       </div>
     </header>
 
-    <div id="directory-view">
+    <div id="email-view" style="background: transparent;">
       <div class="page-title-row">
-        <h1 class="page-title">Member Directory</h1>
+        <h1 class="page-title">Send Email</h1>
         <div class="page-title-actions">
-          <div class="showing-select"><span>Showing</span><select id="rows-per-page">
-              <option value="10" selected>10</option>
-              <option value="20">20</option>
-            </select></div>
-          <div class="filter-pills" id="filter-pills">
-            <span class="filter-label"><span class="material-icons-round">filter_list</span> Filter</span>
-            <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All</button>
-            <button class="filter-pill" data-filter="active" onclick="setFilter('active')">Active</button>
-            <button class="filter-pill" data-filter="suspended" onclick="setFilter('suspended')">Suspended</button>
-            <button class="filter-pill" data-filter="expire" onclick="setFilter('expire')">Inactive</button>
-            <button class="filter-pill" data-filter="pending" onclick="setFilter('pending')">Pending</button>
-          </div>
-          <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
+          <button class="btn-outline" onclick="saveDraft()"><span class="material-icons-round">save</span> Save Draft</button>
+          <button class="btn-primary" onclick="sendEmail()"><span class="material-icons-round">send</span> Send Now</button>
         </div>
       </div>
-
-      <section class="table-section">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th onclick="toggleSort('date')" style="cursor:pointer">Join Date <span id="sort-icon-date"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('company')" style="cursor:pointer">Company Name <span id="sort-icon-company"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('member')" style="cursor:pointer">Name <span id="sort-icon-member"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('location')" style="cursor:pointer">Location <span id="sort-icon-location"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('address')" style="cursor:pointer">Address <span id="sort-icon-address"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('mobile')" style="cursor:pointer">Mobile <span id="sort-icon-mobile"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('email')" style="cursor:pointer">Email <span id="sort-icon-email"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('status')" style="cursor:pointer">Status <span id="sort-icon-status"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('plan')" style="cursor:pointer">Plan Name <span id="sort-icon-plan"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('action')" style="cursor:pointer">Action <span id="sort-icon-action"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-            </tr>
-          </thead>
-          <tbody id="members-tbody"></tbody>
-        </table>
-
-        <div class="table-footer">
-          <button class="nav-text-btn" id="prev-page"><span class="material-icons-round">chevron_left</span>
-            Previous</button>
-          <div class="pagination" id="pagination-controls"></div>
-          <button class="nav-text-btn" id="next-page">Next <span
-              class="material-icons-round">chevron_right</span></button>
+      
+      <div style="display: flex; gap: 24px; align-items: stretch; height: calc(100vh - 160px);">
+        
+        <!-- Templates Sidebar -->
+        <div style="width: 280px; flex-shrink: 0; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <div style="padding: 20px; border-bottom: 1px solid var(--border); background: #f8fafc;">
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
+              <span class="material-icons-round" style="color: var(--blue); font-size: 20px;">auto_awesome_mosaic</span> Templates
+            </h3>
+            <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-soft); font-weight: 600;">Click to load pre-written emails.</p>
+          </div>
+          <div id="template-list" style="overflow-y: auto; flex: 1; padding: 12px;">
+            <!-- Filled by email.js -->
+          </div>
         </div>
-      </section>
+        
+        <!-- Email Composer -->
+        <div style="flex: 1; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+          <div style="padding: 20px 24px; border-bottom: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+              <label style="font-weight: 800; font-size: 0.9rem; color: var(--text-mid); width: 60px;">To:</label>
+              <input type="text" id="email-to" placeholder="e.g. All Active Members, or Specific Emails..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <label style="font-weight: 800; font-size: 0.9rem; color: var(--text-mid); width: 60px;">Subject:</label>
+              <input type="text" id="email-subject" placeholder="Enter email subject..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+          </div>
+          
+          <div style="padding: 12px 24px; border-bottom: 1px solid var(--border); background: #f8fafc; display: flex; gap: 16px; align-items: center;">
+            <div style="display: flex; gap: 4px;">
+              <button class="editor-btn"><span class="material-icons-round">format_bold</span></button>
+              <button class="editor-btn"><span class="material-icons-round">format_italic</span></button>
+              <button class="editor-btn"><span class="material-icons-round">format_underlined</span></button>
+            </div>
+            <div style="width: 1px; height: 20px; background: var(--border);"></div>
+            <div style="display: flex; gap: 4px;">
+              <button class="editor-btn"><span class="material-icons-round">format_align_left</span></button>
+              <button class="editor-btn"><span class="material-icons-round">format_align_center</span></button>
+              <button class="editor-btn"><span class="material-icons-round">format_align_right</span></button>
+            </div>
+            <div style="width: 1px; height: 20px; background: var(--border);"></div>
+            <div style="display: flex; gap: 4px;">
+              <button class="editor-btn"><span class="material-icons-round">format_list_bulleted</span></button>
+              <button class="editor-btn"><span class="material-icons-round">format_list_numbered</span></button>
+              <button class="editor-btn"><span class="material-icons-round">link</span></button>
+            </div>
+          </div>
+          
+          <textarea id="email-body" style="flex: 1; border: none; padding: 24px; font-family: inherit; font-size: 0.95rem; color: var(--text); line-height: 1.6; resize: none; outline: none;" placeholder="Write your message here..."></textarea>
+          
+        </div>
+        
+      </div>
     </div>
-
-    <div id="profile-view" class="profile-view hidden"></div>
   </main>
 
-  <div id="modal-container" class="modal-overlay hidden">
-    <div class="modal-content" id="modal-content"></div>
-  </div>
   <div id="toast-container" class="toast-container"></div>
-  <script src="script.js"></script>
+  <script src="email.js"></script>
 </body>
-
 </html>

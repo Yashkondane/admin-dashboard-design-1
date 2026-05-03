@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — Employees</title>
+  <title>Admin Dashboard — Call Requests</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <aside class="sidebar" id="sidebar">
-    <!-- Collapse/Expand tab on right edge -->
     <button class="sidebar-toggle-tab" id="sidebar-toggle" title="Toggle sidebar">
       <span class="material-icons-round" id="sidebar-toggle-icon">chevron_left</span>
     </button>
@@ -68,15 +70,15 @@
         </div>
 
         <!-- Requests -->
-        <div class="nav-group">
+        <div class="nav-group open">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
             <span class="material-icons-round">assignment</span>
             <span class="nav-label">Requests</span>
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
-          <div class="nav-sub">
+          <div class="nav-sub" style="height: auto;">
             <a href="profile-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Profile Request</a>
-            <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
+            <a href="call-requests.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
 
@@ -93,7 +95,7 @@
         </div>
 
         <!-- Employees (temp) -->
-        <a href="employees.html" class="nav-item active" id="nav-employees" style="opacity:0.5;">
+        <a href="employees.html" class="nav-item" id="nav-employees" style="opacity:0.5;">
           <span class="material-icons-round">badge</span>
           <span class="nav-label">Employees</span>
         </a>
@@ -108,46 +110,65 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Search" id="top-search-input"></div>
+        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
+            placeholder="Search Calls" id="top-search-input"></div>
       </div>
       <div class="top-bar-right">
-        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span class="notif-dot"></span></button>
+        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
+            class="notif-dot"></span></button>
         <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span></button>
         <div class="header-user">
           <img class="header-user-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jane Cooper">
-          <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span class="header-user-email">jane234@example.com</span></div>
+          <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span
+              class="header-user-email">jane234@example.com</span></div>
           <span class="material-icons-round header-user-arrow">expand_more</span>
         </div>
       </div>
     </header>
 
-    <div id="employee-view" style="background: transparent;">
+    <div id="calls-view" style="background: transparent;">
       <div class="page-title-row">
-        <h1 class="page-title">Employee</h1>
+        <h1 class="page-title">Call Requests</h1>
         <div class="page-title-actions">
-          <div class="showing-select"><span>Showing</span><select id="rows-per-page"><option value="10" selected>10</option><option value="20">20</option></select></div>
+          <div class="filter-pills" id="filter-pills">
+            <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All</button>
+            <button class="filter-pill" data-filter="Pending" onclick="setFilter('Pending')">Pending</button>
+            <button class="filter-pill" data-filter="Scheduled" onclick="setFilter('Scheduled')">Scheduled</button>
+            <button class="filter-pill" data-filter="Completed" onclick="setFilter('Completed')">Completed</button>
+          </div>
           <button class="btn-outline"><span class="material-icons-round">filter_alt</span> Filter</button>
-          <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
-          <button class="btn-primary"><span class="material-icons-round">add</span> Add New Employee</button>
         </div>
       </div>
-
-      <div class="employee-grid" id="employee-grid">
-        <!-- Employee cards injected here via JS -->
-      </div>
       
-      <div class="table-footer">
-        <button class="page-btn nav-text-btn" id="prev-page"><span class="material-icons-round">chevron_left</span> Previous</button>
-        <div class="pagination" id="pagination-controls"></div>
-        <button class="page-btn nav-text-btn" id="next-page">Next <span class="material-icons-round">chevron_right</span></button>
-      </div>
+      <section class="table-section">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="padding-left: 24px;">Req ID</th>
+              <th>Member Name</th>
+              <th>Topic</th>
+              <th>Requested Time</th>
+              <th>Status</th>
+              <th style="text-align: right; padding-right: 32px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="calls-tbody">
+            <!-- Rendered by calls.js -->
+          </tbody>
+        </table>
+        <div class="table-footer">
+          <button class="page-btn nav-text-btn" id="prev-page"><span class="material-icons-round">chevron_left</span> Previous</button>
+          <div class="pagination">
+            <button class="page-btn active">1</button>
+          </div>
+          <button class="page-btn nav-text-btn" id="next-page">Next <span class="material-icons-round">chevron_right</span></button>
+        </div>
+      </section>
     </div>
-
-    <div id="profile-view" class="profile-view hidden"></div>
   </main>
 
-  <div id="modal-container" class="modal-overlay hidden"><div class="modal-content" id="modal-content"></div></div>
+  <div id="modal-container" class="modal-overlay hidden"><div class="modal-content" id="modal-content" style="max-width: 500px;"></div></div>
   <div id="toast-container" class="toast-container"></div>
-  <script src="employees.js"></script>
+  <script src="calls.js"></script>
 </body>
 </html>
