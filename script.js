@@ -538,98 +538,6 @@ function renderProfileTab(m, tab) {
   } else if (tab === 'plan') {
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content:space-between; align-items:center;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
-            <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">card_membership</span></div>
-            <div>
-              <h3 class="profile-section-title">Current Plan</h3>
-              <p class="profile-section-desc">Active subscription details and expiry information.</p>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:20px; border:1px solid var(--border); border-radius:14px; overflow:hidden;">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; background:#fff; border-bottom:1px solid var(--border);">
-            <div>
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Current Plan</div>
-              <div style="display:flex;gap:10px;align-items:center;">
-                <span style="background:#0f172a;color:#fff;padding:4px 14px;border-radius:6px;font-weight:800;font-size:0.9rem;">Business</span>
-                <span style="border:1px solid #16a34a;color:#16a34a;padding:4px 12px;border-radius:6px;font-weight:700;font-size:0.85rem;display:inline-flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;"></span>Active</span>
-              </div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Days Remaining</div>
-              <div style="font-size:3rem;font-weight:900;color:var(--blue);line-height:1;">82</div>
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;">
-            <div style="padding:18px 24px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:#fff;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Start Date</div>
-              <div style="font-size:1rem;font-weight:800;color:var(--text);font-family:monospace;">23 Apr 2026</div>
-            </div>
-            <div style="padding:18px 24px;border-bottom:1px solid var(--border);background:#fff;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Expiry Date</div>
-              <div style="font-size:1rem;font-weight:800;color:var(--text);font-family:monospace;">22 Jul 2026</div>
-            </div>
-            <div style="padding:18px 24px;border-right:1px solid var(--border);background:#fff;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Pricing</div>
-              <div style="font-size:1rem;font-weight:800;color:var(--text);">₹9999.00</div>
-            </div>
-            <div style="padding:18px 24px;background:#fff;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Auto Expiry</div>
-              <div style="font-size:1rem;font-weight:800;color:#16a34a;">Enabled</div>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex;justify-content:flex-end;margin-top:16px;">
-          <button class="btn-primary" style="border-radius:8px;" onclick="switchTab(${m.id},'assign')">
-            <span class="material-icons-round">swap_horiz</span> Change Plan
-          </button>
-        </div>
-
-        <div style="margin-top:28px;">
-          <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">// Plan Change History</div>
-          <div style="font-size:1rem;font-weight:900;color:var(--text);margin-bottom:16px;">Past plans (2)</div>
-          <div style="border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-            <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
-              <thead>
-                <tr style="background:#f8fafc;">
-                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Plan</th>
-                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Started</th>
-                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Ended</th>
-                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Pricing</th>
-                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Replaced By</th>
-                  <th style="padding:10px 16px;text-align:left;font-weight:800;color:var(--text-soft);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;">Changed By</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-top:1px solid var(--border);">
-                  <td style="padding:12px 16px;"><span style="border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--text);">Business</span></td>
-                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Apr 2026</td>
-                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Apr 2026</td>
-                  <td style="padding:12px 16px;font-weight:700;color:var(--text);">₹2999.00</td>
-                  <td style="padding:12px 16px;"><span style="background:#0f172a;color:#fff;border-radius:6px;padding:3px 10px;font-weight:700;">Enterprise</span></td>
-                  <td style="padding:12px 16px;font-weight:600;color:var(--blue);">admin@example.com</td>
-                </tr>
-                <tr style="border-top:1px solid var(--border);">
-                  <td style="padding:12px 16px;"><span style="border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--text);">Business</span></td>
-                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Mar 2026</td>
-                  <td style="padding:12px 16px;font-weight:700;color:var(--text-mid);font-family:monospace;">23 Apr 2026</td>
-                  <td style="padding:12px 16px;font-weight:700;color:var(--text);">₹9999.00</td>
-                  <td style="padding:12px 16px;"><span style="border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-weight:700;color:var(--text);">Business</span></td>
-                  <td style="padding:12px 16px;font-weight:600;color:var(--blue);">admin@example.com</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    `;
-
-  } else if (tab === '___placeholder___') {
-    return `
-      <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
           <div style="display:flex; gap:12px; align-items:flex-start;">
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">payment</span></div>
@@ -644,20 +552,20 @@ function renderProfileTab(m, tab) {
         </div>
 
         <!-- Plan Banner -->
-        <div style="margin-top:24px; border-radius:16px; background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); padding:28px 32px; display:flex; justify-content:space-between; align-items:center; position:relative; overflow:hidden;">
-          <div style="position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.05);"></div>
-          <div style="position:absolute;right:60px;bottom:-40px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.04);"></div>
+        <div style="margin-top:24px; border: 1px solid var(--border); border-radius:16px; background: #fff; padding:28px 32px; display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <div style="font-size:0.75rem;font-weight:800;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Active Plan</div>
-            <div style="font-size:2rem;font-weight:900;color:#fff;line-height:1;margin-bottom:8px;">Business Plan</div>
-            <div style="font-size:0.9rem;font-weight:600;color:rgba(255,255,255,0.7);">Renews automatically on Aug 15, 2026</div>
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <span style="font-size:0.75rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:1px;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Active Plan</span>
+              <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;padding:4px 10px;border-radius:100px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;"></span>
+                <span style="font-size:0.75rem;font-weight:800;color:#16a34a;">Auto-renew ON</span>
+              </span>
+            </div>
+            <div style="font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;margin-bottom:8px;">${capitalize(m.plan)} Plan</div>
+            <div style="font-size:0.9rem;font-weight:600;color:var(--text-mid);">Renews automatically on Aug 15, 2026</div>
           </div>
           <div style="text-align:right;">
-            <div style="font-size:2.4rem;font-weight:900;color:#fff;line-height:1;">$99<span style="font-size:1rem;color:rgba(255,255,255,0.7);font-weight:700;">/mo</span></div>
-            <div style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);padding:4px 12px;border-radius:100px;">
-              <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;"></span>
-              <span style="font-size:0.8rem;font-weight:800;color:#fff;">Auto-renew ON</span>
-            </div>
+            <div style="font-size:2.8rem;font-weight:900;color:var(--blue);line-height:1;">$99<span style="font-size:1.1rem;color:var(--text-mid);font-weight:700;">/mo</span></div>
           </div>
         </div>
 
@@ -716,100 +624,6 @@ function renderProfileTab(m, tab) {
       </div>
     `;
 
-  } else if (tab === 'assign') {
-    return `
-      <div class="content-card">
-        <div class="profile-section-header">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">assignment</span></div>
-            <div>
-              <h3 class="profile-section-title">Manual Plan Assignment</h3>
-              <p class="profile-section-desc">Set a new plan. Invoice will be auto-generated and user notified before expiry.</p>
-            </div>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 24px;">
-          <!-- Free -->
-          <div style="border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fff; cursor: pointer;">
-            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text);">Free</div>
-            <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">₹0 / 365d</div>
-          </div>
-          <!-- Starter -->
-          <div style="border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fff; cursor: pointer;">
-            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text);">Starter</div>
-            <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">₹999 / 30d</div>
-          </div>
-          <!-- Business -->
-          <div style="border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fff; cursor: pointer;">
-            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text);">Business</div>
-            <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">₹2999 / 30d</div>
-          </div>
-          <!-- Enterprise -->
-          <div style="border: 1px solid var(--blue); border-radius: 8px; padding: 16px; background: #eff6ff; position: relative; cursor: pointer;">
-            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text);">Enterprise</div>
-            <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">₹9999 / 90d</div>
-            <span class="material-icons-round" style="position: absolute; right: 16px; top: 16px; color: var(--blue); font-size: 20px;">check_circle</span>
-          </div>
-          <!-- Custom -->
-          <div style="grid-column: span 2; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fff; cursor: pointer;">
-            <div style="font-weight: 800; font-size: 0.95rem; color: var(--text);">Custom</div>
-            <div style="font-size: 0.8rem; color: var(--text-soft); margin-top: 4px;">₹0 / custom</div>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 24px;">
-          <div>
-            <label style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; margin-bottom: 8px;">Validity (Days)</label>
-            <input type="number" value="90" style="width: 100%; padding: 12px 16px; border: none; background: #f8fafc; border-radius: 8px; font-weight: 700; color: var(--text); outline: none; font-family: inherit; box-sizing: border-box;">
-          </div>
-          <div>
-            <label style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; margin-bottom: 8px;">Pricing (₹)</label>
-            <input type="number" value="9999" style="width: 100%; padding: 12px 16px; border: none; background: #f8fafc; border-radius: 8px; font-weight: 700; color: var(--text); outline: none; font-family: inherit; box-sizing: border-box;">
-          </div>
-          <div>
-            <label style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; margin-bottom: 8px;">Discount (%)</label>
-            <div style="position: relative;">
-              <select style="width: 100%; padding: 12px 16px; border: none; background: #f8fafc; border-radius: 8px; font-weight: 700; color: var(--text); outline: none; appearance: none; font-family: inherit; box-sizing: border-box;">
-                <option>0</option>
-              </select>
-              <span class="material-icons-round" style="position: absolute; right: 12px; top: 12px; color: var(--text-soft); font-size: 20px; pointer-events: none;">unfold_more</span>
-            </div>
-          </div>
-          <div>
-            <label style="display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; margin-bottom: 8px;">Auto Expiry</label>
-            <button style="width: 100%; padding: 12px; background: #0f172a; color: #fff; border: none; border-radius: 8px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; font-family: inherit; box-sizing: border-box;">Enabled</button>
-          </div>
-        </div>
-
-        <div style="margin-top: 24px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; padding: 24px;">
-          <div style="display: flex; align-items: center; gap: 8px; color: var(--blue); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px;">
-            <span class="material-icons-round" style="font-size: 16px;">receipt</span> Invoice Preview
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem;">
-            <span style="color: var(--text-mid); font-weight: 600;">Plan</span>
-            <span style="font-weight: 800; color: var(--text);">Enterprise</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem;">
-            <span style="color: var(--text-mid); font-weight: 600;">Base Price</span>
-            <span style="font-weight: 600; color: var(--text-soft);">₹9999.00</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 0.9rem;">
-            <span style="color: var(--text-mid); font-weight: 600;">Discount</span>
-            <span style="font-weight: 600; color: var(--text-soft);">-0%</span>
-          </div>
-          <div style="border-top: 1px solid var(--border); margin: 0 -24px; margin-bottom: 16px;"></div>
-          <div style="display: flex; justify-content: space-between; font-size: 1rem;">
-            <span style="font-weight: 900; color: var(--text);">Total</span>
-            <span style="font-weight: 900; color: var(--blue);">₹9999.00</span>
-          </div>
-        </div>
-
-        <button class="btn-primary" style="width: 100%; margin-top: 24px; padding: 14px; font-size: 0.95rem; border-radius: 8px; display: flex; justify-content: center; gap: 8px; align-items: center;" onclick="showToast('Invoice generated', 'success')">
-          <span class="material-icons-round">receipt</span> Assign & Generate Invoice
-        </button>
-      </div>
-    `;
   } else if (tab === 'email') {
     return `
       <div class="content-card">
@@ -861,28 +675,37 @@ function renderProfileTab(m, tab) {
             </div>
             <div style="padding:0;">
               <div style="padding:16px 20px; border-bottom:1px solid var(--border);">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-                  <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your plan is about to expire</div>
+                <div style="cursor:pointer; display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" onclick="const b=this.nextElementSibling.nextElementSibling; b.style.display=b.style.display==='none'?'block':'none'; const i=this.querySelector('.material-icons-round'); i.textContent=i.textContent==='expand_more'?'expand_less':'expand_more';">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="material-icons-round" style="font-size:18px; color:var(--text-soft); transition:0.2s;">expand_more</span>
+                    <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your plan is about to expire</div>
+                  </div>
                   <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">23 Apr 2026, 18:19</div>
                 </div>
-                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
-                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6;">This is a reminder that your current plan is expiring soon. Please renew to continue accessing all features.<br>— Team Admin</div>
+                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px; padding-left:26px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
+                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6; display:none; padding-left:26px; padding-top:8px; border-top:1px dashed var(--border); margin-top:8px;">This is a reminder that your current plan is expiring soon. Please renew to continue accessing all features.<br>— Team Admin</div>
               </div>
               <div style="padding:16px 20px; border-bottom:1px solid var(--border);">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-                  <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Welcome to the Platform</div>
+                <div style="cursor:pointer; display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" onclick="const b=this.nextElementSibling.nextElementSibling; b.style.display=b.style.display==='none'?'block':'none'; const i=this.querySelector('.material-icons-round'); i.textContent=i.textContent==='expand_more'?'expand_less':'expand_more';">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="material-icons-round" style="font-size:18px; color:var(--text-soft); transition:0.2s;">expand_more</span>
+                    <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Welcome to the Platform</div>
+                  </div>
                   <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">24 Nov 2025, 09:00</div>
                 </div>
-                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
-                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6;">Welcome! Your account is now active and ready to use.<br>— Team Admin</div>
+                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px; padding-left:26px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
+                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6; display:none; padding-left:26px; padding-top:8px; border-top:1px dashed var(--border); margin-top:8px;">Welcome! Your account is now active and ready to use.<br>— Team Admin</div>
               </div>
               <div style="padding:16px 20px;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-                  <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your monthly invoice is ready</div>
+                <div style="cursor:pointer; display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" onclick="const b=this.nextElementSibling.nextElementSibling; b.style.display=b.style.display==='none'?'block':'none'; const i=this.querySelector('.material-icons-round'); i.textContent=i.textContent==='expand_more'?'expand_less':'expand_more';">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="material-icons-round" style="font-size:18px; color:var(--text-soft); transition:0.2s;">expand_more</span>
+                    <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your monthly invoice is ready</div>
+                  </div>
                   <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">12 Jul 2026, 14:00</div>
                 </div>
-                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
-                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6;">Invoice for Jul 2026 has been generated. Please review and make payment.<br>— Team Admin</div>
+                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px; padding-left:26px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
+                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6; display:none; padding-left:26px; padding-top:8px; border-top:1px dashed var(--border); margin-top:8px;">Invoice for Jul 2026 has been generated. Please review and make payment.<br>— Team Admin</div>
               </div>
             </div>
           </div>
