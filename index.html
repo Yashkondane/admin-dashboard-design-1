@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=10">
 </head>
 
 <body>
@@ -111,8 +111,10 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
-            placeholder="Search" id="top-search-input"></div>
+        <div class="top-bar-search" style="position:relative;"><span class="material-icons-round">search</span><input type="text"
+            placeholder="Search by name, company, email or mobile..." id="top-search-input" style="padding-right:40px;">
+            <div style="position:absolute; right:12px; background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.75rem; font-weight:700; color:#64748b; pointer-events:none;">⌘ K</div>
+        </div>
       </div>
       <div class="top-bar-right">
         <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
@@ -128,60 +130,52 @@
     </header>
 
     <div id="directory-view">
-      <div class="page-title-row">
-        <h1 class="page-title">Member Directory</h1>
-        <div class="page-title-actions">
-          <div class="showing-select"><span>Showing</span><select id="rows-per-page">
-              <option value="10" selected>10</option>
-              <option value="20">20</option>
-            </select></div>
-          <div class="filter-pills" id="filter-pills">
-            <span class="filter-label"><span class="material-icons-round">filter_list</span> Filter</span>
-            <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All</button>
-            <button class="filter-pill" data-filter="active" onclick="setFilter('active')">Active</button>
-            <button class="filter-pill" data-filter="suspended" onclick="setFilter('suspended')">Suspended</button>
-            <button class="filter-pill" data-filter="expire" onclick="setFilter('expire')">Inactive</button>
-            <button class="filter-pill" data-filter="pending" onclick="setFilter('pending')">Pending</button>
-          </div>
-          <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
+      <div class="page-title-row" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <h1 class="page-title">Members</h1>
+          <p style="color: var(--text-soft); font-weight: 600; margin-top: 6px;">View and manage all company members and their account status.</p>
         </div>
+        <button class="btn-outline" style="padding: 8px 16px; font-size: 0.9rem;"><span class="material-icons-round" style="font-size: 18px;">filter_list</span> Filter <span class="material-icons-round" style="font-size: 18px; margin-left: 4px;">expand_more</span></button>
       </div>
 
-      <section class="table-section">
-        <table class="data-table">
+      <section class="table-section" style="display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border); padding: 0 24px; background: #fff;">
+          <div class="tabs-container" style="display: flex; gap: 24px;">
+            <button class="tab-item active" data-filter="all" onclick="setFilter('all')">All Members <span class="badge">15</span></button>
+            <button class="tab-item" data-filter="active" onclick="setFilter('active')">Active <span class="badge">9</span></button>
+            <button class="tab-item" data-filter="inactive" onclick="setFilter('expire')">Inactive <span class="badge">2</span></button>
+            <button class="tab-item" data-filter="pending" onclick="setFilter('pending')">Pending <span class="badge">1</span></button>
+            <button class="tab-item" data-filter="incomplete" onclick="setFilter('incomplete')">Incomplete <span class="badge">1</span></button>
+            <button class="tab-item" data-filter="suspended" onclick="setFilter('suspended')">Suspended <span class="badge">2</span></button>
+          </div>
+        </div>
+
+        <div class="table-scroll-wrap">
+          <table class="data-table">
           <thead>
             <tr>
-              <th onclick="toggleSort('date')" style="cursor:pointer">Join Date <span id="sort-icon-date"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('company')" style="cursor:pointer">Company Name <span id="sort-icon-company"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('member')" style="cursor:pointer">Name <span id="sort-icon-member"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('location')" style="cursor:pointer">Location <span id="sort-icon-location"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('address')" style="cursor:pointer">Address <span id="sort-icon-address"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('mobile')" style="cursor:pointer">Mobile <span id="sort-icon-mobile"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('email')" style="cursor:pointer">Email <span id="sort-icon-email"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('status')" style="cursor:pointer">Status <span id="sort-icon-status"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('plan')" style="cursor:pointer">Plan Name <span id="sort-icon-plan"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('action')" style="cursor:pointer">Action <span id="sort-icon-action"
-                  class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('member')" style="cursor:pointer; width: 26%;">NAME & COMPANY <span id="sort-icon-member" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('location')" style="cursor:pointer; width: 14%;">LOCATION <span id="sort-icon-location" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('email')" style="cursor:pointer; width: 22%;">EMAIL <span id="sort-icon-email" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('mobile')" style="cursor:pointer; width: 14%;">MOBILE <span id="sort-icon-mobile" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('plan')" style="cursor:pointer; width: 8%;">PLAN <span id="sort-icon-plan" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('status')" style="cursor:pointer; width: 8%;">STATUS <span id="sort-icon-status" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('date')" style="cursor:pointer; width: 8%;">JOIN DATE <span id="sort-icon-date" class="material-icons-round sort-icon">unfold_more</span></th>
             </tr>
           </thead>
           <tbody id="members-tbody"></tbody>
         </table>
+        </div>
 
-        <div class="table-footer">
-          <button class="nav-text-btn" id="prev-page"><span class="material-icons-round">chevron_left</span>
-            Previous</button>
-          <div class="pagination" id="pagination-controls"></div>
-          <button class="nav-text-btn" id="next-page">Next <span
-              class="material-icons-round">chevron_right</span></button>
+        <div class="table-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 1 to 10 of 15 members</div>
+          <div class="pagination" id="pagination-controls" style="display: flex; align-items: center;"></div>
+          <div>
+            <select id="rows-per-page-bottom" onchange="rowsPerPage=parseInt(this.value); currentPage=1; renderTable();" style="border: none; outline: none; background: transparent; font-size: 0.85rem; font-weight: 600; color: var(--text-mid); cursor: pointer;">
+              <option value="10">10 / page</option>
+              <option value="20">20 / page</option>
+            </select>
+          </div>
         </div>
       </section>
     </div>
@@ -193,7 +187,7 @@
     <div class="modal-content" id="modal-content"></div>
   </div>
   <div id="toast-container" class="toast-container"></div>
-  <script src="script.js"></script>
+  <script src="script.js?v=10"></script>
 </body>
 
 </html>

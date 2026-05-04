@@ -1,97 +1,104 @@
 const members = [
-  { 
-    id:0, date:'23 Mar 2026', company:'Redstone Mining Ltd', member:'Ira Patel', location:'Nagpur', mobile:'+91 8408326704', email:'ira.patel@redstone.com', status:'suspended', plan:'enterprise', photo:'https://randomuser.me/api/portraits/women/44.jpg', address:'Plot 42, MIDC, Nagpur',
+  {
+    id: 0, date: '23 Mar 2026', company: 'Redstone Mining Ltd', member: 'Ira Patel', location: 'Nagpur', mobile: '+91 8408326704', email: 'ira.patel@redstone.com', status: 'suspended', plan: 'enterprise', photo: 'https://randomuser.me/api/portraits/women/44.jpg', address: 'Plot 42, MIDC, Nagpur',
     joinIp: '95.66.134.42', lastLogin: '2 hours ago', companyType: 'Manufacturer', role: 'Director', about: 'Redstone Mining Ltd is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.',
     contacts: [
-      { name: 'Ira Patel', role: 'Director', phone: '+91 8408326704', email: 'ira.patel@redstone.com' },
-      { name: 'Amit Sharma', role: 'Operations Manager', phone: '+91 9882142918', email: 'amit.s@redstone.com' },
-      { name: 'Diya Gupta', role: 'CEO', phone: '+91 7028519305', email: 'diya.gupta@rudra.com' }
+      { name: 'Ira Patel', role: 'Director', phone: '+91 8408326704', email: 'ira.patel@redstone.com', isMain: true, status: 'Active', reason: 'Primary stakeholder for all procurement and technical discussions.' },
+      { name: 'Amit Sharma', role: 'Operations Manager', phone: '+91 9882142918', email: 'amit.s@redstone.com', isMain: false, status: 'Active', reason: 'Handles day-to-day operations and logistics coordination.' },
+      { name: 'Diya Gupta', role: 'CEO', phone: '+91 7028519305', email: 'diya.gupta@rudra.com', isMain: false, status: 'Inactive', reason: 'No longer associated with this project.' }
     ],
     addresses: [
-      { type: 'Primary', detail: 'Plot 42, MIDC, Nagpur, Maharashtra' },
-      { type: 'Secondary', detail: '12th Floor, Trade Center, Mumbai' }
+      { title: 'Company Address', line1: 'Plot 42, MIDC', line2: 'Nagpur, Maharashtra', pincode: '440016', city: 'Nagpur', isDefault: true },
+      { title: 'Branch Office', line1: '12th Floor, Trade Center', line2: 'Mumbai', pincode: '400051', city: 'Mumbai', isDefault: false }
+    ],
+    stamps: [
+      { date: '12 Apr 2026', badges: ['identity', 'email', 'docs', 'account'], remark: 'Verified via onsite visit and document audit.', admin: 'Admin User' },
+      { date: '15 Mar 2026', badges: ['identity', 'email'], remark: 'Initial identity and email check completed.', admin: 'System' }
     ]
   },
-  { 
-    id:1, date:'24 Jan 2026', company:'Rudra Steel Works', member:'Diya Gupta', location:'Chennai', mobile:'+91 7028519305', email:'diya.gupta@rudra.com', status:'active', plan:'enterprise', photo:'https://randomuser.me/api/portraits/women/65.jpg', address:'Ambattur Ind. Estate, Chennai',
+  {
+    id: 1, date: '24 Jan 2026', company: 'Rudra Steel Works', member: 'Diya Gupta', location: 'Chennai, Tamil Nadu', mobile: '+91 7028519305', email: 'diya.gupta@rudra.com', status: 'active', plan: 'enterprise', photo: 'https://randomuser.me/api/portraits/women/65.jpg', address: 'Ambattur Ind. Estate, Chennai',
     joinIp: '102.45.22.11', lastLogin: '1 day ago', companyType: 'Steel Production', role: 'CEO', about: 'Rudra Steel Works specializes in high-quality structural steel and custom fabrication services for major infrastructure projects.',
     contacts: [{ name: 'Diya Gupta', role: 'CEO', phone: '+91 7028519305', email: 'diya.gupta@rudra.com' }],
-    addresses: [{ type: 'Factory', detail: 'Ambattur Ind. Estate, Chennai' }]
+    addresses: [{ title: 'Factory Address', line1: 'Ambattur Ind. Estate', line2: '', pincode: '600058', city: 'Chennai', isDefault: true }],
+    stamps: [{ date: '20 Jan 2026', badges: ['identity', 'email', 'docs'], remark: 'Verified at factory site.', admin: 'Admin' }]
   },
-  { 
-    id:2, date:'18 Jan 2026', company:'Saffron Exports', member:'Ishaan Reddy', location:'Jaipur', mobile:'+91 8834759735', email:'shaan.reddy@saffron.com', status:'active', plan:'business', photo:'https://randomuser.me/api/portraits/men/32.jpg', address:'B-22, Sitapura, Jaipur',
+  {
+    id: 2, date: '18 Jan 2026', company: 'Saffron Exports', member: 'Ishaan Reddy', location: 'Jaipur, Rajasthan', mobile: '+91 8834759735', email: 'shaan.reddy@saffron.com', status: 'active', plan: 'business', photo: 'https://randomuser.me/api/portraits/men/32.jpg', address: 'B-22, Sitapura, Jaipur',
     joinIp: '45.12.99.201', lastLogin: '5 mins ago', companyType: 'Exporter', role: 'Founder', about: 'Saffron Exports is a premier export house dealing in authentic Indian spices and textiles for the European market.',
     contacts: [{ name: 'Ishaan Reddy', role: 'Founder', phone: '+91 8834759735', email: 'shaan.reddy@saffron.com' }],
-    addresses: [{ type: 'Head Office', detail: 'B-22, Sitapura, Jaipur' }]
+    addresses: [{ title: 'Head Office', line1: 'B-22, Sitapura', line2: '', pincode: '302022', city: 'Jaipur', isDefault: true }],
+    stamps: [{ date: '15 Jan 2026', badges: ['identity', 'email', 'account'], remark: 'Identity and account verified.', admin: 'System' }]
   },
-  { 
-    id:3, date:'04 Jan 2026', company:'Sharma Jewellers', member:'Aditya Sharma', location:'Chandigarh', mobile:'+91 9882142918', email:'aditya.sharma@sharma.com', status:'pending', plan:'nil', photo:'https://randomuser.me/api/portraits/men/45.jpg', address:'Sector 22-C, Chandigarh',
+  {
+    id: 3, date: '04 Jan 2026', company: 'Sharma Jewellers', member: 'Aditya Sharma', location: 'Chandigarh, Punjab', mobile: '+91 9882142918', email: 'aditya.sharma@sharma.com', status: 'pending', plan: 'nil', photo: 'https://randomuser.me/api/portraits/men/45.jpg', address: 'Sector 22-C, Chandigarh',
     joinIp: '110.22.33.44', lastLogin: '3 days ago', companyType: 'Retailer', role: 'Owner', about: 'Sharma Jewellers is a multi-generational boutique offering bespoke gold and diamond jewellery in the heart of Chandigarh.',
     contacts: [{ name: 'Aditya Sharma', role: 'Owner', phone: '+91 9882142918', email: 'aditya.sharma@sharma.com' }],
-    addresses: [{ type: 'Showroom', detail: 'Sector 22-C, Chandigarh' }]
+    addresses: [{ title: 'Showroom', line1: 'Sector 22-C', line2: '', pincode: '160022', city: 'Chandigarh', isDefault: true }],
+    stamps: [{ date: '01 Jan 2026', badges: ['identity', 'email'], remark: 'Awaiting document verification.', admin: 'Admin' }]
   },
-  { 
-    id:4, date:'05 Dec 2025', company:'Vyom AgriTech', member:'Kabir Nair', location:'Hyderabad', mobile:'+91 9820011504', email:'kabir.nair@vyom.com', status:'suspended', plan:'free', photo:'https://randomuser.me/api/portraits/men/22.jpg', address:'HITEC City, Hyderabad',
+  {
+    id: 4, date: '05 Dec 2025', company: 'Vyom AgriTech', member: 'Kabir Nair', location: 'Hyderabad, Telangana', mobile: '+91 9820011504', email: 'kabir.nair@vyom.com', status: 'suspended', plan: 'free', photo: 'https://randomuser.me/api/portraits/men/22.jpg', address: 'HITEC City, Hyderabad',
     joinIp: '88.12.45.67', lastLogin: '1 week ago', companyType: 'AgriTech', role: 'CTO', about: 'Vyom AgriTech provides precision agriculture solutions using IoT sensors and AI-driven analytics for Indian farmers.',
     contacts: [{ name: 'Kabir Nair', role: 'CTO', phone: '+91 9820011504', email: 'kabir.nair@vyom.com' }],
-    addresses: [{ type: 'Office', detail: 'HITEC City, Hyderabad' }]
+    addresses: [{ title: 'Company Address', line1: 'HITEC City', line2: '', pincode: '500081', city: 'Hyderabad', isDefault: true }]
   },
-  { 
-    id:5, date:'24 Nov 2025', company:'Coastal Seafoods', member:'Maya Verma', location:'Kochi', mobile:'+91 8856174832', email:'maya.verma@coastal.com', status:'expire', plan:'starter', photo:'https://randomuser.me/api/portraits/women/28.jpg', address:'Harbour Road, Kochi',
+  {
+    id: 5, date: '24 Nov 2025', company: 'Coastal Seafoods', member: 'Maya Verma', location: 'Kochi, Kerala', mobile: '+91 8856174832', email: 'maya.verma@coastal.com', status: 'expire', plan: 'starter', photo: 'https://randomuser.me/api/portraits/women/28.jpg', address: 'Harbour Road, Kochi',
     joinIp: '77.33.21.90', lastLogin: '2 weeks ago', companyType: 'Food Processing', role: 'Managing Director', about: 'Coastal Seafoods is a premium seafood processing and export company based out of Kochi, Kerala.',
     contacts: [{ name: 'Maya Verma', role: 'Managing Director', phone: '+91 8856174832', email: 'maya.verma@coastal.com' }],
-    addresses: [{ type: 'Factory', detail: 'Harbour Road, Kochi, Kerala' }]
+    addresses: [{ title: 'Factory Address', line1: 'Harbour Road', line2: 'Kerala', pincode: '682003', city: 'Kochi', isDefault: true }]
   },
-  { 
-    id:6, date:'09 Oct 2025', company:'Indigo Pharma', member:'Ananya Kapoor', location:'Ahmedabad', mobile:'+91 9361872296', email:'ananya.kapoor@indigo.com', status:'pending', plan:'nil', photo:'https://randomuser.me/api/portraits/women/33.jpg', address:'GIDC Vatva, Ahmedabad',
+  {
+    id: 6, date: '09 Oct 2025', company: 'Indigo Pharma', member: 'Ananya Kapoor', location: 'Ahmedabad, Gujarat', mobile: '+91 9361872296', email: 'ananya.kapoor@indigo.com', status: 'pending', plan: 'nil', photo: 'https://randomuser.me/api/portraits/women/33.jpg', address: 'GIDC Vatva, Ahmedabad',
     joinIp: '55.66.77.88', lastLogin: '5 days ago', companyType: 'Pharmaceutical', role: 'Founder', about: 'Indigo Pharma focuses on generic drug manufacturing and API production for domestic and international markets.',
     contacts: [{ name: 'Ananya Kapoor', role: 'Founder', phone: '+91 9361872296', email: 'ananya.kapoor@indigo.com' }],
-    addresses: [{ type: 'Plant', detail: 'GIDC Vatva, Ahmedabad, Gujarat' }]
+    addresses: [{ title: 'Plant Address', line1: 'GIDC Vatva', line2: 'Gujarat', pincode: '382445', city: 'Ahmedabad', isDefault: true }]
   },
-  { 
-    id:7, date:'14 Sep 2025', company:'Aurora Logistics', member:'Vihaan Singh', location:'Delhi', mobile:'+91 9901457488', email:'vihaan.singh@aurora.com', status:'active', plan:'starter', photo:'https://randomuser.me/api/portraits/men/55.jpg', address:'Okhla Phase-II, New Delhi',
+  {
+    id: 7, date: '14 Sep 2025', company: 'Aurora Logistics', member: 'Vihaan Singh', location: 'Delhi, Delhi', mobile: '+91 9901457488', email: 'vihaan.singh@aurora.com', status: 'active', plan: 'starter', photo: 'https://randomuser.me/api/portraits/men/55.jpg', address: 'Okhla Phase-II, New Delhi',
     joinIp: '112.90.45.12', lastLogin: '30 mins ago', companyType: 'Logistics', role: 'CEO', about: 'Aurora Logistics provides end-to-end supply chain solutions across India with a focus on last-mile delivery.',
     contacts: [{ name: 'Vihaan Singh', role: 'CEO', phone: '+91 9901457488', email: 'vihaan.singh@aurora.com' }],
-    addresses: [{ type: 'Head Office', detail: 'Okhla Phase-II, New Delhi' }]
+    addresses: [{ title: 'Head Office', line1: 'Okhla Phase-II', line2: '', pincode: '110020', city: 'New Delhi', isDefault: true }]
   },
-  { 
-    id:8, date:'22 Aug 2025', company:'Bluebell Cafe Co.', member:'Neha Agarwal', location:'Kolkata', mobile:'+91 9739421934', email:'neha.agarwal@bluebell.com', status:'expire', plan:'starter', photo:'https://randomuser.me/api/portraits/women/50.jpg', address:'Park Street, Kolkata',
+  {
+    id: 8, date: '22 Aug 2025', company: 'Bluebell Cafe Co.', member: 'Neha Agarwal', location: 'Kolkata, West Bengal', mobile: '+91 9739421934', email: 'neha.agarwal@bluebell.com', status: 'expire', plan: 'starter', photo: 'https://randomuser.me/api/portraits/women/50.jpg', address: 'Park Street, Kolkata',
     joinIp: '99.88.77.66', lastLogin: '1 month ago', companyType: 'Hospitality', role: 'Owner', about: 'Bluebell Cafe Co. is a specialty coffee chain with a focus on artisanal roasts and cozy ambiance.',
     contacts: [{ name: 'Neha Agarwal', role: 'Owner', phone: '+91 9739421934', email: 'neha.agarwal@bluebell.com' }],
     addresses: [{ type: 'Flagship', detail: 'Park Street, Kolkata' }]
   },
-  { 
-    id:9, date:'10 Jul 2025', company:'Summit Traders', member:'Rohan Mehta', location:'Mumbai', mobile:'+91 9112358741', email:'rohan.mehta@summit.com', status:'active', plan:'business', photo:'https://randomuser.me/api/portraits/men/36.jpg', address:'BKC, Bandra East, Mumbai',
+  {
+    id: 9, date: '10 Jul 2025', company: 'Summit Traders', member: 'Rohan Mehta', location: 'Mumbai, Maharashtra', mobile: '+91 9112358741', email: 'rohan.mehta@summit.com', status: 'active', plan: 'business', photo: 'https://randomuser.me/api/portraits/men/36.jpg', address: 'BKC, Bandra East, Mumbai',
     joinIp: '44.55.66.77', lastLogin: '1 hour ago', companyType: 'Trading', role: 'Partner', about: 'Summit Traders is a diversified trading firm dealing in commodities, textiles, and electronics.',
     contacts: [{ name: 'Rohan Mehta', role: 'Partner', phone: '+91 9112358741', email: 'rohan.mehta@summit.com' }],
     addresses: [{ type: 'Office', detail: 'BKC, Bandra East, Mumbai' }]
   },
-  { 
-    id:10, date:'01 Jun 2025', company:'Prism Textiles', member:'Sneha Joshi', location:'Surat', mobile:'+91 8825467190', email:'sneha.joshi@prism.com', status:'pending', plan:'nil', photo:'https://randomuser.me/api/portraits/women/12.jpg', address:'Ring Road, Surat',
+  {
+    id: 10, date: '01 Jun 2025', company: 'Prism Textiles', member: 'Sneha Joshi', location: 'Surat', mobile: '+91 8825467190', email: 'sneha.joshi@prism.com', status: 'pending', plan: 'nil', photo: 'https://randomuser.me/api/portraits/women/12.jpg', address: 'Ring Road, Surat',
     joinIp: '33.44.55.66', lastLogin: '4 days ago', companyType: 'Textiles', role: 'Director', about: 'Prism Textiles manufactures premium quality fabrics for both domestic and export markets.',
     contacts: [{ name: 'Sneha Joshi', role: 'Director', phone: '+91 8825467190', email: 'sneha.joshi@prism.com' }],
     addresses: [{ type: 'Factory', detail: 'Ring Road, Surat, Gujarat' }]
   },
-  { 
-    id:11, date:'18 May 2025', company:'Zenith Infotech', member:'Arjun Das', location:'Bangalore', mobile:'+91 9944125803', email:'arjun.das@zenith.com', status:'active', plan:'business', photo:'https://randomuser.me/api/portraits/men/64.jpg', address:'Prestige Tech Park, Bangalore',
+  {
+    id: 11, date: '18 May 2025', company: 'Zenith Infotech', member: 'Arjun Das', location: 'Bangalore', mobile: '+91 9944125803', email: 'arjun.das@zenith.com', status: 'active', plan: 'business', photo: 'https://randomuser.me/api/portraits/men/64.jpg', address: 'Prestige Tech Park, Bangalore',
     joinIp: '22.33.44.55', lastLogin: '10 mins ago', companyType: 'IT Services', role: 'CEO', about: 'Zenith Infotech is a leading IT services and consulting firm specializing in cloud solutions and digital transformation.',
     contacts: [{ name: 'Arjun Das', role: 'CEO', phone: '+91 9944125803', email: 'arjun.das@zenith.com' }],
     addresses: [{ type: 'HQ', detail: 'Prestige Tech Park, Bangalore' }]
   },
-  { 
-    id:12, date:'02 Apr 2025', company:'Heritage Spices', member:'Priya Menon', location:'Thiruvananthapuram', mobile:'+91 8803216754', email:'priya.menon@heritage.com', status:'active', plan:'starter', photo:'https://randomuser.me/api/portraits/women/71.jpg', address:'Pattom, Thiruvananthapuram',
+  {
+    id: 12, date: '02 Apr 2025', company: 'Heritage Spices', member: 'Priya Menon', location: 'Thiruvananthapuram', mobile: '+91 8803216754', email: 'priya.menon@heritage.com', status: 'active', plan: 'starter', photo: 'https://randomuser.me/api/portraits/women/71.jpg', address: 'Pattom, Thiruvananthapuram',
     joinIp: '11.22.33.44', lastLogin: '2 days ago', companyType: 'FMCG', role: 'Founder', about: 'Heritage Spices curates and exports authentic Kerala spices to premium international markets.',
     contacts: [{ name: 'Priya Menon', role: 'Founder', phone: '+91 8803216754', email: 'priya.menon@heritage.com' }],
     addresses: [{ type: 'Warehouse', detail: 'Pattom, Thiruvananthapuram' }]
   },
-  { 
-    id:13, date:'15 Mar 2025', company:'Emerald Foods', member:'Karan Bhatia', location:'Ludhiana', mobile:'+91 9678234501', email:'karan.bhatia@emerald.com', status:'expire', plan:'free', photo:'https://randomuser.me/api/portraits/men/78.jpg', address:'Focal Point, Ludhiana',
+  {
+    id: 13, date: '15 Mar 2025', company: 'Emerald Foods', member: 'Karan Bhatia', location: 'Ludhiana', mobile: '+91 9678234501', email: 'karan.bhatia@emerald.com', status: 'expire', plan: 'free', photo: 'https://randomuser.me/api/portraits/men/78.jpg', address: 'Focal Point, Ludhiana',
     joinIp: '66.77.88.99', lastLogin: '3 weeks ago', companyType: 'Food Production', role: 'MD', about: 'Emerald Foods produces organic and health-conscious food products for the Indian market.',
     contacts: [{ name: 'Karan Bhatia', role: 'MD', phone: '+91 9678234501', email: 'karan.bhatia@emerald.com' }],
     addresses: [{ type: 'Factory', detail: 'Focal Point, Ludhiana, Punjab' }]
   },
-  { 
-    id:14, date:'28 Feb 2025', company:'Nova Electronics', member:'Tanvi Rao', location:'Pune', mobile:'+91 9534128976', email:'tanvi.rao@nova.com', status:'pending', plan:'nil', photo:'https://randomuser.me/api/portraits/women/85.jpg', address:'Amanora Mall, Pune',
+  {
+    id: 14, date: '28 Feb 2025', company: 'Nova Electronics', member: 'Tanvi Rao', location: 'Pune', mobile: '+91 9534128976', email: 'tanvi.rao@nova.com', status: 'incomplete', plan: 'nil', photo: 'https://randomuser.me/api/portraits/women/85.jpg', address: 'Amanora Mall, Pune',
     joinIp: '55.44.33.22', lastLogin: '6 days ago', companyType: 'Electronics', role: 'COO', about: 'Nova Electronics designs and manufactures consumer electronics and smart home devices.',
     contacts: [{ name: 'Tanvi Rao', role: 'COO', phone: '+91 9534128976', email: 'tanvi.rao@nova.com' }],
     addresses: [{ type: 'Office', detail: 'Amanora Mall, Pune, Maharashtra' }]
@@ -142,8 +149,8 @@ document.addEventListener('click', closeAllDropdowns);
 function setFilter(status) {
   currentFilter = status;
   currentPage = 1;
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  const active = document.querySelector(`.filter-pill[data-filter="${status}"]`);
+  document.querySelectorAll('.tab-item').forEach(p => p.classList.remove('active'));
+  const active = document.querySelector(`.tab-item[data-filter="${status}"]`);
   if (active) active.classList.add('active');
   renderTable();
   closeAllDropdowns();
@@ -184,7 +191,7 @@ function getFiltered() {
   filtered.sort((a, b) => {
     let valA = a[sortCol];
     let valB = b[sortCol];
-    
+
     // Default to name for Action sort
     if (sortCol === 'action') { valA = a.member; valB = b.member; }
 
@@ -195,7 +202,7 @@ function getFiltered() {
       valA = valA.toLowerCase();
       valB = valB.toLowerCase();
     }
-    
+
     if (valA < valB) return sortDir === 'asc' ? -1 : 1;
     if (valA > valB) return sortDir === 'asc' ? 1 : -1;
     return 0;
@@ -209,38 +216,69 @@ function renderTable() {
   const end = start + rowsPerPage;
   const pageItems = filtered.slice(start, end);
 
+  const tbodyEl = document.getElementById('members-tbody');
+  if (!tbodyEl) return;
+
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:60px;color:var(--text-soft);">No members found.</td></tr>`;
+    tbodyEl.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:60px;color:var(--text-soft);">No members found.</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = pageItems.map((m, i) => `
+  tbodyEl.innerHTML = pageItems.map((m, i) => {
+    const stamps = m.stamps || [];
+    const badgeConfig = {
+      identity: { icon: 'badge', color: '#fff', bg: '#3b82f6' },
+      email:    { icon: 'mark_email_read', color: '#fff', bg: '#16a34a' },
+      docs:     { icon: 'verified_user', color: '#fff', bg: '#7c3aed' },
+      account:  { icon: 'account_circle', color: '#fff', bg: '#d97706' }
+    };
+    const activeKeys = [...new Set(stamps.flatMap(s => s.badges || []))];
+
+    return `
     <tr style="animation-delay: ${i * 0.03}s">
-      <td onclick="openProfile(${m.id})">${m.date}</td>
-      <td onclick="openProfile(${m.id})">${m.company}</td>
       <td onclick="openProfile(${m.id})">
-        <div class="cell-member">
-          <img class="member-avatar" src="${m.photo}" alt="${m.member}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.member)}&background=eef3ff&color=4880ff'">
-          <span class="member-name">${m.member}</span>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="position:relative;">
+            <img class="member-avatar" src="${m.photo}" alt="${m.member}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.member)}&background=eef3ff&color=4880ff'" style="width: 44px; height: 44px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <div style="position:absolute; bottom:-4px; right:-4px; width:18px; height:18px; border-radius:50%; background:${m.status === 'active' ? '#16a34a' : (['suspended', 'inactive', 'expire'].includes(m.status) ? '#ef4444' : (m.status === 'incomplete' ? '#f59e0b' : '#94a3b8'))}; border:2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 800; color: var(--text); font-size: 0.95rem; letter-spacing:-0.2px;">${m.member}</span>
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; margin-top:2px;">${m.company}</span>
+          </div>
         </div>
       </td>
-      <td onclick="openProfile(${m.id})">${m.location}</td>
-      <td class="address-cell" title="${m.address}" onclick="openProfile(${m.id})">${m.address}</td>
-      <td onclick="openProfile(${m.id})">${m.mobile}</td>
-      <td onclick="openProfile(${m.id})">${m.email}</td>
-      <td onclick="openProfile(${m.id})"><span class="status-badge ${m.status}">${capitalize(m.status)}</span></td>
-      <td onclick="openProfile(${m.id})">${capitalize(m.plan)}</td>
-      <td class="action-cell">
-        <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown(${m.id}, this)">
-          <span class="material-icons-round">more_horiz</span>
-        </button>
-        <div class="dropdown-menu" id="dropdown-${m.id}">
-          <button class="dropdown-item" onclick="openProfile(${m.id}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-          <button class="dropdown-item delete" onclick="showToast('Profile deleted', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+      <td onclick="openProfile(${m.id})">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="color: var(--text-mid); font-weight: 700; font-size: 0.88rem;">${m.location.split(',')[0]}</span>
+        </div>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <span style="color: var(--text); font-weight: 700; font-size:0.85rem;">${m.email}</span>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <span style="color: var(--text); font-weight: 700; font-size:0.85rem;">${m.mobile}</span>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0;">
+          <span style="color: var(--text); font-weight: 800; font-size: 0.78rem; text-transform:uppercase; letter-spacing:0.3px;">${m.plan === 'nil' ? 'No Plan' : m.plan}</span>
+        </div>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <div class="status-badge ${m.status}">
+          <span></span>
+          ${capitalize(m.status === 'expire' ? 'inactive' : m.status)}
+        </div>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <div style="display:flex; flex-direction:column; align-items:flex-end;">
+          <span style="color: var(--text); font-weight: 800; font-size: 0.85rem;">${m.date}</span>
+          <span style="color: var(--text-soft); font-weight: 600; font-size: 0.7rem;">Applied On</span>
         </div>
       </td>
     </tr>
-  `).join('');
+    `;
+  }).join('');
 
   renderPagination(filtered.length);
   updateSortIcons();
@@ -250,35 +288,21 @@ function renderPagination(total) {
   const tp = Math.ceil(total / rowsPerPage);
   let html = '';
 
+  html += `<button class="page-btn" id="prev-page" style="width: 32px; height: 32px; border: none; background: transparent;" ${currentPage === 1 ? 'disabled style="opacity:0.4;cursor:default;"' : `onclick="goToPage(${currentPage - 1})"`}><span class="material-icons-round" style="color:var(--text-mid); font-size: 18px;">chevron_left</span></button>`;
+
   for (let i = 1; i <= tp; i++) {
-    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${String(i).padStart(2, '0')}</button>`;
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" style="width: 32px; height: 32px; font-size: 0.85rem; font-weight: 700; background: transparent; border: 1px solid ${i === currentPage ? 'var(--blue)' : 'transparent'}; border-radius: 50%; color: ${i === currentPage ? 'var(--blue)' : 'var(--text-mid)'};" onclick="goToPage(${i})">${i}</button>`;
   }
-  
+
+  html += `<button class="page-btn" id="next-page" style="width: 32px; height: 32px; border: none; background: transparent;" ${currentPage === tp ? 'disabled style="opacity:0.4;cursor:default;"' : `onclick="goToPage(${currentPage + 1})"`}><span class="material-icons-round" style="color:var(--text-mid); font-size: 18px;">chevron_right</span></button>`;
+
   paginationControls.innerHTML = html;
 
-  const prevBtn = document.getElementById('prev-page');
-  const nextBtn = document.getElementById('next-page');
-  
-  if(currentPage === 1) {
-    prevBtn.disabled = true;
-    prevBtn.style.opacity = '0.4';
-    prevBtn.style.cursor = 'default';
-  } else {
-    prevBtn.disabled = false;
-    prevBtn.style.opacity = '1';
-    prevBtn.style.cursor = 'pointer';
-    prevBtn.onclick = () => goToPage(currentPage - 1);
-  }
-
-  if(currentPage === tp || tp === 0) {
-    nextBtn.disabled = true;
-    nextBtn.style.opacity = '0.4';
-    nextBtn.style.cursor = 'default';
-  } else {
-    nextBtn.disabled = false;
-    nextBtn.style.opacity = '1';
-    nextBtn.style.cursor = 'pointer';
-    nextBtn.onclick = () => goToPage(currentPage + 1);
+  const showingText = document.getElementById('showing-text');
+  if (showingText) {
+    const start = total === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+    const end = Math.min(currentPage * rowsPerPage, total);
+    showingText.textContent = `Showing ${start} to ${end} of ${total} members`;
   }
 }
 
@@ -291,10 +315,6 @@ function goToPage(page) {
   document.querySelector('.table-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function toggleSort() {
-  sortDir = sortDir === 'desc' ? 'asc' : 'desc';
-  renderTable();
-}
 
 function openProfile(id, tab = 'company') {
   const m = members.find(x => x.id === id);
@@ -315,13 +335,37 @@ function openProfile(id, tab = 'company') {
       <div class="profile-header-top">
         <div class="profile-avatar-wrapper">
           <img class="profile-header-avatar" src="${m.photo}" alt="${m.member}">
-          <div class="avatar-edit-btn"><span class="material-icons-round">edit</span></div>
         </div>
         <div class="profile-header-info" style="display:flex; flex-direction:column; justify-content:center; flex:1;">
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <div style="display:flex; align-items:center; gap:12px;">
-              <div class="profile-header-name" style="font-size: 2rem; font-weight: 900; color: var(--text); letter-spacing: -0.8px;">${m.company}</div>
-              <span class="status-badge ${m.status}">${capitalize(m.status)}</span>
+            <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div class="profile-header-name" style="font-size: 2rem; font-weight: 900; color: var(--text); letter-spacing: -0.8px;">${m.company}</div>
+                ${(() => {
+                  const stamps = m.stamps || [];
+                  if (!stamps.length) return '';
+                  const badgeConfig = {
+                    identity: { icon: 'badge', color: '#fff', bg: '#3b82f6' },
+                    email:    { icon: 'mark_email_read', color: '#fff', bg: '#16a34a' },
+                    docs:     { icon: 'verified_user', color: '#fff', bg: '#7c3aed' },
+                    account:  { icon: 'account_circle', color: '#fff', bg: '#d97706' }
+                  };
+                  const activeKeys = [...new Set(stamps.flatMap(s => s.badges || []))];
+                  return `
+                    <div style="display:flex; align-items:center; margin-left: 4px; margin-right: 4px;">
+                      ${activeKeys.map((k, idx) => {
+                        const cfg = badgeConfig[k];
+                        return cfg ? `
+                          <div title="${k} Verified" style="width:24px; height:24px; border-radius:50%; background:${cfg.bg}; color:${cfg.color}; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-left:${idx === 0 ? '0' : '-8px'}; z-index:${10 - idx};">
+                            <span class="material-icons-round" style="font-size:14px;">${cfg.icon}</span>
+                          </div>
+                        ` : '';
+                      }).join('')}
+                    </div>
+                  `;
+                })()}
+                <span class="status-badge ${m.status}">${capitalize(m.status)}</span>
+              </div>
             </div>
             <button class="btn-outline" style="border-color:#fecaca; color:#ef4444; padding:6px 16px; font-size:0.85rem;" onclick="showToast('Profile deleted', 'error'); closeProfile();">
               <span class="material-icons-round" style="font-size:16px; color:#ef4444;">delete</span> Delete Profile
@@ -348,17 +392,22 @@ function openProfile(id, tab = 'company') {
           <div class="stat-label">Last Login</div>
           <div class="stat-value">${m.lastLogin || '2 hours ago'}</div>
         </div>
+        <div class="stat-item">
+          <div class="stat-label">Broadcasts</div>
+          <div class="stat-value">${m.broadcasts ? m.broadcasts.length : 2}</div>
+        </div>
       </div>
     </div>
 
     <div class="profile-tabs" id="profile-tabs">
-      <button class="profile-tab ${tab==='company'?'active':''}" onclick="switchTab(${id},'company')"><span class="material-icons-round">business</span> Company</button>
-      <button class="profile-tab ${tab==='contacts'?'active':''}" onclick="switchTab(${id},'contacts')"><span class="material-icons-round">people</span> Contacts</button>
-      <button class="profile-tab ${tab==='addresses'?'active':''}" onclick="switchTab(${id},'addresses')"><span class="material-icons-round">location_on</span> Addresses</button>
-      <button class="profile-tab ${tab==='plan'?'active':''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">card_membership</span> Current Plan</button>
-      <button class="profile-tab ${tab==='assign'?'active':''}" onclick="switchTab(${id},'assign')"><span class="material-icons-round">swap_horiz</span> Change Plan</button>
-      <button class="profile-tab ${tab==='email'?'active':''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email</button>
-      <button class="profile-tab ${tab==='history'?'active':''}" onclick="switchTab(${id},'history')"><span class="material-icons-round">history</span> Status History</button>
+      <button class="profile-tab ${tab === 'company' ? 'active' : ''}" onclick="switchTab(${id},'company')"><span class="material-icons-round">business</span> Company</button>
+      <button class="profile-tab ${tab === 'contacts' ? 'active' : ''}" onclick="switchTab(${id},'contacts')"><span class="material-icons-round">people</span> Contacts</button>
+      <button class="profile-tab ${tab === 'addresses' ? 'active' : ''}" onclick="switchTab(${id},'addresses')"><span class="material-icons-round">location_on</span> Addresses</button>
+      <button class="profile-tab ${tab === 'plan' ? 'active' : ''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">assignment</span> Assign Plan</button>
+      <button class="profile-tab ${tab === 'email' ? 'active' : ''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email Setup</button>
+      <button class="profile-tab ${tab === 'broadcasts' ? 'active' : ''}" onclick="switchTab(${id},'broadcasts')"><span class="material-icons-round">campaign</span> Broadcasts</button>
+      <button class="profile-tab ${tab === 'history' ? 'active' : ''}" onclick="switchTab(${id},'history')"><span class="material-icons-round">login</span> Login History</button>
+      <button class="profile-tab ${tab === 'stamp' ? 'active' : ''}" onclick="switchTab(${id},'stamp')"><span class="material-icons-round">verified</span> Stamp</button>
     </div>
 
     <div class="profile-content" id="profile-tab-content">${renderProfileTab(m, tab)}</div>
@@ -376,14 +425,11 @@ function renderProfileTab(m, tab) {
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
           <div style="display:flex; gap:12px; align-items:center;">
             <div class="profile-section-icon"><span class="material-icons-round">business</span></div>
-            <h3 class="profile-section-title" style="margin:0;">Company Profile</h3>
+            <h3 class="profile-section-title" style="margin:0;">Company</h3>
           </div>
           <div style="display:flex; gap:12px;">
             <button class="btn-primary" style="background:#4880FF; padding: 6px 16px; font-size: 0.9rem;" onclick="openEditModal('company', ${m.id}, 0)">
               <span class="material-icons-round" style="font-size: 16px;">edit</span> Edit
-            </button>
-            <button class="btn-outline" style="padding: 6px 16px; font-size: 0.9rem;" onclick="showToast('Exporting data...', 'success')">
-              <span class="material-icons-round" style="font-size: 16px;">file_download</span> Export
             </button>
           </div>
         </div>
@@ -401,7 +447,7 @@ function renderProfileTab(m, tab) {
             </div>
             <div class="company-bubble-field">
               <span class="company-bubble-label">Website</span>
-              <span class="company-bubble-value">www.${m.company.toLowerCase().replace(/ /g,'')}.com</span>
+              <span class="company-bubble-value">www.${m.company.toLowerCase().replace(/ /g, '')}.com</span>
             </div>
             <div class="company-bubble-field">
               <span class="company-bubble-label">Email ID</span>
@@ -439,51 +485,66 @@ function renderProfileTab(m, tab) {
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
           <div style="display:flex; gap:12px; align-items:flex-start;">
             <div class="profile-section-icon"><span class="material-icons-round">group</span></div>
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">people</span></div>
             <div>
-              <h3 class="profile-section-title">Manage Contacts</h3>
-              <p class="profile-section-desc">Primary and secondary contact persons for this account.</p>
+              <h3 class="profile-section-title">Key Contacts</h3>
+              <p class="profile-section-desc">Manage decision makers and stakeholders for this company.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('contact', ${m.id})">
             <span class="material-icons-round">add</span> Add Contact
           </button>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-top: 24px;">
           ${contacts.map((c, ci) => {
-            const status = c.status || 'Active';
-            const statusClass = status.toLowerCase() === 'inactive' ? 'inactive' : 'active';
-            return `
-            <div class="employee-card" style="position:relative">
-              <div style="position:absolute; top:16px; right:16px; z-index:10;">
-                <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}', this)">
-                  <span class="material-icons-round">more_vert</span>
-                </button>
-                <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="right:0;top:100%;margin-top:4px">
-                  <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-                  <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Contact removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+      const status = c.status || 'Active';
+      return `
+              <div class="employee-card" style="position:relative; display:flex; flex-direction:column; gap:16px; padding:20px;">
+                <div style="position:absolute; top:16px; right:12px; z-index:10;">
+                  <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}', this)">
+                    <span class="material-icons-round">more_vert</span>
+                  </button>
+                  <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="right:0;top:100%;margin-top:4px">
+                    <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
+                    <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Contact removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+                  </div>
                 </div>
-              </div>
-              <div class="employee-card-header">
-                <img src="https://randomuser.me/api/portraits/${ci % 2 === 0 ? 'men' : 'women'}/${ci + 10}.jpg" alt="${c.name}" class="employee-avatar" style="width:44px; height:44px;">
-                <div class="employee-info">
-                  <div class="employee-name">${c.name}</div>
-                  <div class="employee-role">${c.role}</div>
+
+                <div style="display:flex; gap:16px; align-items:center;">
+                  <img src="https://randomuser.me/api/portraits/${ci % 2 === 0 ? 'men' : 'women'}/${ci + 20}.jpg" class="employee-avatar" style="width:52px; height:52px; border-radius:14px; object-fit:cover; border:2px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                  <div>
+                    <div style="font-weight:800; color:var(--text); font-size:1.05rem; letter-spacing:-0.2px;">${c.name}</div>
+                    <div style="font-weight:700; color:var(--text-soft); font-size:0.8rem;">${c.role}</div>
+                  </div>
                 </div>
-              </div>
-              <div class="employee-contact">
-                <div class="contact-row">
-                  <span class="material-icons-round">call</span> ${c.phone}
+
+                <div style="display:flex; gap:8px;">
+                  <span class="status-badge ${status.toLowerCase()}" style="min-width:auto; padding:4px 12px; font-size:0.75rem;">
+                    <span></span> ${status}
+                  </span>
+                  ${c.isMain ? '<span class="bubble-tag blue" style="font-size:0.7rem; padding:4px 12px; font-weight:800; letter-spacing:0.3px;">MAIN CONTACT</span>' : ''}
                 </div>
-                <div class="contact-row">
-                  <span class="material-icons-round">mail_outline</span> ${c.email}
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:14px; background:#f8fafc; border-radius:12px; border:1px solid #f1f5f9;">
+                  <div>
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">MOBILE</div>
+                    <div style="font-size:0.85rem; font-weight:700; color:var(--text);">${c.phone}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">EMAIL</div>
+                    <div style="font-size:0.85rem; font-weight:700; color:var(--text); word-break:break-all;">${c.email}</div>
+                  </div>
                 </div>
+
+                ${c.reason ? `
+                  <div style="padding:14px; border:1px solid #f1f5f9; border-radius:12px; background:#fff;">
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">INTERNAL NOTE</div>
+                    <div style="font-size:0.8rem; font-weight:600; color:var(--text-mid); line-height:1.5;">${c.reason}</div>
+                  </div>
+                ` : ''}
               </div>
-              <div class="employee-card-footer" style="margin-top: 16px;">
-                <span class="employee-badge ${statusClass}">${status}</span>
-              </div>
-            </div>
             `;
-          }).join('') || '<p style="color:var(--text-soft)">No contacts added.</p>'}
+    }).join('') || '<p style="color:var(--text-soft)">No contacts added.</p>'}
         </div>
       </div>
     `;
@@ -504,7 +565,16 @@ function renderProfileTab(m, tab) {
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
-          ${addresses.map((a, ai) => `
+          ${addresses.map((a, ai) => {
+      const title = a.title || a.type || 'Address';
+      const isDefault = a.isDefault || false;
+      let fullAddress = '';
+      if (a.line1) {
+        fullAddress = [a.line1, a.line2, a.city, a.pincode].filter(Boolean).join(', ');
+      } else {
+        fullAddress = a.detail; // fallback
+      }
+      return `
             <div class="employee-card" style="position:relative; min-height: 160px;">
               <div style="position:absolute; top:16px; right:16px; z-index:10;">
                 <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)">
@@ -512,26 +582,30 @@ function renderProfileTab(m, tab) {
                 </button>
                 <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}" style="right:0;top:100%;margin-top:4px">
                   <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-                  <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Address removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+                  <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
                 </div>
               </div>
-              <div class="employee-card-header">
+              <div class="employee-card-header" style="align-items:flex-start;">
                 <div style="width:40px; height:40px; border-radius:10px; background:#1e293b; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:12px;">
                   <span class="material-icons-round" style="color:#fff; font-size:22px;">location_city</span>
                 </div>
-                <div class="employee-info">
-                  <div class="employee-name" style="text-transform:uppercase; font-size:0.8rem;">${a.type} Address</div>
-                  <div style="font-weight:700; color:var(--text-soft); font-size:0.85rem;">${a.city || m.location}</div>
+                <div class="employee-info" style="padding-right: 24px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="employee-name" style="text-transform:uppercase; font-size:0.85rem;">${title}</div>
+                    ${isDefault ? '<span class="bubble-tag blue" style="font-size:0.65rem; padding: 2px 6px;">Default</span>' : ''}
+                  </div>
+                  <div style="font-weight:700; color:var(--text-soft); font-size:0.85rem; margin-top:2px;">${a.city || m.location}</div>
                 </div>
               </div>
               <div class="employee-contact" style="margin-bottom:0; border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 12px;">
                 <div class="contact-row" style="align-items:flex-start;">
                   <span class="material-icons-round" style="margin-top:2px;">place</span>
-                  <span style="line-height:1.5;">${a.detail}</span>
+                  <span style="line-height:1.6;">${fullAddress}</span>
                 </div>
               </div>
             </div>
-          `).join('') || '<p style="color:var(--text-soft)">No addresses found.</p>'}
+            `;
+    }).join('') || '<p style="color:var(--text-soft)">No addresses found.</p>'}
         </div>
       </div>
     `;
@@ -714,61 +788,297 @@ function renderProfileTab(m, tab) {
       </div>
     `;
 
+  } else if (tab === 'broadcasts') {
+    const broadcasts = m.broadcasts || [
+      { id: 'BRD-001', date: '02-May-2026 04:04:28 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Mobile Iphone | Qty : 5 Pcs | Price', sendTo: 'SendToAll', status: 'Live' },
+      { id: 'BRD-002', date: '01-May-2026 06:34:49 PM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 10 Pcs | Call', sendTo: 'SendToAll', status: 'Live' },
+      { id: 'BRD-003', date: '30-Apr-2026 05:20:35 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 15 Pcs | Call', sendTo: 'SendToAll', status: 'Live' }
+    ];
 
+    const totalCreations = broadcasts.length;
 
-  } else if (tab === 'history') {
-    return `
-      <div class="content-card">
-        <div class="profile-section-header">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">history</span></div>
-            <div>
-              <h3 class="profile-section-title">Status & Activity History</h3>
-              <p class="profile-section-desc">Timeline of major account lifecycle events and status changes.</p>
+    let html = `
+      <!-- Stats Row -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 24px;">
+        
+        <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width:56px; height:56px; border-radius:14px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; flex-shrink:0;">
+            <span class="material-icons-round" style="font-size:28px;">campaign</span>
+          </div>
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Total Broadcasts</div>
+            <div style="font-size:1.8rem; font-weight:900; color:var(--text); line-height:1;">${totalCreations}</div>
+          </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width:56px; height:56px; border-radius:14px; background:#f0fdf4; color:#16a34a; display:grid; place-items:center; flex-shrink:0;">
+            <span class="material-icons-round" style="font-size:28px;">bolt</span>
+          </div>
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Recent Status</div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#16a34a; display:inline-block;"></span>
+              <span style="font-size:1.1rem; font-weight:900; color:#16a34a;">${broadcasts.length ? broadcasts[0].status : 'N/A'}</span>
             </div>
           </div>
         </div>
-        <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 16px;">
-          
-          <div style="border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--white); display: flex; gap: 16px; align-items: flex-start;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: #eff6ff; color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <span class="material-icons-round">upgrade</span>
-            </div>
+
+        <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width:56px; height:56px; border-radius:14px; background:#fff7ed; color:#ea580c; display:grid; place-items:center; flex-shrink:0;">
+            <span class="material-icons-round" style="font-size:28px;">person</span>
+          </div>
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Primary Broadcaster</div>
+            <div style="font-size:1.1rem; font-weight:900; color:var(--text); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;">${broadcasts.length ? broadcasts[0].broadcaster : 'N/A'}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- History Table -->
+      <div class="content-card">
+        <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="profile-section-icon" style="background:var(--blue-light); color:var(--blue);"><span class="material-icons-round">history</span></div>
             <div>
-              <div style="font-size: 1rem; font-weight: 800; color: var(--text);">Plan Upgraded to Business</div>
-              <div style="font-size: 0.9rem; color: var(--text-mid); font-weight: 600; margin-top: 4px;">Changed by Admin (admin@system.com)</div>
-              <div style="font-size: 0.8rem; color: var(--text-soft); font-weight: 700; margin-top: 8px;">Jul 10, 2026 &middot; 14:22 PM</div>
+              <h3 class="profile-section-title" style="margin:0;">Broadcast History</h3>
+              <p style="font-size:0.8rem; color:var(--text-soft); margin:4px 0 0 0; font-weight:600;">Track and manage communication logs.</p>
             </div>
           </div>
-          
-          <div style="border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--white); display: flex; gap: 16px; align-items: flex-start;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <span class="material-icons-round">check_circle</span>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; background:#f8fafc; border:1px solid var(--border); border-radius:10px;">
+              <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid);">Approval Required</span>
+              <input type="checkbox" style="width: 18px; height: 18px; accent-color:var(--blue); cursor:pointer;">
             </div>
+            <button class="btn-primary" onclick="showToast('Initiating new broadcast...', 'success')" style="border-radius:10px; padding: 10px 18px;">
+              <span class="material-icons-round" style="font-size:18px;">add</span> New Broadcast
+            </button>
+          </div>
+        </div>
+        
+        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
+          <table class="data-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date & Time</th>
+                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Message Detail</th>
+                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Recipient</th>
+                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
+                <th style="padding: 20px 24px; text-align: right; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${broadcasts.map(b => `
+                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${b.date.split(' ')[0]}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">${b.date.split(' ').slice(1).join(' ')}</div>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border); max-width:300px;">
+                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">Sent by ${b.broadcaster}</div>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                    <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid); background:#f1f5f9; padding:4px 10px; border-radius:6px;">${b.sendTo}</span>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:100px; background:#f0fdf4; border:1px solid #dcfce7;">
+                      <span style="width:6px; height:6px; border-radius:50%; background:#16a34a;"></span>
+                      <span style="color:#16a34a; font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">${b.status}</span>
+                    </div>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border); text-align:right;">
+                    <button class="action-btn" onclick="showToast('Viewing broadcast detail...', 'success')" style="width:36px; height:36px; border-radius:10px; background:white; border:1px solid var(--border); color:var(--text-mid); display:inline-flex; align-items:center; justify-content:center; transition: all 0.2s;">
+                      <span class="material-icons-round" style="font-size:18px;">visibility</span>
+                    </button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    return html;
+
+  } else if (tab === 'history') {
+    const loginHistory = m.loginHistory || [];
+    return `
+      <div class="content-card">
+        <div class="profile-section-header" style="justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">login</span></div>
             <div>
-              <div style="font-size: 1rem; font-weight: 800; color: var(--text);">Account Activated</div>
-              <div style="font-size: 0.9rem; color: var(--text-mid); font-weight: 600; margin-top: 4px;">Initial setup completed by user.</div>
-              <div style="font-size: 0.8rem; color: var(--text-soft); font-weight: 700; margin-top: 8px;">Mar 23, 2026 &middot; 09:00 AM</div>
+              <h3 class="profile-section-title">Login History</h3>
+              <p class="profile-section-desc">A log of all device logins for this account.</p>
             </div>
           </div>
-          
-          <div style="border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--white); display: flex; gap: 16px; align-items: flex-start;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: #f8fafc; color: var(--text-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <span class="material-icons-round">person_add</span>
+        </div>
+        <div class="table-scroll-wrap" style="margin: 16px -24px -24px -24px; border-top: 1px solid var(--border);">
+          <table class="data-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th>Sr.No</th>
+                <th>Date & Time</th>
+                <th>IP Address</th>
+                <th>Device ID</th>
+                <th>GEO Information</th>
+                <th>Mac Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${loginHistory.length ? loginHistory.map((l, i) => `
+                <tr>
+                  <td><span style="color:var(--text-soft); font-weight:800;">${i+1}</span></td>
+                  <td>
+                    <div style="font-weight:800; color:var(--text);">${l.datetime.split(' ')[0]}</div>
+                    <div style="font-size:0.75rem; color:var(--text-soft);">${l.datetime.split(' ')[1]} ${l.datetime.split(' ')[2] || ''}</div>
+                  </td>
+                  <td style="font-family:monospace; font-weight:700;">${l.ip}</td>
+                  <td style="font-family:monospace;">${l.deviceId}</td>
+                  <td>${l.geo}</td>
+                  <td style="font-family:monospace; color:var(--text-soft);">${l.mac}</td>
+                </tr>
+              `).join('') : `
+                <tr>
+                  <td colspan="6" style="padding:64px; text-align:center; color:var(--text-soft); font-weight:700;">No login history found</td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+  } else if (tab === 'stamp') {
+    const stamps = m.stamps || [];
+    const badgeConfig = [
+      { key: 'identity', label: 'Identity',  icon: 'badge',           color: '#3b82f6', bg: '#dbeafe' },
+      { key: 'email',    label: 'Email',     icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7' },
+      { key: 'docs',     label: 'Documents', icon: 'verified_user',   color: '#7c3aed', bg: '#ede9fe' },
+      { key: 'account',  label: 'Account',   icon: 'account_circle',  color: '#d97706', bg: '#fef3c7' },
+    ];
+
+    return `
+      <!-- Top Row: Stats & Action -->
+      <div style="display: flex; gap: 20px; margin-bottom: 24px; align-items: stretch;">
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; flex: 1;">
+          <div class="content-card" style="margin-bottom:0; padding:20px; display:flex; align-items:center; gap:20px; border:1px solid var(--border);">
+            <div style="width:52px; height:52px; border-radius:12px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; flex-shrink:0;">
+              <span class="material-icons-round" style="font-size:26px;">verified</span>
             </div>
             <div>
-              <div style="font-size: 1rem; font-weight: 800; color: var(--text);">Account Created</div>
-              <div style="font-size: 0.9rem; color: var(--text-mid); font-weight: 600; margin-top: 4px;">System registration.</div>
-              <div style="font-size: 0.8rem; color: var(--text-soft); font-weight: 700; margin-top: 8px;">Mar 23, 2026 &middot; 08:55 AM</div>
+              <div style="font-size:0.7rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Stamps Applied</div>
+              <div style="font-size:1.6rem; font-weight:900; color:var(--text); line-height:1;">${stamps.length}</div>
             </div>
           </div>
-          
+          <div class="content-card" style="margin-bottom:0; padding:20px; display:flex; align-items:center; gap:20px; border:1px solid var(--border);">
+            <div style="width:52px; height:52px; border-radius:12px; background:#f0fdf4; color:#16a34a; display:grid; place-items:center; flex-shrink:0;">
+              <span class="material-icons-round" style="font-size:26px;">calendar_today</span>
+            </div>
+            <div>
+              <div style="font-size:0.7rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Last Verified</div>
+              <div style="font-size:1.1rem; font-weight:900; color:var(--text);">${stamps.length ? stamps[0].date.split(' ')[0] : 'Never'}</div>
+            </div>
+          </div>
+        </div>
+        <div class="content-card" style="margin-bottom:0; padding:20px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--blue); background:var(--blue-light); width:240px; border-radius:16px;">
+           <button class="btn-primary" onclick="openStampModal(${m.id})" style="width:100%; height:100%; padding: 0; font-size: 0.95rem; background:var(--blue); font-weight:900; box-shadow:0 6px 16px rgba(59,130,246,0.25); display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span class="material-icons-round" style="font-size:20px;">add_circle</span> Add Stamp
+          </button>
+        </div>
+      </div>
+
+      <!-- Compact Badge Display -->
+      <div class="content-card" style="margin-bottom:24px; padding:24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+          <div style="width:8px; height:20px; background:var(--blue); border-radius:4px;"></div>
+          <h3 style="margin:0; font-size:1.1rem; font-weight:900; color:var(--text);">Current Verification Status</h3>
+        </div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; padding: 20px; background: #f8fafc; border-radius: 20px; border: 1px dashed var(--border);">
+          ${badgeConfig.map(b => {
+            const isActive = stamps.some(s => s.badges && s.badges.includes(b.key));
+            return `
+              <div title="${b.label}: ${isActive ? 'Verified' : 'Pending'}" style="width:50px; height:50px; border-radius:50%; background:${isActive ? b.bg : '#fff'}; color:${isActive ? b.color : '#cbd5e1'}; display:grid; place-items:center; border:2.5px solid ${isActive ? b.color : 'var(--border)'}; transition: all 0.3s; position:relative; box-shadow:${isActive ? '0 4px 12px '+b.color+'20' : 'none'};">
+                <span class="material-icons-round" style="font-size:24px;">${b.icon}</span>
+                ${isActive ? `
+                  <div style="position:absolute; bottom:-4px; right:-4px; width:20px; height:20px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+                    <span class="material-icons-round" style="font-size:12px;">check</span>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- History Table -->
+      <div class="content-card">
+        <div class="profile-section-header" style="border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="profile-section-icon" style="background:#f1f5f9; color:var(--text-mid);"><span class="material-icons-round">history</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0;">Verification History</h3>
+              <p style="font-size:0.8rem; color:var(--text-soft); margin:4px 0 0 0; font-weight:600;">Audit log of all stamps applied to this account.</p>
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
+          <table class="data-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Applied Date</th>
+                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Badges Applied</th>
+                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Remark / Note</th>
+                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Verified By</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${stamps.length ? stamps.map((s, idx) => `
+                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${s.date}</div>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      ${(s.badges || []).map(bk => {
+                        const cfg = badgeConfig.find(b => b.key === bk);
+                        return cfg ? `<div title="${cfg.label}" style="width:28px; height:28px; border-radius:50%; background:${cfg.color}; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-right:-8px;"><span class="material-icons-round" style="font-size:14px; color:#fff;">${cfg.icon}</span></div>` : '';
+                      }).join('')}
+                    </div>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border); max-width:250px;">
+                    <div style="font-size: 0.85rem; color: var(--text-mid); font-weight: 600; line-height:1.5;">${s.remark || 'N/A'}</div>
+                  </td>
+                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="display:flex; align-items:center; justify-content:space-between;">
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:24px; height:24px; border-radius:50%; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; font-size:0.65rem; font-weight:900;">A</div>
+                        <span style="font-size:0.85rem; font-weight:700; color:var(--text);">${s.admin || 'Admin'}</span>
+                      </div>
+                      <button class="header-icon-btn delete-stamp-btn" onclick="deleteStamp(${m.id}, ${idx})" style="color:var(--red); opacity:0; transition:opacity 0.2s;">
+                        <span class="material-icons-round" style="font-size:18px;">delete_outline</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('') : `
+                <tr>
+                  <td colspan="4" style="padding: 60px; text-align: center;">
+                    <div style="color:var(--text-soft); font-weight:700; font-size:0.95rem;">No verification history found.</div>
+                  </td>
+                </tr>
+              `}
+            </tbody>
+          </table>
         </div>
       </div>
     `;
   }
   return '';
 }
+
 
 function closeProfile() {
   profileView.classList.add('hidden');
@@ -784,134 +1094,264 @@ function openEditModal(type, memberId, index) {
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
   let html = '';
-
   if (type === 'contact') {
     const c = m.contacts[index];
     const nameParts = c.name.split(' ');
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
     const status = c.status || 'Active';
-    
+    content.className = 'modal-content modal-wide';
+
     html = `
       <div class="modal-header">
-        <h3>Edit Contact</h3>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+            <span class="material-icons-round">edit</span>
+          </div>
+          <h3>Edit Contact</h3>
+        </div>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body" style="gap: 20px;">
-        <div style="display:flex; align-items:center; gap:16px;">
-          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:56px; height:56px; border-radius:50%;">
-          <button class="btn-outline" style="padding: 6px 12px; font-size: 0.85rem;">Choose File</button>
-          <span style="color:var(--text-soft); font-size:0.85rem; font-weight:600;">no file selected</span>
-        </div>
-        
-        <div class="modal-grid-2">
-          <div>
-            <label class="modal-label">First Name</label>
-            <input class="modal-input" type="text" value="${firstName}" id="edit-c-fname" placeholder="Enter First Name">
+      <div class="modal-body" style="padding: 32px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
+          
+          <!-- Column 1: Info -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
+              <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:64px; height:64px; border-radius:50%; flex-shrink:0;">
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700;">Choose File</button>
+                <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">First Name</label>
+                <input class="modal-input" type="text" value="${firstName}" id="edit-c-fname" placeholder="First name" style="background:#f8fafc;">
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Last Name</label>
+                <input class="modal-input" type="text" value="${lastName}" id="edit-c-lname" placeholder="Last name" style="background:#f8fafc;">
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Designation</label>
+              <select class="modal-input" id="edit-c-role" style="background:#f8fafc;">
+                <option value="" disabled ${!['CEO', 'Proprietor', 'Director', 'Manager', 'Partner'].includes(c.role) ? 'selected' : ''}>Choose Designation</option>
+                <option value="CEO" ${c.role === 'CEO' ? 'selected' : ''}>CEO</option>
+                <option value="Proprietor" ${c.role === 'Proprietor' ? 'selected' : ''}>Proprietor</option>
+                <option value="Director" ${c.role === 'Director' ? 'selected' : ''}>Director</option>
+                <option value="Manager" ${c.role === 'Manager' ? 'selected' : ''}>Manager</option>
+                <option value="Partner" ${c.role === 'Partner' ? 'selected' : ''}>Partner</option>
+                ${!['CEO', 'Proprietor', 'Director', 'Manager', 'Partner'].includes(c.role) && c.role ? `<option value="${c.role}" selected>${c.role}</option>` : ''}
+              </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Mobile</label>
+              <input class="modal-input" type="text" value="${c.phone}" id="edit-c-phone" placeholder="+91 —" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Address</label>
+              <input class="modal-input" type="email" value="${c.email}" id="edit-c-email" placeholder="email@example.com" style="background:#f8fafc;">
+            </div>
           </div>
-          <div>
-            <label class="modal-label">Last Name</label>
-            <input class="modal-input" type="text" value="${lastName}" id="edit-c-lname" placeholder="Enter Last Name">
+
+          <!-- Column 2: Status & Settings -->
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            <div style="padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:16px;">
+              <label class="modal-label" style="display:block; margin-bottom:16px; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Status & Permissions</label>
+              
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+                <input type="checkbox" id="edit-c-main" style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
+                <label for="edit-c-main" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Mark as Main Contact</label>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--text);">Account Status</div>
+                <div style="display:flex; gap: 20px;">
+                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
+                    <input type="radio" name="edit-status" value="Active" ${status === 'Active' ? 'checked' : ''} style="accent-color: var(--blue);" onchange="document.getElementById('edit-inactive-options').style.display='none';"> Active
+                  </label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
+                    <input type="radio" name="edit-status" value="Inactive" ${status === 'Inactive' ? 'checked' : ''} style="accent-color: var(--blue);" onchange="document.getElementById('edit-inactive-options').style.display='block';"> Inactive
+                  </label>
+                </div>
+                <div id="edit-inactive-options" style="display: ${status === 'Inactive' ? 'block' : 'none'}; margin-top: 4px;">
+                  <select class="modal-input" style="background:#fff;">
+                    <option value="" disabled selected>Select Inactive Reason</option>
+                    <option value="Block">Block</option>
+                    <option value="AllowedForNewRegistration">Allowed For New Registration</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Reason / Internal Note</label>
+              <textarea class="modal-input" id="edit-c-reason" style="flex:1; background:#f8fafc; resize:none; min-height:120px;" placeholder="Add internal notes about this contact..."></textarea>
+            </div>
           </div>
-          <div style="grid-column: 1 / -1;">
-            <label class="modal-label">Designation</label>
-            <select class="modal-input" id="edit-c-role">
-              <option value="Director" ${c.role === 'Director' ? 'selected' : ''}>Director</option>
-              <option value="Operations Manager" ${c.role === 'Operations Manager' ? 'selected' : ''}>Operations Manager</option>
-              <option value="Sales Head" ${c.role === 'Sales Head' ? 'selected' : ''}>Sales Head</option>
-              <option value="Owner" ${c.role === 'Owner' ? 'selected' : ''}>Owner</option>
-            </select>
-          </div>
-          <div style="grid-column: 1 / -1;">
-            <label class="modal-label">Mobile</label>
-            <input class="modal-input" type="text" value="${c.phone}" id="edit-c-phone" placeholder="Enter Mobile Number">
-          </div>
-          <div style="grid-column: 1 / -1;">
-            <label class="modal-label">Email</label>
-            <input class="modal-input" type="email" value="${c.email}" id="edit-c-email" placeholder="Enter E-mail">
-          </div>
-          <div style="grid-column: 1 / -1;">
-            <label class="modal-label">Status</label>
-            <select class="modal-input" id="edit-c-status">
-              <option value="Active" ${status === 'Active' ? 'selected' : ''}>Active</option>
-              <option value="Inactive" ${status === 'Inactive' ? 'selected' : ''}>Inactive</option>
-            </select>
-          </div>
+
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Close</button>
-        <button class="btn-primary" style="background:#4880FF; border-radius:8px;" onclick="saveContact(${memberId}, ${index})">Save</button>
+      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
+        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveContact(${memberId}, ${index})">Save</button>
       </div>
     `;
   } else if (type === 'address') {
     const a = m.addresses[index];
+    const title = a.title || a.type || 'Company Address';
+    const isDefault = a.isDefault || false;
+    content.className = 'modal-content modal-wide';
     html = `
       <div class="modal-header">
-        <h3>Edit Address</h3>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+            <span class="material-icons-round">location_city</span>
+          </div>
+          <h3>Update Location</h3>
+        </div>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body">
-        <label class="modal-label">Address Type</label>
-        <input class="modal-input" type="text" value="${a.type}" id="edit-addr-type">
-        <label class="modal-label">Full Address</label>
-        <input class="modal-input" type="text" value="${a.detail}" id="edit-addr-detail">
-        <label class="modal-label">City</label>
-        <select class="modal-input" id="edit-addr-city" style="appearance:none;">
-          ${['Mumbai','Delhi','Bengaluru','Hyderabad','Chennai','Kolkata','Pune','Jaipur','Ahmedabad','Surat','Lucknow','Kanpur','Nagpur','Indore','Thane','Bhopal','Visakhapatnam','Pimpri-Chinchwad','Patna','Vadodara','Coimbatore','Kochi','Chandigarh'].map(city => `<option value="${city}" ${city===m.location?'selected':''}>${city}</option>`).join('')}
-        </select>
+      <div class="modal-body" style="padding: 32px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
+          
+          <!-- Column 1 -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Title</label>
+              <select class="modal-input" id="edit-addr-title" style="background:#f8fafc;">
+                <option value="" disabled ${!['Company Address', 'Work', 'Factory', 'Warehouse'].includes(title) ? 'selected' : ''}>Choose any Address Title</option>
+                <option value="Company Address" ${title === 'Company Address' ? 'selected' : ''}>Company Address</option>
+                <option value="Work" ${title === 'Work' ? 'selected' : ''}>Work</option>
+                <option value="Factory" ${title === 'Factory' ? 'selected' : ''}>Factory</option>
+                <option value="Warehouse" ${title === 'Warehouse' ? 'selected' : ''}>Warehouse</option>
+              </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 1</label>
+              <input class="modal-input" type="text" value="${a.line1 || a.detail || ''}" id="edit-addr-line1" placeholder="Building, Street" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 2</label>
+              <input class="modal-input" type="text" value="${a.line2 || ''}" id="edit-addr-line2" placeholder="Enter Address Line" style="background:#f8fafc;">
+            </div>
+          </div>
+
+          <!-- Column 2 -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Pincode</label>
+              <input class="modal-input" type="text" value="${a.pincode || ''}" id="edit-addr-pincode" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">City</label>
+              <input class="modal-input" type="text" value="${a.city || m.location}" id="edit-addr-city" placeholder="e.g. Ahmedabad Gujarat" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px; margin-top:28px; padding:16px; background:#f8fafc; border-radius:12px; border:1px solid var(--border);">
+              <input type="checkbox" id="edit-addr-default" ${isDefault ? 'checked' : ''} style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
+              <label for="edit-addr-default" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Set as default address</label>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveAddress(${memberId}, ${index})">Save Changes</button>
+      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
+        <button class="btn-outline" style="color:var(--red); border-color:var(--red-bg); background:#fff;" onclick="m.addresses.splice(${index}, 1); closeModal(); showToast('Address removed', 'error'); switchTab(${memberId}, 'addresses');">Delete</button>
+        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveAddress(${memberId}, ${index})">Save</button>
       </div>
     `;
   } else if (type === 'company') {
+    content.className = 'modal-content modal-wide';
     html = `
       <div class="modal-header">
-        <h3>Edit Company Profile</h3>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+            <span class="material-icons-round">business</span>
+          </div>
+          <h3>Company Information</h3>
+        </div>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body">
-        <div class="modal-grid-2">
-          <div>
-            <label class="modal-label">Company Name</label>
-            <input class="modal-input" type="text" value="${m.company}" id="edit-co-name">
+      <div class="modal-body" style="padding: 32px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
+          
+          <!-- Column 1 -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
+              <div style="width:64px; height:64px; background:#475569; border-radius:50%; color:#fff; display:grid; place-items:center; flex-shrink:0;">
+                <span class="material-icons-round" style="font-size:32px;">person</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700;">Choose File</button>
+                <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">GST / VAT</label>
+              <input class="modal-input" type="text" value="${m.gst || '29ABCDE1234F1Z5'}" id="edit-co-gst" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Company Name</label>
+              <input class="modal-input" type="text" value="${m.company}" id="edit-co-name" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Address</label>
+              <input class="modal-input" type="email" value="${m.email}" id="edit-co-email" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Business Type</label>
+              <select class="modal-input" id="edit-co-type" style="background:#f8fafc;">
+                <option value="Wholesaler" ${m.companyType === 'Wholesaler' ? 'selected' : ''}>Wholesaler</option>
+                <option value="Retailer" ${m.companyType === 'Retailer' ? 'selected' : ''}>Retailer</option>
+                <option value="Manufacturer" ${m.companyType === 'Manufacturer' ? 'selected' : ''}>Manufacturer</option>
+                ${!['Wholesaler', 'Retailer', 'Manufacturer'].includes(m.companyType) ? `<option value="${m.companyType}" selected>${m.companyType}</option>` : ''}
+              </select>
+            </div>
           </div>
-          <div>
-            <label class="modal-label">Business Type</label>
-            <input class="modal-input" type="text" value="${m.companyType}" id="edit-co-type">
+
+          <!-- Column 2 -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Website</label>
+              <input class="modal-input" type="text" value="www.${m.company.toLowerCase().replace(/ /g, '')}.com" id="edit-co-website" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Phone 1</label>
+              <input class="modal-input" type="text" value="${m.mobile}" id="edit-co-phone1" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Phone 2</label>
+              <input class="modal-input" type="text" value="${m.phone2 || ''}" id="edit-co-phone2" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">About Us</label>
+              <textarea class="modal-input" id="edit-co-about" rows="4" style="background:#f8fafc; resize:none;">${m.about || ''}</textarea>
+            </div>
           </div>
-          <div>
-            <label class="modal-label">Website</label>
-            <input class="modal-input" type="text" value="www.${m.company.toLowerCase().replace(/ /g,'')}.com" id="edit-co-website">
-          </div>
-          <div>
-            <label class="modal-label">Email ID</label>
-            <input class="modal-input" type="email" value="${m.email}" id="edit-co-email">
-          </div>
-          <div>
-            <label class="modal-label">GST No</label>
-            <input class="modal-input" type="text" value="${m.gst || '29ABCDE1234F1Z5'}" id="edit-co-gst">
-          </div>
-          <div>
-            <label class="modal-label">Phone No 1</label>
-            <input class="modal-input" type="text" value="${m.mobile}" id="edit-co-phone1">
-          </div>
-          <div>
-            <label class="modal-label">Phone No 2</label>
-            <input class="modal-input" type="text" value="${m.phone2 || ''}" id="edit-co-phone2">
-          </div>
-          <div></div>
-          <div style="grid-column: 1 / -1;">
-            <label class="modal-label">About Business</label>
-            <textarea class="modal-input" id="edit-co-about" rows="3">${m.about || ''}</textarea>
-          </div>
+
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
         <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveCompany(${memberId})">Save Changes</button>
+        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveCompany(${memberId})">Save</button>
       </div>
     `;
   }
@@ -925,68 +1365,172 @@ function openAddModal(type, memberId) {
   const content = document.getElementById('modal-content');
   const m = members.find(x => x.id === memberId);
   let html = '';
-
   if (type === 'contact') {
+    content.className = 'modal-content modal-wide';
     html = `
       <div class="modal-header">
-        <h3>Add New Contact</h3>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+            <span class="material-icons-round">person_add</span>
+          </div>
+          <h3>Add New Contact</h3>
+        </div>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body">
-        <div class="modal-grid-2">
-          <div>
-            <label class="modal-label">First Name</label>
-            <input class="modal-input" type="text" id="add-c-fname" placeholder="First name">
+      <div class="modal-body" style="padding: 32px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
+          
+          <!-- Column 1: Info -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
+              <div style="width:64px; height:64px; background:#475569; border-radius:50%; color:#fff; display:grid; place-items:center; flex-shrink:0;">
+                <span class="material-icons-round" style="font-size:36px;">person</span>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700;">Choose File</button>
+                <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">First Name</label>
+                <input class="modal-input" type="text" id="add-c-fname" placeholder="First name" style="background:#f8fafc;">
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Last Name</label>
+                <input class="modal-input" type="text" id="add-c-lname" placeholder="Last name" style="background:#f8fafc;">
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Designation</label>
+              <select class="modal-input" id="add-c-role" style="background:#f8fafc;">
+                <option value="" disabled selected>Choose Designation</option>
+                <option value="CEO">CEO</option>
+                <option value="Proprietor">Proprietor</option>
+                <option value="Director">Director</option>
+                <option value="Manager">Manager</option>
+                <option value="Partner">Partner</option>
+              </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Mobile</label>
+              <input class="modal-input" type="text" id="add-c-phone" placeholder="+91 —" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Address</label>
+              <input class="modal-input" type="email" id="add-c-email" placeholder="email@example.com" style="background:#f8fafc;">
+            </div>
           </div>
-          <div>
-            <label class="modal-label">Last Name</label>
-            <input class="modal-input" type="text" id="add-c-lname" placeholder="Last name">
+
+          <!-- Column 2: Status & Settings -->
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            <div style="padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:16px;">
+              <label class="modal-label" style="display:block; margin-bottom:16px; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Status & Permissions</label>
+              
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+                <input type="checkbox" id="add-c-main" style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
+                <label for="add-c-main" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Mark as Main Contact</label>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--text);">Account Status</div>
+                <div style="display:flex; gap: 20px;">
+                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
+                    <input type="radio" name="add-status" value="Active" checked style="accent-color: var(--blue);" onchange="document.getElementById('add-inactive-options').style.display='none';"> Active
+                  </label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
+                    <input type="radio" name="add-status" value="Inactive" style="accent-color: var(--blue);" onchange="document.getElementById('add-inactive-options').style.display='block';"> Inactive
+                  </label>
+                </div>
+                <div id="add-inactive-options" style="display: none; margin-top: 4px;">
+                  <select class="modal-input" style="background:#fff;">
+                    <option value="" disabled selected>Select Inactive Reason</option>
+                    <option value="Block">Block</option>
+                    <option value="AllowedForNewRegistration">Allowed For New Registration</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Reason / Internal Note</label>
+              <textarea class="modal-input" id="add-c-reason" style="flex:1; background:#f8fafc; resize:none; min-height:120px;" placeholder="Add internal notes about this contact..."></textarea>
+            </div>
           </div>
-          <div>
-            <label class="modal-label">Role / Designation</label>
-            <input class="modal-input" type="text" id="add-c-role" placeholder="e.g. CEO">
-          </div>
-          <div>
-            <label class="modal-label">Phone</label>
-            <input class="modal-input" type="text" id="add-c-phone" placeholder="+91 XXXXX XXXXX">
-          </div>
-          <div>
-            <label class="modal-label">Email</label>
-            <input class="modal-input" type="email" id="add-c-email" placeholder="email@example.com">
-          </div>
-          <div>
-            <label class="modal-label">Status</label>
-            <select class="modal-input" id="add-c-status">
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
+
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveNewContact(${memberId})">Add Contact</button>
+      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
+        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveNewContact(${memberId})">Save</button>
       </div>
     `;
   } else if (type === 'address') {
+    content.className = 'modal-content modal-wide';
     html = `
       <div class="modal-header">
-        <h3>Add New Address</h3>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+            <span class="material-icons-round">location_city</span>
+          </div>
+          <h3>Add New Location</h3>
+        </div>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body">
-        <label class="modal-label">Address Type</label>
-        <input class="modal-input" type="text" id="add-addr-type" placeholder="e.g. Head Office, Branch">
-        <label class="modal-label">Full Address</label>
-        <input class="modal-input" type="text" id="add-addr-detail" placeholder="Building, Street, Area">
-        <label class="modal-label">City</label>
-        <select class="modal-input" id="add-addr-city">
-          ${['Mumbai','Delhi','Bengaluru','Hyderabad','Chennai','Kolkata','Pune','Jaipur','Ahmedabad','Surat','Lucknow','Nagpur','Indore','Thane','Bhopal'].map(city => `<option value="${city}">${city}</option>`).join('')}
-        </select>
+      <div class="modal-body" style="padding: 32px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
+          
+          <!-- Column 1 -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Title</label>
+              <select class="modal-input" id="add-addr-title" style="background:#f8fafc;">
+                <option value="" disabled selected>Choose any Address Title</option>
+                <option value="Company Address">Company Address</option>
+                <option value="Work">Work</option>
+                <option value="Factory">Factory</option>
+                <option value="Warehouse">Warehouse</option>
+              </select>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 1</label>
+              <input class="modal-input" type="text" id="add-addr-line1" placeholder="Building, Street" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 2</label>
+              <input class="modal-input" type="text" id="add-addr-line2" placeholder="Enter Address Line" style="background:#f8fafc;">
+            </div>
+          </div>
+
+          <!-- Column 2 -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Pincode</label>
+              <input class="modal-input" type="text" id="add-addr-pincode" placeholder="Enter Pincode" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">City</label>
+              <input class="modal-input" type="text" id="add-addr-city" placeholder="e.g. Ahmedabad Gujarat" style="background:#f8fafc;">
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px; margin-top:28px; padding:16px; background:#f8fafc; border-radius:12px; border:1px solid var(--border);">
+              <input type="checkbox" id="add-addr-default" style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
+              <label for="add-addr-default" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Set as default address</label>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveNewAddress(${memberId})">Add Address</button>
+      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
+        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveNewAddress(${memberId})">Save</button>
       </div>
     `;
   }
@@ -1006,7 +1550,8 @@ function saveNewContact(memberId) {
     role: document.getElementById('add-c-role').value || 'Contact',
     phone: document.getElementById('add-c-phone').value || '',
     email: document.getElementById('add-c-email').value || '',
-    status: document.getElementById('add-c-status').value || 'Active',
+    status: document.querySelector('input[name="add-status"]:checked')?.value || 'Active',
+    reason: document.getElementById('add-c-reason')?.value || '',
     photo: `https://ui-avatars.com/api/?name=${encodeURIComponent(fName)}&background=eef3ff&color=4880ff`
   });
   closeModal();
@@ -1016,15 +1561,21 @@ function saveNewContact(memberId) {
 
 function saveNewAddress(memberId) {
   const m = members.find(x => x.id === memberId);
-  const addrType = document.getElementById('add-addr-type').value.trim();
-  const addrDetail = document.getElementById('add-addr-detail').value.trim();
-  if (!addrType || !addrDetail) { showToast('Please fill all fields', 'error'); return; }
+  const title = document.getElementById('add-addr-title').value;
+  const line1 = document.getElementById('add-addr-line1').value.trim();
+  const line2 = document.getElementById('add-addr-line2').value.trim();
+  const pincode = document.getElementById('add-addr-pincode').value.trim();
+  const city = document.getElementById('add-addr-city').value.trim();
+  const isDefault = document.getElementById('add-addr-default').checked;
+
+  if (!title || (!line1 && !city)) { showToast('Please fill required fields', 'error'); return; }
+
   if (!m.addresses) m.addresses = [];
-  m.addresses.push({
-    type: addrType,
-    detail: addrDetail + ', ' + document.getElementById('add-addr-city').value,
-    city: document.getElementById('add-addr-city').value
-  });
+
+  if (isDefault) m.addresses.forEach(a => a.isDefault = false);
+
+  m.addresses.push({ title, line1, line2, pincode, city, isDefault });
+
   closeModal();
   showToast('Address added successfully', 'success');
   switchTab(memberId, 'addresses');
@@ -1043,7 +1594,8 @@ function saveContact(memberId, index) {
   m.contacts[index].role = document.getElementById('edit-c-role').value;
   m.contacts[index].phone = document.getElementById('edit-c-phone').value;
   m.contacts[index].email = document.getElementById('edit-c-email').value;
-  m.contacts[index].status = document.getElementById('edit-c-status').value;
+  m.contacts[index].status = document.querySelector('input[name="edit-status"]:checked')?.value || 'Active';
+  m.contacts[index].reason = document.getElementById('edit-c-reason')?.value || '';
   closeModal();
   showToast('Contact updated successfully.', 'success');
   openProfile(memberId, 'contacts');
@@ -1051,8 +1603,17 @@ function saveContact(memberId, index) {
 
 function saveAddress(memberId, index) {
   const m = members.find(x => x.id === memberId);
-  m.addresses[index].type   = document.getElementById('edit-addr-type').value;
-  m.addresses[index].detail = document.getElementById('edit-addr-detail').value;
+  const title = document.getElementById('edit-addr-title').value;
+  const line1 = document.getElementById('edit-addr-line1').value.trim();
+  const line2 = document.getElementById('edit-addr-line2').value.trim();
+  const pincode = document.getElementById('edit-addr-pincode').value.trim();
+  const city = document.getElementById('edit-addr-city').value.trim();
+  const isDefault = document.getElementById('edit-addr-default').checked;
+
+  if (isDefault) m.addresses.forEach((a, i) => { if (i !== index) a.isDefault = false; });
+
+  m.addresses[index] = { ...m.addresses[index], title, line1, line2, pincode, city, isDefault };
+
   closeModal();
   showToast('Address updated successfully.', 'success');
   switchTab(memberId, 'addresses');
@@ -1060,13 +1621,13 @@ function saveAddress(memberId, index) {
 
 function saveCompany(memberId) {
   const m = members.find(x => x.id === memberId);
-  m.company     = document.getElementById('edit-co-name').value;
+  m.company = document.getElementById('edit-co-name').value;
   m.companyType = document.getElementById('edit-co-type').value;
-  m.email       = document.getElementById('edit-co-email').value;
-  m.gst         = document.getElementById('edit-co-gst').value;
-  m.mobile      = document.getElementById('edit-co-phone1').value;
-  m.phone2      = document.getElementById('edit-co-phone2').value;
-  m.about       = document.getElementById('edit-co-about').value;
+  m.email = document.getElementById('edit-co-email').value;
+  m.gst = document.getElementById('edit-co-gst').value;
+  m.mobile = document.getElementById('edit-co-phone1').value;
+  m.phone2 = document.getElementById('edit-co-phone2').value;
+  m.about = document.getElementById('edit-co-about').value;
   closeModal();
   showToast('Company profile updated.', 'success');
   switchTab(memberId, 'company');
@@ -1113,5 +1674,299 @@ function toggleNavGroup(btn) {
   else { group.classList.add('open'); sub.style.height = sub.scrollHeight + 'px'; }
 }
 
-renderTable();
+// ===== ASSIGN PLAN =====
+function assignPlan(memberId, plan) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+  m.plan = plan.toLowerCase();
+  showToast(`Plan changed to ${plan}`, 'success');
+  switchTab(memberId, 'plan');
+}
 
+// ===== STAMP MODAL =====
+function openStampModal(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+
+  const modalContainer = document.getElementById('modal-container');
+  const modalContent = document.getElementById('modal-content');
+
+  const badgeConfig = [
+    { key: 'identity', label: 'Identity Verified',  icon: 'badge',           color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
+    { key: 'email',    label: 'Email Verified',     icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
+    { key: 'docs',     label: 'Documents Verified', icon: 'verified_user',   color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
+    { key: 'account',  label: 'Account Verified',   icon: 'account_circle',  color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
+  ];
+
+  modalContent.className = 'modal-content modal-stamp';
+  modalContent.style.maxWidth = '1000px';
+  modalContent.innerHTML = `
+    <div class="modal-header" style="background:#fff; border-bottom:1px solid var(--border); padding:20px 24px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:36px; height:36px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+          <span class="material-icons-round" style="font-size:20px;">verified</span>
+        </div>
+        <h3 style="margin:0; font-size:1.25rem; font-weight:900;">Add Verification Stamp</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body" style="padding:32px; background:#fff;">
+      <p style="margin:0 0 24px 0; color:var(--text-soft); font-weight:600; font-size:0.9rem;">Add a verification stamp that will be visible to other users on the user profile.</p>
+      
+      <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
+        <!-- Left Column: Date & Badges -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <div>
+            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">DATE <span style="color:var(--red);">*</span></label>
+            <div style="position:relative;">
+              <span class="material-icons-round" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-soft); font-size:20px;">calendar_today</span>
+              <input type="date" id="stamp-date" class="modal-input" style="padding-left:44px; background:#f8fafc;" value="${new Date().toISOString().split('T')[0]}">
+            </div>
+          </div>
+
+          <div>
+            <label class="modal-label" style="display:block; margin-bottom:12px; color:var(--text); font-weight:800; font-size:0.8rem;">VERIFICATION BADGES <span style="color:var(--red);">*</span></label>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              ${badgeConfig.map(b => `
+                <label class="badge-select-item" style="display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
+                  <input type="checkbox" id="badge-${b.key}" value="${b.key}" style="width:18px; height:18px; accent-color:var(--blue); cursor:pointer;">
+                  <div style="width:36px; height:36px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
+                    <span class="material-icons-round" style="font-size:20px;">${b.icon}</span>
+                  </div>
+                  <div>
+                    <div style="font-size:0.85rem; font-weight:800; color:var(--text);">${b.label}</div>
+                    <div style="font-size:0.75rem; color:var(--text-soft); font-weight:600;">${b.desc}</div>
+                  </div>
+                </label>
+              `).join('')}
+            </div>
+            <p style="margin:12px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Please select minimum 3 and maximum 4 badges.</p>
+          </div>
+        </div>
+
+        <!-- Right Column: Remark -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <div style="flex:1; display:flex; flex-direction:column;">
+            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">REMARK <span style="color:var(--text-soft); font-weight:600; text-transform:none;">(Optional)</span></label>
+            <div style="position:relative; flex:1;">
+              <span class="material-icons-round" style="position:absolute; left:14px; top:14px; color:var(--text-soft); font-size:20px;">chat_bubble_outline</span>
+              <textarea id="stamp-remark" class="modal-input" style="width:100%; height:100%; min-height:200px; padding:12px 16px 12px 44px; background:#f8fafc; resize:none;" placeholder="Enter remark (optional)"></textarea>
+            </div>
+            <p style="margin:8px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Add any additional notes or remarks (optional).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding:20px 24px; background:#f8fafc; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:12px;">
+      <button class="btn-outline" style="background:#fff; font-weight:800; padding:10px 24px;" onclick="closeModal()">Close</button>
+      <button class="btn-primary" style="background:var(--blue); font-weight:900; padding:10px 24px; display:flex; align-items:center; gap:8px;" onclick="saveStamp(${m.id})">
+        <span class="material-icons-round" style="font-size:18px;">save</span> Save Stamp
+      </button>
+    </div>
+  `;
+  modalContainer.classList.remove('hidden');
+}
+
+function saveStamp(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+
+  const dateRaw = document.getElementById('stamp-date').value;
+  const remark = document.getElementById('stamp-remark').value.trim();
+  const badges = ['identity', 'email', 'docs', 'account'].filter(k => {
+    const el = document.getElementById('badge-' + k);
+    return el && el.checked;
+  });
+
+  if (!dateRaw) { showToast('Please select a verification date', 'error'); return; }
+  if (badges.length < 3) { showToast('Please select at least 3 verification badges', 'error'); return; }
+
+  const d = new Date(dateRaw);
+  const dateFormatted = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  if (!m.stamps) m.stamps = [];
+  m.stamps.unshift({
+    date: dateFormatted,
+    badges,
+    remark: remark || 'Verified and badges assigned.',
+    admin: 'Admin User'
+  });
+
+  closeModal();
+  showToast('Verification stamp applied successfully!', 'success');
+  switchTab(memberId, 'stamp');
+}
+
+// Close modal on overlay click
+document.getElementById('modal-container').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// Events
+document.getElementById('top-search-input')?.addEventListener('input', e => {
+  searchQuery = e.target.value;
+  currentPage = 1;
+  renderTable();
+});
+
+document.getElementById('rows-per-page')?.addEventListener('change', e => {
+  rowsPerPage = parseInt(e.target.value);
+  currentPage = 1;
+  renderTable();
+});
+
+document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+  const sidebar = document.getElementById('sidebar');
+  const main = document.querySelector('.main-content');
+  const icon = document.getElementById('sidebar-toggle-icon');
+  sidebar?.classList.toggle('collapsed');
+  main?.classList.toggle('expanded');
+  if(icon) icon.textContent = sidebar?.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+});
+
+
+
+
+function toggleNavGroup(btn) {
+  const group = btn.closest('.nav-group');
+  const sub = group.querySelector('.nav-sub');
+  const isOpen = group.classList.contains('open');
+  document.querySelectorAll('.nav-group.open').forEach(g => {
+    if (g !== group) { g.classList.remove('open'); g.querySelector('.nav-sub').style.height = '0px'; }
+  });
+  if (isOpen) { group.classList.remove('open'); sub.style.height = '0px'; }
+  else { group.classList.add('open'); sub.style.height = sub.scrollHeight + 'px'; }
+}
+
+// ===== ASSIGN PLAN =====
+function assignPlan(memberId, plan) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+  m.plan = plan.toLowerCase();
+  showToast(`Plan changed to ${plan}`, 'success');
+  switchTab(memberId, 'plan');
+}
+
+// ===== STAMP MODAL =====
+function openStampModal(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+
+  const modalContainer = document.getElementById('modal-container');
+  const modalContent = document.getElementById('modal-content');
+
+  const badgeConfig = [
+    { key: 'identity', label: 'Identity Verified',  icon: 'badge',           color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
+    { key: 'email',    label: 'Email Verified',     icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
+    { key: 'docs',     label: 'Documents Verified', icon: 'verified_user',   color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
+    { key: 'account',  label: 'Account Verified',   icon: 'account_circle',  color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
+  ];
+
+  modalContent.className = 'modal-content modal-stamp';
+  modalContent.style.maxWidth = '1000px';
+  modalContent.innerHTML = `
+    <div class="modal-header" style="background:#fff; border-bottom:1px solid var(--border); padding:20px 24px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:36px; height:36px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+          <span class="material-icons-round" style="font-size:20px;">verified</span>
+        </div>
+        <h3 style="margin:0; font-size:1.25rem; font-weight:900;">Add Verification Stamp</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body" style="padding:32px; background:#fff;">
+      <p style="margin:0 0 24px 0; color:var(--text-soft); font-weight:600; font-size:0.9rem;">Add a verification stamp that will be visible to other users on the user profile.</p>
+      
+      <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
+        <!-- Left Column: Date & Badges -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <div>
+            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">DATE <span style="color:var(--red);">*</span></label>
+            <div style="position:relative;">
+              <span class="material-icons-round" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-soft); font-size:20px;">calendar_today</span>
+              <input type="date" id="stamp-date" class="modal-input" style="padding-left:44px; background:#f8fafc;" value="${new Date().toISOString().split('T')[0]}">
+            </div>
+          </div>
+
+          <div>
+            <label class="modal-label" style="display:block; margin-bottom:12px; color:var(--text); font-weight:800; font-size:0.8rem;">VERIFICATION BADGES <span style="color:var(--red);">*</span></label>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              ${badgeConfig.map(b => `
+                <label class="badge-select-item" style="display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
+                  <input type="checkbox" id="badge-${b.key}" value="${b.key}" style="width:18px; height:18px; accent-color:var(--blue); cursor:pointer;">
+                  <div style="width:36px; height:36px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
+                    <span class="material-icons-round" style="font-size:20px;">${b.icon}</span>
+                  </div>
+                  <div>
+                    <div style="font-size:0.85rem; font-weight:800; color:var(--text);">${b.label}</div>
+                    <div style="font-size:0.75rem; color:var(--text-soft); font-weight:600;">${b.desc}</div>
+                  </div>
+                </label>
+              `).join('')}
+            </div>
+            <p style="margin:12px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Please select minimum 3 and maximum 4 badges.</p>
+          </div>
+        </div>
+
+        <!-- Right Column: Remark -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <div style="flex:1; display:flex; flex-direction:column;">
+            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">REMARK <span style="color:var(--text-soft); font-weight:600; text-transform:none;">(Optional)</span></label>
+            <div style="position:relative; flex:1;">
+              <span class="material-icons-round" style="position:absolute; left:14px; top:14px; color:var(--text-soft); font-size:20px;">chat_bubble_outline</span>
+              <textarea id="stamp-remark" class="modal-input" style="width:100%; height:100%; min-height:200px; padding:12px 16px 12px 44px; background:#f8fafc; resize:none;" placeholder="Enter remark (optional)"></textarea>
+            </div>
+            <p style="margin:8px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Add any additional notes or remarks (optional).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding:20px 24px; background:#f8fafc; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:12px;">
+      <button class="btn-outline" style="background:#fff; font-weight:800; padding:10px 24px;" onclick="closeModal()">Close</button>
+      <button class="btn-primary" style="background:var(--blue); font-weight:900; padding:10px 24px; display:flex; align-items:center; gap:8px;" onclick="saveStamp(${m.id})">
+        <span class="material-icons-round" style="font-size:18px;">save</span> Save Stamp
+      </button>
+    </div>
+  `;
+  modalContainer.classList.remove('hidden');
+}
+
+function saveStamp(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+
+  const dateRaw = document.getElementById('stamp-date').value;
+  const remark = document.getElementById('stamp-remark').value.trim();
+  const badges = ['identity', 'email', 'docs', 'account'].filter(k => {
+    const el = document.getElementById('badge-' + k);
+    return el && el.checked;
+  });
+
+  if (!dateRaw) { showToast('Please select a verification date', 'error'); return; }
+  if (badges.length < 3) { showToast('Please select at least 3 verification badges', 'error'); return; }
+
+  const d = new Date(dateRaw);
+  const dateFormatted = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  if (!m.stamps) m.stamps = [];
+  m.stamps.unshift({
+    date: dateFormatted,
+    badges,
+    remark: remark || 'Verified and badges assigned.',
+    admin: 'Admin User'
+  });
+
+  closeModal();
+  showToast('Verification stamp applied successfully!', 'success');
+  switchTab(memberId, 'stamp');
+}
+
+// Robust initial render — works whether DOM is already ready or still loading
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderTable);
+} else {
+  renderTable();
+}
+
+
+function deleteStamp(memberId, index) { if(confirm('Are you sure you want to remove this verification stamp?')) { const m = members.find(x => x.id === memberId); if(m && m.stamps) { m.stamps.splice(index, 1); showToast('Verification stamp removed', 'info'); switchTab(memberId, 'stamp'); } } }
