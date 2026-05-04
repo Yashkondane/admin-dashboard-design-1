@@ -220,61 +220,65 @@ function renderTable() {
   if (!tbodyEl) return;
 
   if (filtered.length === 0) {
-    tbodyEl.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:60px;color:var(--text-soft);">No members found.</td></tr>`;
+    tbodyEl.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:60px;color:var(--text-soft);">No members found.</td></tr>';
     return;
   }
 
   tbodyEl.innerHTML = pageItems.map((m, i) => {
-    const stamps = m.stamps || [];
-    const badgeConfig = {
-      identity: { icon: 'badge', color: '#fff', bg: '#3b82f6' },
-      email:    { icon: 'mark_email_read', color: '#fff', bg: '#16a34a' },
-      docs:     { icon: 'verified_user', color: '#fff', bg: '#7c3aed' },
-      account:  { icon: 'account_circle', color: '#fff', bg: '#d97706' }
-    };
-    const activeKeys = [...new Set(stamps.flatMap(s => s.badges || []))];
+    const hasEmailCheck = m.status === 'active' || m.status === 'suspended' || m.id % 2 !== 0;
+    const hasMobileCheck = m.status === 'active' || m.id % 3 !== 0;
+    
+    const emailIcon = hasEmailCheck ? 
+      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' : 
+      '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
+      
+    const mobileIcon = hasMobileCheck ? 
+      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' : 
+      '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
+
+    let statusBg = '#f1f5f9'; let statusColor = '#64748b'; let statusText = m.status;
+    if (m.status === 'active') { statusBg = '#dcfce7'; statusColor = '#16a34a'; statusText = 'Active'; }
+    else if (m.status === 'suspended') { statusBg = '#ffedd5'; statusColor = '#ea580c'; statusText = 'Suspended'; }
+    else if (m.status === 'pending') { statusBg = '#dbeafe'; statusColor = '#3b82f6'; statusText = 'Pending'; }
+    else if (m.status === 'incomplete') { statusBg = '#f1f5f9'; statusColor = '#94a3b8'; statusText = 'Incomplete'; }
+    else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#f1f5f9'; statusColor = '#94a3b8'; statusText = 'Inactive'; }
 
     return `
     <tr style="animation-delay: ${i * 0.03}s">
       <td onclick="openProfile(${m.id})">
         <div style="display: flex; align-items: center; gap: 14px;">
-          <div style="position:relative;">
-            <img class="member-avatar" src="${m.photo}" alt="${m.member}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.member)}&background=eef3ff&color=4880ff'" style="width: 44px; height: 44px; border-radius: 12px; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <div style="position:absolute; bottom:-4px; right:-4px; width:18px; height:18px; border-radius:50%; background:${m.status === 'active' ? '#16a34a' : (['suspended', 'inactive', 'expire'].includes(m.status) ? '#ef4444' : (m.status === 'incomplete' ? '#f59e0b' : '#94a3b8'))}; border:2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
-          </div>
+          <img class="member-avatar" src="${m.photo}" alt="${m.member}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.member)}&background=eef3ff&color=4880ff'" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 800; color: var(--text); font-size: 0.95rem; letter-spacing:-0.2px;">${m.member}</span>
-            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; margin-top:2px;">${m.company}</span>
+            <span style="font-weight: 800; color: var(--text); font-size: 0.85rem;">${m.member}</span>
+            <span style="font-size: 0.75rem; color: var(--text-soft); font-weight: 600; margin-top:2px;">${m.company}</span>
           </div>
+        </div>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.location}</span>
+      </td>
+      <td onclick="openProfile(${m.id})">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.email}</span>
+          ${emailIcon}
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; align-items:center; gap:6px;">
-          <span style="color: var(--text-mid); font-weight: 700; font-size: 0.88rem;">${m.location.split(',')[0]}</span>
+          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.mobile}</span>
+          ${mobileIcon}
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text); font-weight: 700; font-size:0.85rem;">${m.email}</span>
+        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
       </td>
       <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text); font-weight: 700; font-size:0.85rem;">${m.mobile}</span>
-      </td>
-      <td onclick="openProfile(${m.id})">
-        <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:8px; background:#f1f5f9; border:1px solid #e2e8f0;">
-          <span style="color: var(--text); font-weight: 800; font-size: 0.78rem; text-transform:uppercase; letter-spacing:0.3px;">${m.plan === 'nil' ? 'No Plan' : m.plan}</span>
+        <div style="display:inline-flex; align-items:center; justify-content:center; padding:4px 10px; border-radius:6px; background:${statusBg}; color:${statusColor}; font-size:0.75rem; font-weight:700;">
+          ${capitalize(statusText)}
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
-        <div class="status-badge ${m.status}">
-          <span></span>
-          ${capitalize(m.status === 'expire' ? 'inactive' : m.status)}
-        </div>
-      </td>
-      <td onclick="openProfile(${m.id})">
-        <div style="display:flex; flex-direction:column; align-items:flex-end;">
-          <span style="color: var(--text); font-weight: 800; font-size: 0.85rem;">${m.date}</span>
-          <span style="color: var(--text-soft); font-weight: 600; font-size: 0.7rem;">Applied On</span>
-        </div>
+        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.date}</span>
       </td>
     </tr>
     `;
@@ -331,7 +335,7 @@ function openProfile(id, tab = 'company') {
       <span class="current">${m.company}</span>
     </div>
 
-    <div class="profile-header-card">
+    <div class="profile-header-card" style="padding: 16px 24px; margin-bottom: 16px;">
       <div class="profile-header-top">
         <div class="profile-avatar-wrapper">
           <img class="profile-header-avatar" src="${m.photo}" alt="${m.member}">
@@ -340,7 +344,7 @@ function openProfile(id, tab = 'company') {
           <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
             <div style="display:flex; flex-direction:column;">
               <div style="display:flex; align-items:center; gap:12px;">
-                <div class="profile-header-name" style="font-size: 2rem; font-weight: 900; color: var(--text); letter-spacing: -0.8px;">${m.company}</div>
+                <div class="profile-header-name" style="font-size: 1.5rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px;">${m.company}</div>
                 ${(() => {
                   const stamps = m.stamps || [];
                   if (!stamps.length) return '';
@@ -364,10 +368,12 @@ function openProfile(id, tab = 'company') {
                     </div>
                   `;
                 })()}
-                <span class="status-badge ${m.status}">${capitalize(m.status)}</span>
+                  <div style="display:inline-flex; align-items:center; justify-content:center; padding:4px 12px; border-radius:6px; background:${m.status === 'active' ? '#dcfce7' : (['suspended'].includes(m.status) ? '#ffedd5' : (m.status === 'pending' ? '#dbeafe' : '#f1f5f9'))}; color:${m.status === 'active' ? '#16a34a' : (['suspended'].includes(m.status) ? '#ea580c' : (m.status === 'pending' ? '#3b82f6' : '#64748b'))}; font-size:0.8rem; font-weight:800;">
+                    ${capitalize(m.status)}
+                  </div>
               </div>
             </div>
-            <button class="btn-outline" style="border-color:#fecaca; color:#ef4444; padding:6px 16px; font-size:0.85rem;" onclick="showToast('Profile deleted', 'error'); closeProfile();">
+            <button class="btn-outline" style="border-color:#fecaca; color:#ef4444; padding:6px 12px; font-size:0.8rem; height: 32px; display:inline-flex; align-items:center; gap:6px;" onclick="showToast('Profile deleted', 'error'); closeProfile();">
               <span class="material-icons-round" style="font-size:16px; color:#ef4444;">delete</span> Delete Profile
             </button>
           </div>
@@ -375,26 +381,30 @@ function openProfile(id, tab = 'company') {
         </div>
       </div>
       <div class="profile-header-divider"></div>
-      <div class="profile-stats-row">
-        <div class="stat-item">
+      <div class="profile-stats-row" style="margin-top: 12px; padding-top: 16px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; border-top: 1px solid #f1f5f9;">
+        <div class="stat-item" style="min-width: 0;">
+          <div class="stat-label">Plan</div>
+          <div class="stat-value" title="${m.plan || 'Starter'}" style="color:var(--blue);">${capitalize(m.plan || 'Starter')}</div>
+        </div>
+        <div class="stat-item" style="min-width: 0;">
           <div class="stat-label">Join Date</div>
-          <div class="stat-value">${m.date}</div>
+          <div class="stat-value" title="${m.date}">${m.date}</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" style="min-width: 0;">
           <div class="stat-label">Join IP</div>
-          <div class="stat-value">${m.joinIp || '95.66.134.42'}</div>
+          <div class="stat-value" title="${m.joinIp || '95.66.134.42'}">${m.joinIp || '95.66.134.42'}</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" style="min-width: 0;">
           <div class="stat-label">Location</div>
-          <div class="stat-value">${m.location}</div>
+          <div class="stat-value" title="${m.location}">${m.location}</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" style="min-width: 0;">
           <div class="stat-label">Last Login</div>
-          <div class="stat-value">${m.lastLogin || '2 hours ago'}</div>
+          <div class="stat-value" title="${m.lastLogin || '2 hours ago'}">${m.lastLogin || '2 hours ago'}</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-item" style="min-width: 0;">
           <div class="stat-label">Broadcasts</div>
-          <div class="stat-value">${m.broadcasts ? m.broadcasts.length : 2}</div>
+          <div class="stat-value" title="${m.broadcasts ? m.broadcasts.length : 2}">${m.broadcasts ? m.broadcasts.length : 2}</div>
         </div>
       </div>
     </div>
@@ -620,8 +630,8 @@ function renderProfileTab(m, tab) {
               <p class="profile-section-desc">Active subscription details and billing cycle information.</p>
             </div>
           </div>
-          <button class="btn-primary" onclick="showToast('Manage Billing clicked', 'success')">
-            <span class="material-icons-round">payment</span> Manage Billing
+          <button class="btn-primary" onclick="openEditModal('plan', ${m.id})">
+            <span class="material-icons-round">settings</span> Manage Plans
           </button>
         </div>
 
@@ -861,34 +871,34 @@ function renderProfileTab(m, tab) {
           <table class="data-table" style="width: 100%; border-collapse: collapse;">
             <thead>
               <tr>
-                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date & Time</th>
-                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Message Detail</th>
-                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Recipient</th>
-                <th style="padding: 20px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
-                <th style="padding: 20px 24px; text-align: right; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Actions</th>
+                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date & Time</th>
+                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Message Detail</th>
+                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Recipient</th>
+                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
+                <th style="padding: 12px 16px; text-align: right; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Actions</th>
               </tr>
             </thead>
             <tbody>
               ${broadcasts.map(b => `
                 <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${b.date.split(' ')[0]}</div>
                     <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">${b.date.split(' ').slice(1).join(' ')}</div>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border); max-width:300px;">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); max-width:300px;">
                     <div style="font-size: 0.88rem; color: var(--text); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
                     <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">Sent by ${b.broadcaster}</div>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid); background:#f1f5f9; padding:4px 10px; border-radius:6px;">${b.sendTo}</span>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:100px; background:#f0fdf4; border:1px solid #dcfce7;">
                       <span style="width:6px; height:6px; border-radius:50%; background:#16a34a;"></span>
                       <span style="color:#16a34a; font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">${b.status}</span>
                     </div>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border); text-align:right;">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); text-align:right;">
                     <button class="action-btn" onclick="showToast('Viewing broadcast detail...', 'success')" style="width:36px; height:36px; border-radius:10px; background:white; border:1px solid var(--border); color:var(--text-mid); display:inline-flex; align-items:center; justify-content:center; transition: all 0.2s;">
                       <span class="material-icons-round" style="font-size:18px;">visibility</span>
                     </button>
@@ -961,57 +971,55 @@ function renderProfileTab(m, tab) {
     ];
 
     return `
-      <!-- Top Row: Stats & Action -->
-      <div style="display: flex; gap: 20px; margin-bottom: 24px; align-items: stretch;">
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; flex: 1;">
-          <div class="content-card" style="margin-bottom:0; padding:20px; display:flex; align-items:center; gap:20px; border:1px solid var(--border);">
-            <div style="width:52px; height:52px; border-radius:12px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; flex-shrink:0;">
-              <span class="material-icons-round" style="font-size:26px;">verified</span>
-            </div>
-            <div>
-              <div style="font-size:0.7rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Stamps Applied</div>
-              <div style="font-size:1.6rem; font-weight:900; color:var(--text); line-height:1;">${stamps.length}</div>
-            </div>
+      <!-- Condensed Top Row: Stats, Badges & Action -->
+      <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: stretch;">
+        <div class="content-card" style="margin-bottom:0; padding:16px; display:flex; align-items:center; gap:16px; border:1px solid var(--border); flex: 1;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; flex-shrink:0;">
+            <span class="material-icons-round" style="font-size:20px;">verified</span>
           </div>
-          <div class="content-card" style="margin-bottom:0; padding:20px; display:flex; align-items:center; gap:20px; border:1px solid var(--border);">
-            <div style="width:52px; height:52px; border-radius:12px; background:#f0fdf4; color:#16a34a; display:grid; place-items:center; flex-shrink:0;">
-              <span class="material-icons-round" style="font-size:26px;">calendar_today</span>
-            </div>
-            <div>
-              <div style="font-size:0.7rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Last Verified</div>
-              <div style="font-size:1.1rem; font-weight:900; color:var(--text);">${stamps.length ? stamps[0].date.split(' ')[0] : 'Never'}</div>
-            </div>
+          <div>
+            <div style="font-size:0.65rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Stamps Applied</div>
+            <div style="font-size:1.3rem; font-weight:900; color:var(--text); line-height:1;">${stamps.length}</div>
           </div>
         </div>
-        <div class="content-card" style="margin-bottom:0; padding:20px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--blue); background:var(--blue-light); width:240px; border-radius:16px;">
-           <button class="btn-primary" onclick="openStampModal(${m.id})" style="width:100%; height:100%; padding: 0; font-size: 0.95rem; background:var(--blue); font-weight:900; box-shadow:0 6px 16px rgba(59,130,246,0.25); display:flex; align-items:center; justify-content:center; gap:8px;">
-            <span class="material-icons-round" style="font-size:20px;">add_circle</span> Add Stamp
+
+        <div class="content-card" style="margin-bottom:0; padding:16px; display:flex; align-items:center; gap:16px; border:1px solid var(--border); flex: 1;">
+          <div style="width:40px; height:40px; border-radius:10px; background:#f0fdf4; color:#16a34a; display:grid; place-items:center; flex-shrink:0;">
+            <span class="material-icons-round" style="font-size:20px;">calendar_today</span>
+          </div>
+          <div>
+            <div style="font-size:0.65rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Last Verified</div>
+            <div style="font-size:1.1rem; font-weight:900; color:var(--text);">${stamps.length ? stamps[0].date : 'Never'}</div>
+          </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:0; padding:16px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:8px; border:1px solid var(--border); flex: 1.5; background: #f8fafc;">
+          <div style="font-size:0.65rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Current Status</div>
+          <div style="display: flex; gap: 8px;">
+            ${badgeConfig.map(b => {
+              const isActive = stamps.some(s => s.badges && s.badges.includes(b.key));
+              return `
+                <div title="${b.label}: ${isActive ? 'Verified' : 'Pending'}" style="width:32px; height:32px; border-radius:50%; background:${isActive ? b.bg : '#fff'}; color:${isActive ? b.color : '#cbd5e1'}; display:grid; place-items:center; border:2px solid ${isActive ? b.color : 'var(--border)'}; position:relative; box-shadow:${isActive ? '0 2px 8px '+b.color+'20' : 'none'};">
+                  <span class="material-icons-round" style="font-size:16px;">${b.icon}</span>
+                  ${isActive ? `
+                    <div style="position:absolute; bottom:-2px; right:-2px; width:12px; height:12px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; border:1px solid #fff;">
+                      <span class="material-icons-round" style="font-size:8px;">check</span>
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:0; padding:12px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--blue); background:var(--blue-light); width:180px; border-radius:12px;">
+           <button class="btn-primary" onclick="openStampModal(${m.id})" style="width:100%; height:100%; padding: 0; font-size: 0.9rem; background:var(--blue); font-weight:900; box-shadow:0 4px 12px rgba(59,130,246,0.25); display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span class="material-icons-round" style="font-size:18px;">add_circle</span> Add Stamp
           </button>
         </div>
       </div>
 
-      <!-- Compact Badge Display -->
-      <div class="content-card" style="margin-bottom:24px; padding:24px;">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
-          <div style="width:8px; height:20px; background:var(--blue); border-radius:4px;"></div>
-          <h3 style="margin:0; font-size:1.1rem; font-weight:900; color:var(--text);">Current Verification Status</h3>
-        </div>
-        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; padding: 20px; background: #f8fafc; border-radius: 20px; border: 1px dashed var(--border);">
-          ${badgeConfig.map(b => {
-            const isActive = stamps.some(s => s.badges && s.badges.includes(b.key));
-            return `
-              <div title="${b.label}: ${isActive ? 'Verified' : 'Pending'}" style="width:50px; height:50px; border-radius:50%; background:${isActive ? b.bg : '#fff'}; color:${isActive ? b.color : '#cbd5e1'}; display:grid; place-items:center; border:2.5px solid ${isActive ? b.color : 'var(--border)'}; transition: all 0.3s; position:relative; box-shadow:${isActive ? '0 4px 12px '+b.color+'20' : 'none'};">
-                <span class="material-icons-round" style="font-size:24px;">${b.icon}</span>
-                ${isActive ? `
-                  <div style="position:absolute; bottom:-4px; right:-4px; width:20px; height:20px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-                    <span class="material-icons-round" style="font-size:12px;">check</span>
-                  </div>
-                ` : ''}
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
+
 
       <!-- History Table -->
       <div class="content-card">
@@ -1028,19 +1036,19 @@ function renderProfileTab(m, tab) {
           <table class="data-table" style="width: 100%; border-collapse: collapse;">
             <thead>
               <tr>
-                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Applied Date</th>
-                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Badges Applied</th>
-                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Remark / Note</th>
-                <th style="padding: 20px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Verified By</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Applied Date</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Badges Applied</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Remark / Note</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Verified By</th>
               </tr>
             </thead>
             <tbody>
               ${stamps.length ? stamps.map((s, idx) => `
                 <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${s.date}</div>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:flex; align-items:center; gap:6px;">
                       ${(s.badges || []).map(bk => {
                         const cfg = badgeConfig.find(b => b.key === bk);
@@ -1048,10 +1056,10 @@ function renderProfileTab(m, tab) {
                       }).join('')}
                     </div>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border); max-width:250px;">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); max-width:250px;">
                     <div style="font-size: 0.85rem; color: var(--text-mid); font-weight: 600; line-height:1.5;">${s.remark || 'N/A'}</div>
                   </td>
-                  <td style="padding: 18px 24px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:flex; align-items:center; justify-content:space-between;">
                       <div style="display:flex; align-items:center; gap:8px;">
                         <div style="width:24px; height:24px; border-radius:50%; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; font-size:0.65rem; font-weight:900;">A</div>
@@ -1201,6 +1209,112 @@ function openEditModal(type, memberId, index) {
       <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
         <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
         <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveContact(${memberId}, ${index})">Save</button>
+      </div>
+    `;
+  
+  } else if (type === 'plan') {
+    content.className = 'modal-content modal-wide';
+    const planName = m.plan ? capitalize(m.plan) : 'Starter';
+    const planRate = m.planRate || '999';
+    const planValidity = m.planValidity || 'monthly';
+    const planBroadcast = m.planBroadcast || '5';
+    const planEmail = m.planEmail || 'notify@example.com';
+    const flags = m.planFlags || { sendall: true, state: true, city: true, contacts: false, phone: true, address: false };
+
+    html = `
+      <div class="modal-header" style="border-bottom: 1px solid var(--border); padding: 24px 32px; background: #fff;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+            <span class="material-icons-round">assignment</span>
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:1.1rem; font-weight:900; color:var(--text);">Manage Member Plan</h3>
+            <p style="margin:2px 0 0; font-size:0.8rem; color:var(--text-soft); font-weight:600;">Update subscription and permissions for <strong>${m.member}</strong>.</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+      </div>
+
+      <div class="modal-body" style="padding: 32px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+          
+          <!-- LEFT COLUMN: Plan Info -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px;">Plan Information</div>
+            
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Select Plan</label>
+              <select class="modal-input" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+                <option value="starter" ${m.plan === 'starter' ? 'selected' : ''}>Starter Plan</option>
+                <option value="business" ${m.plan === 'business' ? 'selected' : ''}>Business Plan</option>
+                <option value="enterprise" ${m.plan === 'enterprise' ? 'selected' : ''}>Enterprise Plan</option>
+              </select>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Plan Rate (₹)</label>
+                <input class="modal-input" type="number" value="${planRate}" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+              </div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Validity</label>
+                <select class="modal-input" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+                  <option value="monthly" ${planValidity === 'monthly' ? 'selected' : ''}>Monthly</option>
+                  <option value="quarterly" ${planValidity === 'quarterly' ? 'selected' : ''}>Quarterly</option>
+                  <option value="halfyearly" ${planValidity === 'halfyearly' ? 'selected' : ''}>Half Yearly</option>
+                  <option value="yearly" ${planValidity === 'yearly' ? 'selected' : ''}>Yearly</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Daily Broadcast Limit</label>
+              <input class="modal-input" type="number" value="${planBroadcast}" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Notification Email</label>
+              <input class="modal-input" type="email" value="${planEmail}" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Features -->
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px;">Features & Permissions</div>
+            
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              ${[
+                { key: 'sendall', label: 'Send to All', desc: 'Broadcast to all users' },
+                { key: 'state', label: 'State Targeting', desc: 'Filter by state' },
+                { key: 'city', label: 'City Targeting', desc: 'Filter by city' },
+                { key: 'contacts', label: 'Add Contacts', desc: 'Allow adding contacts in profile' },
+                { key: 'phone', label: 'Phone Visibility', desc: 'User can toggle phone visibility' },
+                { key: 'address', label: 'Address Button', desc: 'User can add more addresses' }
+              ].map(f => `
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom: 1px solid #f8fafc;">
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--text);">${f.label}</div>
+                    <div style="font-size:0.75rem; font-weight:600; color:var(--text-soft); max-width:200px;">${f.desc}</div>
+                  </div>
+                  <label style="position:relative; width:40px; height:22px; flex-shrink:0;">
+                    <input type="checkbox" ${flags[f.key] ? 'checked' : ''} style="opacity:0; width:0; height:0;" onchange="this.nextElementSibling.style.background = this.checked ? 'var(--blue)' : '#e2e8f0'; this.nextElementSibling.querySelector('span').style.transform = this.checked ? 'translateX(18px)' : 'translateX(0)';">
+                    <span style="position:absolute; inset:0; background:${flags[f.key] ? 'var(--blue)' : '#e2e8f0'}; border-radius:99px; cursor:pointer; transition:background 0.2s;">
+                      <span style="position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.15); transform:${flags[f.key] ? 'translateX(18px)' : 'translateX(0)'};"></span>
+                    </span>
+                  </label>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
+        <button class="btn-outline" style="background:#fff; border-color:#d1d5db; color:var(--text-mid); border-radius:8px;" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" style="background:var(--blue); border-radius:8px; padding:12px 28px; font-weight:800; box-shadow:0 4px 12px rgba(72,128,255,0.25);" onclick="showToast('Plan Assigned Successfully!', 'success'); closeModal();">
+          <span class="material-icons-round" style="font-size:18px;">check_circle</span> Assign Plan
+        </button>
       </div>
     `;
   } else if (type === 'address') {
@@ -1726,16 +1840,16 @@ function openStampModal(memberId) {
 
           <div>
             <label class="modal-label" style="display:block; margin-bottom:12px; color:var(--text); font-weight:800; font-size:0.8rem;">VERIFICATION BADGES <span style="color:var(--red);">*</span></label>
-            <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
               ${badgeConfig.map(b => `
-                <label class="badge-select-item" style="display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
+                <label class="badge-select-item" style="display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
                   <input type="checkbox" id="badge-${b.key}" value="${b.key}" style="width:18px; height:18px; accent-color:var(--blue); cursor:pointer;">
-                  <div style="width:36px; height:36px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
-                    <span class="material-icons-round" style="font-size:20px;">${b.icon}</span>
+                  <div style="width:30px; height:30px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
+                    <span class="material-icons-round" style="font-size:16px;">${b.icon}</span>
                   </div>
                   <div>
-                    <div style="font-size:0.85rem; font-weight:800; color:var(--text);">${b.label}</div>
-                    <div style="font-size:0.75rem; color:var(--text-soft); font-weight:600;">${b.desc}</div>
+                    <div style="font-size:0.8rem; font-weight:800; color:var(--text); line-height:1.2;">${b.label}</div>
+                    <div style="font-size:0.7rem; color:var(--text-soft); font-weight:600; line-height:1.2;">${b.desc}</div>
                   </div>
                 </label>
               `).join('')}
@@ -1890,16 +2004,16 @@ function openStampModal(memberId) {
 
           <div>
             <label class="modal-label" style="display:block; margin-bottom:12px; color:var(--text); font-weight:800; font-size:0.8rem;">VERIFICATION BADGES <span style="color:var(--red);">*</span></label>
-            <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
               ${badgeConfig.map(b => `
-                <label class="badge-select-item" style="display:flex; align-items:center; gap:14px; padding:12px 16px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
+                <label class="badge-select-item" style="display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
                   <input type="checkbox" id="badge-${b.key}" value="${b.key}" style="width:18px; height:18px; accent-color:var(--blue); cursor:pointer;">
-                  <div style="width:36px; height:36px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
-                    <span class="material-icons-round" style="font-size:20px;">${b.icon}</span>
+                  <div style="width:30px; height:30px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
+                    <span class="material-icons-round" style="font-size:16px;">${b.icon}</span>
                   </div>
                   <div>
-                    <div style="font-size:0.85rem; font-weight:800; color:var(--text);">${b.label}</div>
-                    <div style="font-size:0.75rem; color:var(--text-soft); font-weight:600;">${b.desc}</div>
+                    <div style="font-size:0.8rem; font-weight:800; color:var(--text); line-height:1.2;">${b.label}</div>
+                    <div style="font-size:0.7rem; color:var(--text-soft); font-weight:600; line-height:1.2;">${b.desc}</div>
                   </div>
                 </label>
               `).join('')}
@@ -1961,12 +2075,75 @@ function saveStamp(memberId) {
   switchTab(memberId, 'stamp');
 }
 
-// Robust initial render — works whether DOM is already ready or still loading
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', renderTable);
-} else {
-  renderTable();
+// ===== NAV GROUP TOGGLE =====
+function toggleNavGroup(btn) {
+  const group = btn.closest('.nav-group');
+  const sub = group.querySelector('.nav-sub');
+  const isOpen = group.classList.contains('open');
+
+  document.querySelectorAll('.nav-group.open').forEach(g => {
+    if (g !== group) {
+      g.classList.remove('open');
+      g.querySelector('.nav-sub').style.height = '0px';
+    }
+  });
+
+  if (isOpen) {
+    group.classList.remove('open');
+    sub.style.height = '0px';
+  } else {
+    group.classList.add('open');
+    sub.style.height = sub.scrollHeight + 'px';
+  }
 }
 
+// ===== DELETE STAMP =====
+function deleteStamp(memberId, index) {
+  if (confirm('Are you sure you want to remove this verification stamp?')) {
+    const m = members.find(x => x.id === memberId);
+    if (m && m.stamps) {
+      m.stamps.splice(index, 1);
+      showToast('Verification stamp removed', 'info');
+      switchTab(memberId, 'stamp');
+    }
+  }
+}
 
-function deleteStamp(memberId, index) { if(confirm('Are you sure you want to remove this verification stamp?')) { const m = members.find(x => x.id === memberId); if(m && m.stamps) { m.stamps.splice(index, 1); showToast('Verification stamp removed', 'info'); switchTab(memberId, 'stamp'); } } }
+// ===== INITIALIZATION =====
+function initApp() {
+  // Render the members table immediately
+  renderTable();
+
+  // Sidebar collapse/expand toggle
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.querySelector('.main-content');
+  const toggleIcon = document.getElementById('sidebar-toggle-icon');
+
+  if (sidebarToggle && sidebar) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      if (mainContent) mainContent.classList.toggle('expanded');
+      if (toggleIcon) {
+        toggleIcon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+      }
+    });
+  }
+
+  // Search input listener
+  const searchInput = document.getElementById('top-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      currentPage = 1;
+      renderTable();
+    });
+  }
+}
+
+// Robust initialization — works whether DOM is already ready or still loading
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}

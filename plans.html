@@ -1,21 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Membership Plans</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=17">
+  <style>
+    /* ===== PLAN CARDS ===== */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .plan-card {
+      background: #fff; border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .plan-card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.08); transform: translateY(-4px); }
+
+    .plan-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+    .pc-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .pc-name { font-size: 1.6rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+    .pc-tag {
+      display: inline-flex; align-items: center;
+      padding: 6px 14px; border-radius: 100px;
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .pc-tag.active { background: #bbf7d0; color: #16a34a; }
+    .pc-tag.inactive { background: #f1f5f9; color: #94a3b8; }
+
+    .pc-price-row { display: flex; align-items: baseline; gap: 6px; }
+    .pc-price { font-size: 2rem; font-weight: 900; color: var(--blue); letter-spacing: -1px; line-height: 1; }
+    .pc-price-cycle { font-size: 0.88rem; font-weight: 600; color: var(--text-soft); }
+
+    .pc-subs {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700; color: var(--text-soft);
+      margin-top: 4px;
+    }
+    .pc-subs .material-icons-round { font-size: 16px; opacity: 0.7; }
+
+    .pc-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; padding: 20px; background: #f0f7ff;
+      border-radius: 14px; border: 1px solid #e0efff;
+    }
+    .pc-stat-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); margin-bottom: 4px; }
+    .pc-stat-value { font-size: 0.95rem; font-weight: 800; color: var(--text); }
+    .pc-stat-email { grid-column: 1/-1; }
+    .pc-stat-email .pc-stat-value { color: var(--blue); }
+
+    .pc-flags { display: flex; flex-direction: column; gap: 0; }
+    .pc-flag-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid #f1f5f9;
+      font-size: 0.92rem; font-weight: 700; color: var(--text-mid);
+    }
+    .pc-flag-row:last-child { border-bottom: none; }
+    .pc-flag-on  { color: #16a34a; }
+    .pc-flag-off { color: #fecaca; }
+
+    .plan-card-footer {
+      display: flex; gap: 12px; padding: 20px 24px;
+      border-top: 1px solid #f1f5f9; background: #fff;
+    }
+    .btn-delete-card {
+        width: 44px; height: 44px; border-radius: 12px; border: 1px solid #fecaca;
+        background: #fff; color: #ef4444; display: grid; place-items: center;
+        cursor: pointer; transition: all 0.2s;
+    }
+    .btn-delete-card:hover { background: #fef2f2; }
+    .btn-edit-card {
+        flex: 1; height: 44px; border-radius: 12px; background: var(--blue);
+        color: #fff; border: none; font-family: inherit; font-size: 0.92rem;
+        font-weight: 800; display: flex; align-items: center; justify-content: center;
+        gap: 8px; cursor: pointer; transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(59,130,246,0.25);
+    }
+    .btn-edit-card:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(59,130,246,0.35); }
+
+    /* Modal Tweaks for 2 Column */
+    .modal-2-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+    .pf-section-title {
+      font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--text-soft);
+      padding-bottom: 12px; border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 12px;
+    }
+    .pf-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .pf-label {
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--text-soft);
+    }
+    .pf-input {
+      border: 1.5px solid #e2e8f0; border-radius: 9px;
+      padding: 10px 14px; font-family: inherit; font-size: 0.9rem;
+      font-weight: 600; color: var(--text); background: #f8fafc;
+      outline: none; transition: all 0.2s;
+      width: 100%; box-sizing: border-box;
+    }
+    .pf-input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 4px var(--blue-light); }
+
+    /* Toggle switch */
+    .toggle-wrap { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle-wrap input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #e2e8f0;
+      border-radius: 99px; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; top: 3px; left: 3px;
+      transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .toggle-wrap input:checked + .toggle-slider { background: var(--blue); }
+    .toggle-wrap input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    .pf-check-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid #f8fafc;
+    }
+    .pf-check-left { display: flex; flex-direction: column; gap: 2px; }
+    .pf-check-name  { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .pf-check-desc  { font-size: 0.75rem; font-weight: 600; color: var(--text-soft); max-width: 180px; }
+  </style>
 </head>
 
 <body>
   <aside class="sidebar" id="sidebar">
-    <!-- Collapse/Expand tab on right edge -->
     <button class="sidebar-toggle-tab" id="sidebar-toggle" title="Toggle sidebar">
       <span class="material-icons-round" id="sidebar-toggle-icon">chevron_left</span>
     </button>
@@ -29,21 +156,14 @@
           </svg></div>
         <span class="brand-name">AdminPanel</span>
       </div>
-
       <div class="nav-section-label">MAIN MENU</div>
-
       <nav class="sidebar-nav">
-        <!-- Dashboard -->
         <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span class="nav-label">Dashboard</span></a>
-
-        <!-- Members -->
-        <a href="index.html" class="nav-item" id="nav-members">
+        <a href="index.html" class="nav-item">
           <span class="material-icons-round">people</span>
           <span class="nav-label">Members</span>
           <span class="nav-badge">15</span>
         </a>
-
-        <!-- Plans & Billing -->
         <div class="nav-group open">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
             <span class="material-icons-round">credit_card</span>
@@ -56,8 +176,6 @@
             <a href="invoice.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Invoice</a>
           </div>
         </div>
-
-        <!-- Communication -->
         <div class="nav-group">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
             <span class="material-icons-round">chat_bubble_outline</span>
@@ -69,8 +187,6 @@
             <a href="notifications.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Notifications</a>
           </div>
         </div>
-
-        <!-- Requests -->
         <div class="nav-group">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
             <span class="material-icons-round">assignment</span>
@@ -82,8 +198,6 @@
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
-
-        <!-- Settings -->
         <div class="nav-group">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
             <span class="material-icons-round">settings</span>
@@ -94,9 +208,7 @@
             <a href="settings-fields.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Field Setting</a>
           </div>
         </div>
-
-        <!-- Employees (temp) -->
-        <a href="employees.html" class="nav-item" id="nav-employees" style="opacity:0.5;">
+        <a href="employees.html" class="nav-item" style="opacity:0.5;">
           <span class="material-icons-round">badge</span>
           <span class="nav-label">Employees</span>
         </a>
@@ -111,40 +223,46 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
-            placeholder="Search Plans" id="top-search-input"></div>
+        <div class="top-bar-search">
+          <span class="material-icons-round">search</span>
+          <input type="text" placeholder="Search plans…" id="top-search-input">
+        </div>
       </div>
       <div class="top-bar-right">
-        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
-            class="notif-dot"></span></button>
+        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span class="notif-dot"></span></button>
         <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span></button>
         <div class="header-user">
           <img class="header-user-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jane Cooper">
-          <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span
-              class="header-user-email">jane234@example.com</span></div>
+          <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span class="header-user-email">jane234@example.com</span></div>
           <span class="material-icons-round header-user-arrow">expand_more</span>
         </div>
       </div>
     </header>
 
-    <div id="plans-view" style="background: transparent;">
-      <div class="page-title-row">
-        <h1 class="page-title">Membership Plans</h1>
-        <div class="page-title-actions">
-          <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
-          <button class="btn-primary" onclick="openAddPlanModal()"><span class="material-icons-round">add</span> Create New Plan</button>
+    <!-- PAGE CONTENT -->
+    <div style="background: var(--white); border-radius: 16px; padding: 28px 32px; border: 1px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+      <!-- Header row -->
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px;">
+        <div>
+          <h1 style="font-size:1.6rem; font-weight:900; color:var(--text); margin:0; letter-spacing:-0.5px;">Membership Plans</h1>
+          <p style="color:var(--text-soft); font-weight:600; margin:6px 0 0; font-size:0.88rem;">Create, manage and assign subscription tiers to your members.</p>
         </div>
+        <button class="btn-primary" onclick="openPlanModal()" style="gap:8px; padding:10px 20px;">
+          <span class="material-icons-round" style="font-size:18px;">add</span>
+          New Plan
+        </button>
       </div>
-      
-      <!-- Grid format matching employees bubble format -->
-      <div id="plans-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding-bottom: 24px;">
-        <!-- Filled by plans.js -->
-      </div>
+
+      <!-- Cards grid -->
+      <div class="plans-grid" id="plans-grid"></div>
     </div>
   </main>
 
-  <div id="modal-container" class="modal-overlay hidden"><div class="modal-content" id="modal-content"></div></div>
+  <div id="modal-container" class="modal-overlay hidden">
+    <div class="modal-content" id="modal-content"></div>
+  </div>
+
   <div id="toast-container" class="toast-container"></div>
-  <script src="plans.js"></script>
+  <script src="plans.js?v=19"></script>
 </body>
 </html>
