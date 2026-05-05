@@ -439,7 +439,7 @@ function renderProfileTab(m, tab) {
             </div>
           </div>
           <button class="btn-primary" onclick="openEditModal('company', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
-            <span class="material-icons-round">edit</span> Edit Details
+            <span class="material-icons-round">edit</span> Edit
           </button>
         </div>
 
@@ -516,7 +516,7 @@ function renderProfileTab(m, tab) {
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('contact', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
-            <span class="material-icons-round">add</span> Add Contact
+            <span class="material-icons-round">add</span> Add
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-top: 24px;">
@@ -587,7 +587,7 @@ function renderProfileTab(m, tab) {
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('address', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
-            <span class="material-icons-round">add</span> Add Address
+            <span class="material-icons-round">add</span> Add
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px;">
