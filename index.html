@@ -133,37 +133,35 @@
     </header>
 
     <div id="directory-view">
-      <div class="page-title-row" style="margin-bottom: 0px; display: flex; justify-content: space-between; align-items: flex-start;">
+      <div class="page-title-row" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
           <h1 class="page-title">Members</h1>
-          <p style="color: var(--text-soft); font-weight: 600; margin-top: 6px;">View and manage all company members and their account status.</p>
         </div>
-        <button class="btn-outline" style="padding: 8px 16px; font-size: 0.9rem;"><span class="material-icons-round" style="font-size: 18px;">filter_list</span> Filter <span class="material-icons-round" style="font-size: 18px; margin-left: 4px;">expand_more</span></button>
+        <button class="btn-outline"><span class="material-icons-round">filter_list</span> Filter <span class="material-icons-round">expand_more</span></button>
+      </div>
+
+      <div class="tabs-container" style="display: flex; gap: 24px; padding: 0 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border);">
+        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">All Members <span class="badge">15</span></button>
+        <button class="tab-item" data-filter="active" onclick="setFilter('active')">Active <span class="badge">9</span></button>
+        <button class="tab-item" data-filter="expire" onclick="setFilter('expire')">Inactive <span class="badge">2</span></button>
+        <button class="tab-item" data-filter="pending" onclick="setFilter('pending')">Pending <span class="badge">1</span></button>
+        <button class="tab-item" data-filter="incomplete" onclick="setFilter('incomplete')">Incomplete <span class="badge">1</span></button>
+        <button class="tab-item" data-filter="suspended" onclick="setFilter('suspended')">Suspended <span class="badge">2</span></button>
       </div>
 
       <section class="table-section" style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border); padding: 0 24px; background: #fff;">
-          <div class="tabs-container" style="display: flex; gap: 24px;">
-            <button class="tab-item active" data-filter="all" onclick="setFilter('all')">All Members <span class="badge">15</span></button>
-            <button class="tab-item" data-filter="active" onclick="setFilter('active')">Active <span class="badge">9</span></button>
-            <button class="tab-item" data-filter="inactive" onclick="setFilter('expire')">Inactive <span class="badge">2</span></button>
-            <button class="tab-item" data-filter="pending" onclick="setFilter('pending')">Pending <span class="badge">1</span></button>
-            <button class="tab-item" data-filter="incomplete" onclick="setFilter('incomplete')">Incomplete <span class="badge">1</span></button>
-            <button class="tab-item" data-filter="suspended" onclick="setFilter('suspended')">Suspended <span class="badge">2</span></button>
-          </div>
-        </div>
 
         <div class="table-scroll-wrap">
           <table class="data-table">
           <thead>
             <tr>
-              <th onclick="toggleSort('member')" style="cursor:pointer; width: 26%;">NAME & COMPANY <span id="sort-icon-member" class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('location')" style="cursor:pointer; width: 14%;">LOCATION <span id="sort-icon-location" class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('email')" style="cursor:pointer; width: 22%;">EMAIL <span id="sort-icon-email" class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('mobile')" style="cursor:pointer; width: 14%;">MOBILE <span id="sort-icon-mobile" class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('plan')" style="cursor:pointer; width: 8%;">PLAN <span id="sort-icon-plan" class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('status')" style="cursor:pointer; width: 8%;">STATUS <span id="sort-icon-status" class="material-icons-round sort-icon">unfold_more</span></th>
-              <th onclick="toggleSort('date')" style="cursor:pointer; width: 8%;">JOIN DATE <span id="sort-icon-date" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('member')" style="cursor:pointer; width: 15%;">NAME & COMPANY <span id="sort-icon-member" class="material-icons-round sort-icon active">arrow_downward</span></th>
+              <th onclick="toggleSort('location')" style="cursor:pointer; width: 10%;">LOCATION <span id="sort-icon-location" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('email')" style="cursor:pointer; width: 20%;">EMAIL <span id="sort-icon-email" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('mobile')" style="cursor:pointer; width: 15%;">MOBILE <span id="sort-icon-mobile" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('plan')" style="cursor:pointer; width: 10%;">PLAN <span id="sort-icon-plan" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('status')" style="cursor:pointer; width: 10%;">STATUS <span id="sort-icon-status" class="material-icons-round sort-icon">unfold_more</span></th>
+              <th onclick="toggleSort('date')" style="cursor:pointer; width: 20%;">JOIN DATE <span id="sort-icon-date" class="material-icons-round sort-icon">unfold_more</span></th>
             </tr>
           </thead>
           <tbody id="members-tbody"></tbody>

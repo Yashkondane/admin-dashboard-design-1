@@ -246,11 +246,11 @@ function renderTable() {
     return `
     <tr style="animation-delay: ${i * 0.03}s">
       <td onclick="openProfile(${m.id})">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <img class="member-avatar" src="${m.photo}" alt="${m.member}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(m.member)}&background=eef3ff&color=4880ff'" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" alt="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #f1f5f9;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 800; color: var(--text); font-size: 0.85rem;">${m.member}</span>
-            <span style="font-size: 0.75rem; color: var(--text-soft); font-weight: 600; margin-top:2px;">${m.company}</span>
+            <span style="font-weight: 700; color: var(--text-mid); font-size: 0.8rem;">${m.member}</span>
+            <span style="font-size: 0.72rem; color: #000; font-weight: 800; margin-top:1px;">${m.company}</span>
           </div>
         </div>
       </td>
@@ -295,7 +295,7 @@ function renderPagination(total) {
   html += `<button class="page-btn" id="prev-page" style="width: 32px; height: 32px; border: none; background: transparent;" ${currentPage === 1 ? 'disabled style="opacity:0.4;cursor:default;"' : `onclick="goToPage(${currentPage - 1})"`}><span class="material-icons-round" style="color:var(--text-mid); font-size: 18px;">chevron_left</span></button>`;
 
   for (let i = 1; i <= tp; i++) {
-    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" style="width: 32px; height: 32px; font-size: 0.85rem; font-weight: 700; background: transparent; border: 1px solid ${i === currentPage ? 'var(--blue)' : 'transparent'}; border-radius: 50%; color: ${i === currentPage ? 'var(--blue)' : 'var(--text-mid)'};" onclick="goToPage(${i})">${i}</button>`;
+    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" style="width: 32px; height: 32px; font-size: 0.85rem; font-weight: 700; background: transparent; border: 1px solid ${i === currentPage ? 'var(--blue)' : 'transparent'}; border-radius: 8px; color: ${i === currentPage ? 'var(--blue)' : 'var(--text-mid)'};" onclick="goToPage(${i})">${i}</button>`;
   }
 
   html += `<button class="page-btn" id="next-page" style="width: 32px; height: 32px; border: none; background: transparent;" ${currentPage === tp ? 'disabled style="opacity:0.4;cursor:default;"' : `onclick="goToPage(${currentPage + 1})"`}><span class="material-icons-round" style="color:var(--text-mid); font-size: 18px;">chevron_right</span></button>`;
@@ -343,76 +343,65 @@ function openProfile(id, tab = 'company', pushState = true) {
       <span class="current">${m.company}</span>
     </div>
 
-    <div class="profile-header-card" style="padding: 16px 24px; margin-bottom: 16px;">
+    <div class="profile-header-card">
       <div class="profile-header-top">
-        <div class="profile-avatar-wrapper">
-          <img class="profile-header-avatar" src="${m.photo}" alt="${m.member}">
-        </div>
-        <div class="profile-header-info" style="display:flex; flex-direction:column; justify-content:center; flex:1;">
-          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-            <div style="display:flex; flex-direction:column;">
-              <div style="display:flex; align-items:center; gap:12px;">
-                <div class="profile-header-name" style="font-size: 1.5rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px;">${m.company}</div>
-                ${(() => {
-                  const stamps = m.stamps || [];
-                  if (!stamps.length) return '';
-                  const badgeConfig = {
-                    identity: { icon: 'badge', color: '#fff', bg: '#3b82f6' },
-                    email:    { icon: 'mark_email_read', color: '#fff', bg: '#16a34a' },
-                    docs:     { icon: 'verified_user', color: '#fff', bg: '#7c3aed' },
-                    account:  { icon: 'account_circle', color: '#fff', bg: '#d97706' }
-                  };
-                  const activeKeys = [...new Set(stamps.flatMap(s => s.badges || []))];
-                  return `
-                    <div style="display:flex; align-items:center; margin-left: 4px; margin-right: 4px;">
-                      ${activeKeys.map((k, idx) => {
-                        const cfg = badgeConfig[k];
-                        return cfg ? `
-                          <div title="${k} Verified" style="width:24px; height:24px; border-radius:50%; background:${cfg.bg}; color:${cfg.color}; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-left:${idx === 0 ? '0' : '-8px'}; z-index:${10 - idx};">
-                            <span class="material-icons-round" style="font-size:14px;">${cfg.icon}</span>
-                          </div>
-                        ` : '';
-                      }).join('')}
-                    </div>
-                  `;
-                })()}
-                  <div style="display:inline-flex; align-items:center; justify-content:center; padding:4px 12px; border-radius:6px; background:${m.status === 'active' ? '#dcfce7' : (['suspended'].includes(m.status) ? '#ffedd5' : (m.status === 'pending' ? '#dbeafe' : '#f1f5f9'))}; color:${m.status === 'active' ? '#16a34a' : (['suspended'].includes(m.status) ? '#ea580c' : (m.status === 'pending' ? '#3b82f6' : '#64748b'))}; font-size:0.8rem; font-weight:800;">
-                    ${capitalize(m.status)}
-                  </div>
-              </div>
-            </div>
-            <button class="btn-outline" style="border-color:#fecaca; color:#ef4444; padding:6px 12px; font-size:0.8rem; height: 32px; display:inline-flex; align-items:center; gap:6px;" onclick="showToast('Profile deleted', 'error'); closeProfile();">
-              <span class="material-icons-round" style="font-size:16px; color:#ef4444;">delete</span> Delete Profile
-            </button>
+        <div class="profile-header-left">
+          <div class="profile-avatar-wrapper">
+            <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.email}" class="profile-header-avatar" alt="${m.member}">
           </div>
-          <div class="profile-header-sub">${m.companyType} &middot; ${m.member}, ${m.role}</div>
+          <div class="profile-header-info">
+            <div class="profile-name-row">
+              <h2 class="profile-header-name">${m.member}, ${m.role}</h2>
+              <span class="material-icons-round verified-icon">verified</span>
+            </div>
+            <p class="profile-header-sub">
+              <span style="color: #000; font-weight: 800;">${m.company}</span>, ${m.companyType || 'Manufacturer'}
+            </p>
+          </div>
+        </div>
+        <div class="profile-header-right">
+          <div class="profile-plan-text">Plan: <span>${m.plan || 'Enterprise'}</span></div>
+          <div class="status-badge-new">
+            <span class="dot"></span>
+            ${m.status ? capitalize(m.status) : 'Suspended'}
+          </div>
         </div>
       </div>
-      <div class="profile-header-divider"></div>
-      <div class="profile-stats-row" style="margin-top: 12px; padding-top: 16px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; border-top: 1px solid #f1f5f9;">
-        <div class="stat-item" style="min-width: 0;">
-          <div class="stat-label">Plan</div>
-          <div class="stat-value" title="${m.plan || 'Starter'}" style="color:var(--blue);">${capitalize(m.plan || 'Starter')}</div>
-        </div>
-        <div class="stat-item" style="min-width: 0;">
+      <div class="profile-stats-row">
+        <div class="stat-item">
           <div class="stat-label">Join Date</div>
-          <div class="stat-value" title="${m.date}">${m.date}</div>
+          <div class="stat-value-row">
+            <span class="material-icons-round stat-icon">calendar_today</span>
+            <div class="stat-value" title="${m.date}">${m.date}</div>
+          </div>
         </div>
-        <div class="stat-item" style="min-width: 0;">
+        <div class="stat-item">
           <div class="stat-label">Join IP</div>
-          <div class="stat-value" title="${m.joinIp || '95.66.134.42'}">${m.joinIp || '95.66.134.42'}</div>
+          <div class="stat-value-row">
+            <span class="material-icons-round stat-icon">desktop_windows</span>
+            <div class="stat-value" title="${m.joinIp || '95.66.134.42'}">${m.joinIp || '95.66.134.42'}</div>
+          </div>
         </div>
-        <div class="stat-item" style="min-width: 0;">
+        <div class="stat-item">
           <div class="stat-label">Location</div>
-          <div class="stat-value" title="${m.location}">${m.location}</div>
+          <div class="stat-value-row">
+            <span class="material-icons-round stat-icon">location_on</span>
+            <div class="stat-value" title="${m.location}">${m.location}</div>
+          </div>
         </div>
-        <div class="stat-item" style="min-width: 0;">
+        <div class="stat-item">
           <div class="stat-label">Last Login</div>
-          <div class="stat-value" title="${m.lastLogin || '2 hours ago'}">${m.lastLogin || '2 hours ago'}</div>
+          <div class="stat-value-row">
+            <span class="material-icons-round stat-icon">schedule</span>
+            <div class="stat-value" title="${m.lastLogin || '2 hours ago'}">${m.lastLogin || '2 hours ago'}</div>
+          </div>
         </div>
-        <div class="stat-item" style="min-width: 0;">
+        <div class="stat-item">
           <div class="stat-label">Broadcasts</div>
-          <div class="stat-value" title="${m.broadcasts ? m.broadcasts.length : 2}">${m.broadcasts ? m.broadcasts.length : 2}</div>
+          <div class="stat-value-row">
+            <span class="material-icons-round stat-icon">sensors</span>
+            <div class="stat-value" title="${m.broadcasts ? m.broadcasts.length : 2}">${m.broadcasts ? m.broadcasts.length : 2}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -439,58 +428,80 @@ function switchTab(id, tab) {
 function renderProfileTab(m, tab) {
   if (tab === 'company') {
     return `
-      <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
+      <div class="content-card" style="padding: 0; border: none; box-shadow: none; background: transparent;">
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; padding-bottom: 8px;">
           <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon"><span class="material-icons-round">business</span></div>
-            <h3 class="profile-section-title" style="margin:0;">Company</h3>
+            <div class="profile-section-icon" style="background:#000; color:#fff; border:none; border-radius:12px;"><span class="material-icons-round">business</span></div>
+            <h3 class="profile-section-title" style="margin:0; font-weight:700; font-size:1.4rem;">Company Profile</h3>
           </div>
           <div style="display:flex; gap:12px;">
-            <button class="btn-primary" style="background:#4880FF; padding: 6px 16px; font-size: 0.9rem;" onclick="openEditModal('company', ${m.id}, 0)">
-              <span class="material-icons-round" style="font-size: 16px;">edit</span> Edit
+            <button class="btn-primary" onclick="openEditModal('company', ${m.id}, 0)">
+              <span class="material-icons-round">edit</span> Edit Profile
             </button>
           </div>
         </div>
 
-        <div class="company-bubble-card">
-
-          <div class="company-bubble-grid">
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Company Name</span>
-              <span class="company-bubble-value">${m.company}</span>
+        <div style="display:flex; flex-direction:column; margin-top: 24px;">
+          <!-- Row 1 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Company Name</span>
+              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.company}</span>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Business Type</span>
-              <span class="bubble-tag blue" style="width:fit-content">${m.companyType}</span>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Business Type</span>
+              <span style="font-size: 1rem; font-weight: 700; color: var(--blue);">${m.companyType}</span>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Website</span>
-              <span class="company-bubble-value">www.${m.company.toLowerCase().replace(/ /g, '')}.com</span>
+          </div>
+          
+          <!-- Row 2 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Website</span>
+              <span style="font-size: 1rem; font-weight: 700; color: var(--blue);">www.${m.company.toLowerCase().replace(/ /g, '')}.com</span>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Email ID</span>
-              <span class="company-bubble-value">${m.email}</span>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Email ID</span>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.email}</span>
+                <span class="material-icons-round" style="font-size:18px; color:#cbd5e1; cursor:pointer;">content_copy</span>
+              </div>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">GST No</span>
-              <span class="company-bubble-value">${m.gst || '29ABCDE1234F1Z5'}</span>
+          </div>
+          
+          <!-- Row 3 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">GST No</span>
+              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.gst || '29ABCDE1234F1Z5'}</span>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Phone No 1</span>
-              <span class="company-bubble-value">${m.mobile}</span>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Phone No 1</span>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.mobile}</span>
+                <span class="material-icons-round" style="font-size:18px; color:#cbd5e1; cursor:pointer;">content_copy</span>
+              </div>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Phone No 2</span>
-              <span class="company-bubble-value">${m.phone2 || '+91 —'}</span>
+          </div>
+          
+          <!-- Row 4 -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Phone No 2</span>
+              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.phone2 || '+91 —'}</span>
             </div>
-            <div class="company-bubble-field">
-              <span class="company-bubble-label">Member Since</span>
-              <span class="company-bubble-value">${m.date}</span>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Member Since</span>
+              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.date}</span>
             </div>
-            <div class="company-bubble-field company-bubble-field--full">
-              <span class="company-bubble-label">About Business</span>
-              <span class="company-bubble-value" style="line-height:1.7; color:var(--text-mid); font-weight:600">${m.about || 'No description available.'}</span>
-            </div>
+          </div>
+          
+          <!-- Row 5 -->
+          <div style="display:flex; flex-direction:column; gap:12px; padding: 24px 0;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">About Business</span>
+            <p style="font-size: 1rem; font-weight: 600; color: #475569; line-height: 1.7; margin: 0; max-width: 100%;">
+              ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
+            </p>
           </div>
         </div>
       </div>
@@ -501,16 +512,14 @@ function renderProfileTab(m, tab) {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
-            <div class="profile-section-icon"><span class="material-icons-round">group</span></div>
+          <div style="display:flex; gap:12px; align-items:center;">
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">people</span></div>
             <div>
               <h3 class="profile-section-title">Key Contacts</h3>
-              <p class="profile-section-desc">Manage decision makers and stakeholders for this company.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('contact', ${m.id})">
-            <span class="material-icons-round">add</span> Add Contact
+            <span class="material-icons-round">add</span> Add
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-top: 24px;">
@@ -571,15 +580,14 @@ function renderProfileTab(m, tab) {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="display:flex; gap:12px; align-items:center;">
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">location_city</span></div>
             <div>
               <h3 class="profile-section-title">Registered Addresses</h3>
-              <p class="profile-section-desc">Official headquarters and registered business addresses. Maximum 3 addresses.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('address', ${m.id})">
-            <span class="material-icons-round">add</span> Add Address
+            <span class="material-icons-round">add</span> Add
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
@@ -593,7 +601,7 @@ function renderProfileTab(m, tab) {
         fullAddress = a.detail; // fallback
       }
       return `
-            <div class="employee-card" style="position:relative; min-height: 160px;">
+            <div class="employee-card" style="position:relative; min-height: 200px; padding: 24px; border-radius: 16px; border: 1px solid var(--border); background: #fff;">
               <div style="position:absolute; top:16px; right:16px; z-index:10;">
                 <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)">
                   <span class="material-icons-round">more_vert</span>
@@ -603,23 +611,24 @@ function renderProfileTab(m, tab) {
                   <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
                 </div>
               </div>
-              <div class="employee-card-header" style="align-items:flex-start;">
-                <div style="width:40px; height:40px; border-radius:10px; background:#1e293b; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:12px;">
-                  <span class="material-icons-round" style="color:#fff; font-size:22px;">location_city</span>
+              
+              <div class="employee-card-header" style="align-items:center; margin-bottom: 24px;">
+                <div style="width:44px; height:44px; border-radius:12px; background:#000; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                  <span class="material-icons-round" style="color:#fff; font-size:24px;">location_city</span>
                 </div>
-                <div class="employee-info" style="padding-right: 24px;">
+                <div class="employee-info">
                   <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="employee-name" style="text-transform:uppercase; font-size:0.85rem;">${title}</div>
-                    ${isDefault ? '<span class="bubble-tag blue" style="font-size:0.65rem; padding: 2px 6px;">Default</span>' : ''}
+                    <div style="font-size:1.1rem; font-weight: 700; color: #000;">${title}</div>
+                    ${isDefault ? '<span class="bubble-tag blue" style="font-size:0.65rem; padding: 3px 8px; border-radius: 6px; font-weight:700;">Default</span>' : ''}
                   </div>
-                  <div style="font-weight:700; color:var(--text-soft); font-size:0.85rem; margin-top:2px;">${a.city || m.location}</div>
                 </div>
               </div>
-              <div class="employee-contact" style="margin-bottom:0; border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 12px;">
-                <div class="contact-row" style="align-items:flex-start;">
-                  <span class="material-icons-round" style="margin-top:2px;">place</span>
-                  <span style="line-height:1.6;">${fullAddress}</span>
-                </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="font-size:0.9rem; font-weight:700; color:#000;">Address Line 1: ${a.line1 || a.detail || ''}</div>
+                <div style="font-size:0.9rem; font-weight:700; color:#000;">Address Line 2: ${a.line2 || '-'}</div>
+                <div style="font-size:0.9rem; font-weight:700; color:#000;">City: ${a.city || ''}</div>
+                <div style="font-size:0.9rem; font-weight:700; color:#000;">Pincode: ${a.pincode || ''}</div>
               </div>
             </div>
             `;
@@ -631,15 +640,14 @@ function renderProfileTab(m, tab) {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="display:flex; gap:12px; align-items:center;">
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">payment</span></div>
             <div>
               <h3 class="profile-section-title">Current Plan Overview</h3>
-              <p class="profile-section-desc">Active subscription details and billing cycle information.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openEditModal('plan', ${m.id})">
-            <span class="material-icons-round">settings</span> Manage Plans
+            <span class="material-icons-round">settings</span> Edit
           </button>
         </div>
 
@@ -720,11 +728,10 @@ function renderProfileTab(m, tab) {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="display:flex; gap:12px; align-items:center;">
             <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">mail</span></div>
             <div>
               <h3 class="profile-section-title">Email &amp; Communication</h3>
-              <p class="profile-section-desc">Sending to <strong>${m.email || 'contact@example.com'}</strong>. All communications are logged.</p>
             </div>
           </div>
         </div>
@@ -861,7 +868,6 @@ function renderProfileTab(m, tab) {
             <div class="profile-section-icon" style="background:var(--blue-light); color:var(--blue);"><span class="material-icons-round">history</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0;">Broadcast History</h3>
-              <p style="font-size:0.8rem; color:var(--text-soft); margin:4px 0 0 0; font-weight:600;">Track and manage communication logs.</p>
             </div>
           </div>
           <div style="display:flex; align-items:center; gap:16px;">
@@ -869,8 +875,8 @@ function renderProfileTab(m, tab) {
               <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid);">Approval Required</span>
               <input type="checkbox" style="width: 18px; height: 18px; accent-color:var(--blue); cursor:pointer;">
             </div>
-            <button class="btn-primary" onclick="showToast('Initiating new broadcast...', 'success')" style="border-radius:10px; padding: 10px 18px;">
-              <span class="material-icons-round" style="font-size:18px;">add</span> New Broadcast
+            <button class="btn-primary" onclick="showToast('Initiating new broadcast...', 'success')">
+              <span class="material-icons-round">add</span> Add
             </button>
           </div>
         </div>
@@ -929,7 +935,6 @@ function renderProfileTab(m, tab) {
             <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">login</span></div>
             <div>
               <h3 class="profile-section-title">Login History</h3>
-              <p class="profile-section-desc">A log of all device logins for this account.</p>
             </div>
           </div>
         </div>
@@ -1021,8 +1026,8 @@ function renderProfileTab(m, tab) {
         </div>
 
         <div class="content-card" style="margin-bottom:0; padding:12px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--blue); background:var(--blue-light); width:180px; border-radius:12px;">
-           <button class="btn-primary" onclick="openStampModal(${m.id})" style="width:100%; height:100%; padding: 0; font-size: 0.9rem; background:var(--blue); font-weight:900; box-shadow:0 4px 12px rgba(59,130,246,0.25); display:flex; align-items:center; justify-content:center; gap:6px;">
-            <span class="material-icons-round" style="font-size:18px;">add_circle</span> Add Stamp
+           <button class="btn-primary" onclick="openStampModal(${m.id})">
+            <span class="material-icons-round">add</span> Add
           </button>
         </div>
       </div>
@@ -1036,7 +1041,6 @@ function renderProfileTab(m, tab) {
             <div class="profile-section-icon" style="background:#f1f5f9; color:var(--text-mid);"><span class="material-icons-round">history</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0;">Verification History</h3>
-              <p style="font-size:0.8rem; color:var(--text-soft); margin:4px 0 0 0; font-weight:600;">Audit log of all stamps applied to this account.</p>
             </div>
           </div>
         </div>
@@ -1221,9 +1225,9 @@ function openEditModal(type, memberId, index) {
 
         </div>
       </div>
-      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
-        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveContact(${memberId}, ${index})">Save</button>
+      <div class="modal-footer">
+        <button class="btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveContact(${memberId}, ${index})">Save</button>
       </div>
     `;
   
@@ -1244,7 +1248,6 @@ function openEditModal(type, memberId, index) {
           </div>
           <div>
             <h3 style="margin:0; font-size:1.1rem; font-weight:900; color:var(--text);">Manage Member Plan</h3>
-            <p style="margin:2px 0 0; font-size:0.8rem; color:var(--text-soft); font-weight:600;">Update subscription and permissions for <strong>${m.member}</strong>.</p>
           </div>
         </div>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
@@ -1325,10 +1328,10 @@ function openEditModal(type, memberId, index) {
         </div>
       </div>
 
-      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
-        <button class="btn-outline" style="background:#fff; border-color:#d1d5db; color:var(--text-mid); border-radius:8px;" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" style="background:var(--blue); border-radius:8px; padding:12px 28px; font-weight:800; box-shadow:0 4px 12px rgba(72,128,255,0.25);" onclick="showToast('Plan Assigned Successfully!', 'success'); closeModal();">
-          <span class="material-icons-round" style="font-size:18px;">check_circle</span> Assign Plan
+      <div class="modal-footer">
+        <button class="btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="showToast('Plan Assigned Successfully!', 'success'); closeModal();">
+          <span class="material-icons-round">check_circle</span> Assign Plan
         </button>
       </div>
     `;
@@ -1336,68 +1339,48 @@ function openEditModal(type, memberId, index) {
     const a = m.addresses[index];
     const title = a.title || a.type || 'Company Address';
     const isDefault = a.isDefault || false;
-    content.className = 'modal-content modal-wide';
+    content.className = 'modal-content';
+    content.style.maxWidth = '580px';
     html = `
       <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-            <span class="material-icons-round">location_city</span>
-          </div>
-          <h3>Update Location</h3>
-        </div>
+        <h3>Update Location</h3>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body" style="padding: 32px;">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
-          
-          <!-- Column 1 -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Title</label>
-              <select class="modal-input" id="edit-addr-title" style="background:#f8fafc;">
-                <option value="" disabled ${!['Company Address', 'Work', 'Factory', 'Warehouse'].includes(title) ? 'selected' : ''}>Choose any Address Title</option>
-                <option value="Company Address" ${title === 'Company Address' ? 'selected' : ''}>Company Address</option>
-                <option value="Work" ${title === 'Work' ? 'selected' : ''}>Work</option>
-                <option value="Factory" ${title === 'Factory' ? 'selected' : ''}>Factory</option>
-                <option value="Warehouse" ${title === 'Warehouse' ? 'selected' : ''}>Warehouse</option>
-              </select>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 1</label>
-              <input class="modal-input" type="text" value="${a.line1 || a.detail || ''}" id="edit-addr-line1" placeholder="Building, Street" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 2</label>
-              <input class="modal-input" type="text" value="${a.line2 || ''}" id="edit-addr-line2" placeholder="Enter Address Line" style="background:#f8fafc;">
-            </div>
-          </div>
-
-          <!-- Column 2 -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Pincode</label>
-              <input class="modal-input" type="text" value="${a.pincode || ''}" id="edit-addr-pincode" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">City</label>
-              <input class="modal-input" type="text" value="${a.city || m.location}" id="edit-addr-city" placeholder="e.g. Ahmedabad Gujarat" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; align-items:center; gap:12px; margin-top:28px; padding:16px; background:#f8fafc; border-radius:12px; border:1px solid var(--border);">
-              <input type="checkbox" id="edit-addr-default" ${isDefault ? 'checked' : ''} style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
-              <label for="edit-addr-default" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Set as default address</label>
-            </div>
-          </div>
-
+      <div class="modal-body" style="padding: 40px 32px;">
+        <div class="modal-form-row">
+          <label>Address Title</label>
+          <select class="modal-input" id="edit-addr-title">
+            <option value="Company Address" ${title === 'Company Address' ? 'selected' : ''}>Company Address</option>
+            <option value="Work" ${title === 'Work' ? 'selected' : ''}>Work</option>
+            <option value="Factory" ${title === 'Factory' ? 'selected' : ''}>Factory</option>
+            <option value="Warehouse" ${title === 'Warehouse' ? 'selected' : ''}>Warehouse</option>
+          </select>
+        </div>
+        <div class="modal-form-row">
+          <label>Address Line 1</label>
+          <input class="modal-input" type="text" value="${a.line1 || a.detail || ''}" id="edit-addr-line1" placeholder="Building, Street">
+        </div>
+        <div class="modal-form-row">
+          <label>Address Line 2</label>
+          <input class="modal-input" type="text" value="${a.line2 || ''}" id="edit-addr-line2" placeholder="Enter Address Line">
+        </div>
+        <div class="modal-form-row">
+          <label>City</label>
+          <input class="modal-input" type="text" value="${a.city || m.location}" id="edit-addr-city" placeholder="Ahmedabad Gujarat">
+        </div>
+        <div class="modal-form-row">
+          <label>Pincode</label>
+          <input class="modal-input" type="text" value="${a.pincode || ''}" id="edit-addr-pincode" placeholder="125558">
+        </div>
+        <div class="modal-form-row" style="margin-top: 24px;">
+          <label>Set as default</label>
+          <input type="checkbox" id="edit-addr-default" ${isDefault ? 'checked' : ''}>
         </div>
       </div>
-      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
-        <button class="btn-outline" style="color:var(--red); border-color:var(--red-bg); background:#fff;" onclick="m.addresses.splice(${index}, 1); closeModal(); showToast('Address removed', 'error'); switchTab(${memberId}, 'addresses');">Delete</button>
-        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveAddress(${memberId}, ${index})">Save</button>
+      <div class="modal-footer">
+        <button class="btn-outline" style="background:#f1f5f9; border:none; color:var(--text-mid);" onclick="m.addresses.splice(${index}, 1); closeModal(); showToast('Address removed', 'error'); switchTab(${memberId}, 'addresses');">Delete</button>
+        <button class="btn-outline" style="background:#f1f5f9; border:none; color:var(--text-mid);" onclick="closeModal()">Close</button>
+        <button class="btn-primary" style="padding: 10px 32px;" onclick="saveAddress(${memberId}, ${index})">Save</button>
       </div>
     `;
   } else if (type === 'company') {
@@ -1478,9 +1461,9 @@ function openEditModal(type, memberId, index) {
 
         </div>
       </div>
-      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
+      <div class="modal-footer">
         <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveCompany(${memberId})">Save</button>
+        <button class="btn-primary" onclick="saveCompany(${memberId})">Save</button>
       </div>
     `;
   }
@@ -1593,73 +1576,54 @@ function openAddModal(type, memberId) {
 
         </div>
       </div>
-      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
-        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveNewContact(${memberId})">Save</button>
+      <div class="modal-footer">
+        <button class="btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveNewContact(${memberId})">Save</button>
       </div>
     `;
   } else if (type === 'address') {
-    content.className = 'modal-content modal-wide';
+    content.className = 'modal-content';
+    content.style.maxWidth = '580px';
     html = `
       <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-            <span class="material-icons-round">location_city</span>
-          </div>
-          <h3>Add New Location</h3>
-        </div>
+        <h3>Add New Location</h3>
         <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
       </div>
-      <div class="modal-body" style="padding: 32px;">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
-          
-          <!-- Column 1 -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Title</label>
-              <select class="modal-input" id="add-addr-title" style="background:#f8fafc;">
-                <option value="" disabled selected>Choose any Address Title</option>
-                <option value="Company Address">Company Address</option>
-                <option value="Work">Work</option>
-                <option value="Factory">Factory</option>
-                <option value="Warehouse">Warehouse</option>
-              </select>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 1</label>
-              <input class="modal-input" type="text" id="add-addr-line1" placeholder="Building, Street" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Address Line 2</label>
-              <input class="modal-input" type="text" id="add-addr-line2" placeholder="Enter Address Line" style="background:#f8fafc;">
-            </div>
-          </div>
-
-          <!-- Column 2 -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Pincode</label>
-              <input class="modal-input" type="text" id="add-addr-pincode" placeholder="Enter Pincode" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">City</label>
-              <input class="modal-input" type="text" id="add-addr-city" placeholder="e.g. Ahmedabad Gujarat" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; align-items:center; gap:12px; margin-top:28px; padding:16px; background:#f8fafc; border-radius:12px; border:1px solid var(--border);">
-              <input type="checkbox" id="add-addr-default" style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
-              <label for="add-addr-default" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Set as default address</label>
-            </div>
-          </div>
-
+      <div class="modal-body" style="padding: 40px 32px;">
+        <div class="modal-form-row">
+          <label>Address Title</label>
+          <select class="modal-input" id="add-addr-title">
+            <option value="" disabled selected>Choose Address Title</option>
+            <option value="Company Address">Company Address</option>
+            <option value="Work">Work</option>
+            <option value="Factory">Factory</option>
+            <option value="Warehouse">Warehouse</option>
+          </select>
+        </div>
+        <div class="modal-form-row">
+          <label>Address Line 1</label>
+          <input class="modal-input" type="text" id="add-addr-line1" placeholder="Building, Street">
+        </div>
+        <div class="modal-form-row">
+          <label>Address Line 2</label>
+          <input class="modal-input" type="text" id="add-addr-line2" placeholder="Enter Address Line">
+        </div>
+        <div class="modal-form-row">
+          <label>City</label>
+          <input class="modal-input" type="text" id="add-addr-city" placeholder="Ahmedabad Gujarat">
+        </div>
+        <div class="modal-form-row">
+          <label>Pincode</label>
+          <input class="modal-input" type="text" id="add-addr-pincode" placeholder="125558">
+        </div>
+        <div class="modal-form-row" style="margin-top: 24px;">
+          <label>Set as default</label>
+          <input type="checkbox" id="add-addr-default">
         </div>
       </div>
-      <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
-        <button class="btn-outline" style="background:#fff;" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" style="background:#4880FF; border-radius:8px; padding: 12px 24px;" onclick="saveNewAddress(${memberId})">Save</button>
+      <div class="modal-footer">
+        <button class="btn-outline" style="background:#f1f5f9; border:none; color:var(--text-mid);" onclick="closeModal()">Close</button>
+        <button class="btn-primary" style="padding: 10px 32px;" onclick="saveNewAddress(${memberId})">Save</button>
       </div>
     `;
   }
@@ -1840,7 +1804,6 @@ function openStampModal(memberId) {
       <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
     <div class="modal-body" style="padding:32px; background:#fff;">
-      <p style="margin:0 0 24px 0; color:var(--text-soft); font-weight:600; font-size:0.9rem;">Add a verification stamp that will be visible to other users on the user profile.</p>
       
       <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
         <!-- Left Column: Date & Badges -->
@@ -1869,7 +1832,6 @@ function openStampModal(memberId) {
                 </label>
               `).join('')}
             </div>
-            <p style="margin:12px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Please select minimum 3 and maximum 4 badges.</p>
           </div>
         </div>
 
@@ -1881,15 +1843,14 @@ function openStampModal(memberId) {
               <span class="material-icons-round" style="position:absolute; left:14px; top:14px; color:var(--text-soft); font-size:20px;">chat_bubble_outline</span>
               <textarea id="stamp-remark" class="modal-input" style="width:100%; height:100%; min-height:200px; padding:12px 16px 12px 44px; background:#f8fafc; resize:none;" placeholder="Enter remark (optional)"></textarea>
             </div>
-            <p style="margin:8px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Add any additional notes or remarks (optional).</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal-footer" style="padding:20px 24px; background:#f8fafc; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:12px;">
-      <button class="btn-outline" style="background:#fff; font-weight:800; padding:10px 24px;" onclick="closeModal()">Close</button>
-      <button class="btn-primary" style="background:var(--blue); font-weight:900; padding:10px 24px; display:flex; align-items:center; gap:8px;" onclick="saveStamp(${m.id})">
-        <span class="material-icons-round" style="font-size:18px;">save</span> Save Stamp
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Close</button>
+      <button class="btn-primary" onclick="saveStamp(${m.id})">
+        <span class="material-icons-round">save</span> Save Stamp
       </button>
     </div>
   `;
@@ -2004,7 +1965,6 @@ function openStampModal(memberId) {
       <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
     <div class="modal-body" style="padding:32px; background:#fff;">
-      <p style="margin:0 0 24px 0; color:var(--text-soft); font-weight:600; font-size:0.9rem;">Add a verification stamp that will be visible to other users on the user profile.</p>
       
       <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
         <!-- Left Column: Date & Badges -->
@@ -2033,7 +1993,6 @@ function openStampModal(memberId) {
                 </label>
               `).join('')}
             </div>
-            <p style="margin:12px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Please select minimum 3 and maximum 4 badges.</p>
           </div>
         </div>
 
@@ -2045,15 +2004,14 @@ function openStampModal(memberId) {
               <span class="material-icons-round" style="position:absolute; left:14px; top:14px; color:var(--text-soft); font-size:20px;">chat_bubble_outline</span>
               <textarea id="stamp-remark" class="modal-input" style="width:100%; height:100%; min-height:200px; padding:12px 16px 12px 44px; background:#f8fafc; resize:none;" placeholder="Enter remark (optional)"></textarea>
             </div>
-            <p style="margin:8px 0 0; font-size:0.75rem; color:var(--text-soft); font-weight:600;">Add any additional notes or remarks (optional).</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal-footer" style="padding:20px 24px; background:#f8fafc; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:12px;">
-      <button class="btn-outline" style="background:#fff; font-weight:800; padding:10px 24px;" onclick="closeModal()">Close</button>
-      <button class="btn-primary" style="background:var(--blue); font-weight:900; padding:10px 24px; display:flex; align-items:center; gap:8px;" onclick="saveStamp(${m.id})">
-        <span class="material-icons-round" style="font-size:18px;">save</span> Save Stamp
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Close</button>
+      <button class="btn-primary" onclick="saveStamp(${m.id})">
+        <span class="material-icons-round">save</span> Save Stamp
       </button>
     </div>
   `;
