@@ -428,78 +428,70 @@ function switchTab(id, tab) {
 function renderProfileTab(m, tab) {
   if (tab === 'company') {
     return `
-      <div class="content-card" style="padding: 24px 28px; border-radius: 20px; background: #fff; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center; padding-bottom: 8px;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon" style="background:#f8fafc; color:#000; border:1px solid #e2e8f0; border-radius:12px;"><span class="material-icons-round">business</span></div>
-            <h3 class="profile-section-title" style="margin:0; font-weight:900; font-size:1.4rem;">Company Profile</h3>
+      <div class="content-card" style="padding: 28px; border-radius: 20px; background: #fff; border: 1px solid #f1f5f9; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; padding-bottom: 24px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="background:#f8fafc; color:#1e293b; border:1px solid #e2e8f0; border-radius:12px; width:44px; height:44px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
+            <h3 class="profile-section-title" style="margin:0; font-weight:800; font-size:1.35rem; color:#1e293b;">Company</h3>
           </div>
-          <div style="display:flex; gap:12px;">
-            <button class="btn-primary" onclick="openEditModal('company', ${m.id}, 0)">
-              <span class="material-icons-round">edit</span> Edit Profile
-            </button>
-          </div>
+          <button class="btn-primary" onclick="openEditModal('company', ${m.id}, 0)" style="padding: 8px 24px; border-radius: 12px; display:flex; align-items:center; gap:8px;">
+            <span class="material-icons-round" style="font-size:18px;">edit</span> Edit
+          </button>
         </div>
 
-        <div style="display:flex; flex-direction:column; margin-top: 24px;">
-          <!-- Row 1 -->
-          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Company Name</span>
-              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.company}</span>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Business Type</span>
-              <span style="font-size: 1.1rem; font-weight: 900; color: var(--blue);">${m.companyType}</span>
-            </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <!-- Field Box: Company Name -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Company Name</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.company}</div>
           </div>
           
-          <!-- Row 2 -->
-          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Website</span>
-              <span style="font-size: 1.1rem; font-weight: 900; color: var(--blue);">www.${m.company.toLowerCase().replace(/ /g, '')}.com</span>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Email ID</span>
-              <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.email}</span>
-                <span class="material-icons-round" style="font-size:18px; color:#cbd5e1; cursor:pointer;">content_copy</span>
-              </div>
-            </div>
+          <!-- Field Box: Business Type -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Business Type</div>
+            <div style="display:inline-block; padding: 4px 12px; border-radius: 8px; background: #eff6ff; color: #3b82f6; font-size: 0.85rem; font-weight: 700;">${m.companyType}</div>
           </div>
-          
-          <!-- Row 3 -->
-          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">GST No</span>
-              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.gst || '29ABCDE1234F1Z5'}</span>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Phone No 1</span>
-              <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.mobile}</span>
-                <span class="material-icons-round" style="font-size:18px; color:#cbd5e1; cursor:pointer;">content_copy</span>
-              </div>
-            </div>
+
+          <!-- Field Box: Website -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Website</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">www.${m.company.toLowerCase().replace(/ /g, '')}.com</div>
           </div>
-          
-          <!-- Row 4 -->
-          <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Phone No 2</span>
-              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.phone2 || '+91 —'}</span>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Member Since</span>
-              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.date}</span>
-            </div>
+
+          <!-- Field Box: Email ID -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Email ID</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.email}</div>
           </div>
-          
-          <!-- Row 5 -->
-          <div style="display:flex; flex-direction:column; gap:12px; padding: 24px 0;">
-            <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">About Business</span>
-            <p style="font-size: 1rem; font-weight: 700; color: #475569; line-height: 1.7; margin: 0; max-width: 100%;">
+
+          <!-- Field Box: GST No -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">GST No</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.gst || '29ABCDE1234F1Z5'}</div>
+          </div>
+
+          <!-- Field Box: Phone No 1 -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Phone No 1</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.mobile}</div>
+          </div>
+
+          <!-- Field Box: Phone No 2 -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Phone No 2</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.phone2 || '+91 —'}</div>
+          </div>
+
+          <!-- Field Box: Member Since -->
+          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Member Since</div>
+            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.date}</div>
+          </div>
+
+          <!-- Field Box: About Business (Full Width) -->
+          <div style="grid-column: span 2; padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">About Business</div>
+            <p style="font-size: 1rem; font-weight: 600; color: #475569; line-height: 1.6; margin: 0;">
               ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
             </p>
           </div>
@@ -590,7 +582,7 @@ function renderProfileTab(m, tab) {
             <span class="material-icons-round">add</span> Add
           </button>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
           ${addresses.map((a, ai) => {
       const title = a.title || a.type || 'Address';
       const isDefault = a.isDefault || false;
@@ -601,34 +593,45 @@ function renderProfileTab(m, tab) {
         fullAddress = a.detail; // fallback
       }
       return `
-            <div class="employee-card" style="position:relative; min-height: 200px; padding: 24px; border-radius: 16px; border: 1px solid var(--border); background: #fff;">
-              <div style="position:absolute; top:16px; right:16px; z-index:10;">
-                <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)">
-                  <span class="material-icons-round">more_vert</span>
-                </button>
-                <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}" style="right:0;top:100%;margin-top:4px">
-                  <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-                  <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
+            <div class="employee-card address-card-item" style="position:relative; padding: 28px; border-radius: 20px; border: 1px solid #f1f5f9; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 20px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:16px;">
+                  <div style="width:48px; height:48px; border-radius:14px; background:#f8fafc; display:flex; align-items:center; justify-content:center; border: 1px solid #e2e8f0; color:#1e293b;">
+                    <span class="material-icons-round" style="font-size:24px;">location_on</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; gap:2px;">
+                    <div style="font-size:1.15rem; font-weight: 800; color: #1e293b;">${title}</div>
+                    ${isDefault ? '<span style="font-size:0.65rem; padding: 2px 10px; border-radius: 20px; font-weight:700; background:#1e293b; color:#fff; width:fit-content; margin-top:4px;">Default Address</span>' : ''}
+                  </div>
                 </div>
-              </div>
-              
-              <div class="employee-card-header" style="align-items:center; margin-bottom: 24px;">
-                <div style="width:44px; height:44px; border-radius:12px; background:#f8fafc; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:16px; border:1px solid #e2e8f0;">
-                  <span class="material-icons-round" style="color:#000; font-size:24px;">location_city</span>
-                </div>
-                <div class="employee-info">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="font-size:1.1rem; font-weight: 900; color: #000;">${title}</div>
-                    ${isDefault ? '<span class="bubble-tag blue" style="font-size:0.65rem; padding: 3px 8px; border-radius: 6px; font-weight:800;">Default</span>' : ''}
+                <div style="position:relative;">
+                  <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
+                    <span class="material-icons-round">more_horiz</span>
+                  </button>
+                  <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}" style="right:0;top:100%;margin-top:8px">
+                    <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
+                    <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
                   </div>
                 </div>
               </div>
               
-              <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="font-size:0.88rem; font-weight:800; color:#000;">Address Line 1: ${a.line1 || a.detail || ''}</div>
-                <div style="font-size:0.88rem; font-weight:800; color:#000;">Address Line 2: ${a.line2 || '-'}</div>
-                <div style="font-size:0.88rem; font-weight:800; color:#000;">City: ${a.city || ''}</div>
-                <div style="font-size:0.88rem; font-weight:800; color:#000;">Pincode: ${a.pincode || ''}</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="grid-column: span 2; padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Address Line 1</div>
+                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.line1 || a.detail || ''}</div>
+                </div>
+                <div style="grid-column: span 2; padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Address Line 2</div>
+                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.line2 || '-'}</div>
+                </div>
+                <div style="padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">City</div>
+                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.city || ''}</div>
+                </div>
+                <div style="padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
+                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Pincode</div>
+                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.pincode || ''}</div>
+                </div>
               </div>
             </div>
             `;
