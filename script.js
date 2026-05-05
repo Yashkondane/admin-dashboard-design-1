@@ -320,9 +320,17 @@ function goToPage(page) {
 }
 
 
-function openProfile(id, tab = 'company') {
+function openProfile(id, tab = 'company', pushState = true) {
   const m = members.find(x => x.id === id);
   if (!m) return;
+
+  if (pushState) {
+    const url = new URL(window.location);
+    url.searchParams.set('p', id);
+    url.searchParams.set('t', tab);
+    window.history.pushState({}, '', url);
+  }
+
   directoryView.classList.add('hidden');
   profileView.classList.remove('hidden');
   document.querySelector('.top-bar-search').style.display = 'none';
@@ -1088,11 +1096,18 @@ function renderProfileTab(m, tab) {
 }
 
 
-function closeProfile() {
+function closeProfile(pushState = true) {
   profileView.classList.add('hidden');
   profileView.innerHTML = '';
   directoryView.classList.remove('hidden');
   document.querySelector('.top-bar-search').style.display = '';
+  
+  if (pushState) {
+    const url = new URL(window.location);
+    url.searchParams.delete('p');
+    url.searchParams.delete('t');
+    window.history.pushState({}, '', url);
+  }
 }
 
 // ===== MODAL EDIT SYSTEM =====
@@ -2138,6 +2153,22 @@ function initApp() {
       currentPage = 1;
       renderTable();
     });
+  }
+
+  // Handle URL on load
+  handleNavigation();
+  window.addEventListener('popstate', handleNavigation);
+}
+
+function handleNavigation() {
+  const params = new URLSearchParams(window.location.search);
+  const profileId = params.get('p');
+  const tab = params.get('t') || 'company';
+
+  if (profileId !== null) {
+    openProfile(parseInt(profileId), tab, false);
+  } else {
+    closeProfile(false);
   }
 }
 
