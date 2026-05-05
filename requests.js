@@ -18,7 +18,7 @@ function renderTable(data = requests) {
   
   tbody.innerHTML = data.map(req => `
     <tr>
-      <td style="padding-left: 24px; font-family: monospace; font-weight: 700; color: var(--text-mid); font-size: 0.9rem;">
+      <td style="padding-left: 24px; font-weight: 700; color: var(--text-mid); font-size: 0.9rem;">
         ${req.id}
       </td>
       <td>

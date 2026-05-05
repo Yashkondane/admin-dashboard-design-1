@@ -9,7 +9,8 @@ const members = [
     ],
     addresses: [
       { title: 'Company Address', line1: 'Plot 42, MIDC', line2: 'Nagpur, Maharashtra', pincode: '440016', city: 'Nagpur', isDefault: true },
-      { title: 'Branch Office', line1: '12th Floor, Trade Center', line2: 'Mumbai', pincode: '400051', city: 'Mumbai', isDefault: false }
+      { title: 'Branch Office', line1: '12th Floor, Trade Center', line2: 'Mumbai', pincode: '400051', city: 'Mumbai', isDefault: false },
+      { title: 'Regional Office', line1: 'Sector 5, Hinjewadi', line2: 'Phase 1', pincode: '411057', city: 'Pune', isDefault: false }
     ],
     stamps: [
       { date: '12 Apr 2026', badges: ['identity', 'email', 'docs', 'account'], remark: 'Verified via onsite visit and document audit.', admin: 'Admin User' },
@@ -244,7 +245,7 @@ function renderTable() {
     else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#f1f5f9'; statusColor = '#94a3b8'; statusText = 'Inactive'; }
 
     return `
-    <tr style="animation-delay: ${i * 0.03}s">
+    <tr>
       <td onclick="openProfile(${m.id})">
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" alt="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #f1f5f9;">
@@ -273,7 +274,7 @@ function renderTable() {
         <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
       </td>
       <td onclick="openProfile(${m.id})">
-        <div style="display:inline-flex; align-items:center; justify-content:center; padding:4px 10px; border-radius:6px; background:${statusBg}; color:${statusColor}; font-size:0.75rem; font-weight:700;">
+        <div class="status-badge ${m.status.toLowerCase()}" style="min-width: 90px; padding: 4px 10px; font-size: 0.75rem;">
           ${capitalize(statusText)}
         </div>
       </td>
@@ -337,10 +338,10 @@ function openProfile(id, tab = 'company', pushState = true) {
   document.querySelector('.top-bar').style.marginBottom = '8px';
 
   profileView.innerHTML = `
-    <div class="breadcrumbs">
-      <a href="#" onclick="closeProfile()">Directory</a>
-      <span class="material-icons-round" style="font-size:16px; margin:0 4px">chevron_right</span>
-      <span class="current">${m.company}</span>
+    <div class="breadcrumbs" style="margin-bottom: 24px;">
+      <span style="color:var(--blue); font-weight:700;">Directory</span>
+      <span class="material-icons-round" style="font-size:16px; color:#cbd5e1;">chevron_right</span>
+      <span style="color:var(--text-soft); font-weight:700;">${m.company}</span>
     </div>
 
     <div class="profile-header-card">
@@ -352,17 +353,17 @@ function openProfile(id, tab = 'company', pushState = true) {
           <div class="profile-header-info">
             <div class="profile-name-row">
               <h2 class="profile-header-name">${m.member}, ${m.role}</h2>
-              <span class="material-icons-round verified-icon">verified</span>
+              <span class="material-icons-round" style="color:var(--blue); font-size:20px; margin-left:4px;">verified</span>
             </div>
             <p class="profile-header-sub">
-              <span style="color: #000; font-weight: 800;">${m.company}</span>, ${m.companyType || 'Manufacturer'}
+              <span style="color: #1e293b; font-weight: 800;">${m.company}</span>, ${m.companyType || 'Manufacturer'}
             </p>
           </div>
         </div>
         <div class="profile-header-right">
-          <div class="profile-plan-text">Plan: <span>${m.plan || 'Enterprise'}</span></div>
-          <div class="status-badge-new">
-            <span class="dot"></span>
+          <div class="profile-plan-text" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; text-transform: lowercase;">Plan: <span style="color:var(--blue); font-weight:800;">${m.plan || 'enterprise'}</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; color: var(--orange); text-transform: capitalize;">
+            <span style="width:6px; height:6px; border-radius:50%; background:var(--orange);"></span>
             ${m.status ? capitalize(m.status) : 'Suspended'}
           </div>
         </div>
@@ -428,69 +429,72 @@ function switchTab(id, tab) {
 function renderProfileTab(m, tab) {
   if (tab === 'company') {
     return `
-      <div class="content-card" style="padding: 28px; border-radius: 20px; background: #fff; border: 1px solid #f1f5f9; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center; padding-bottom: 24px;">
+      <div class="content-card">
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
           <div style="display:flex; gap:16px; align-items:center;">
-            <div class="profile-section-icon" style="background:#f8fafc; color:#1e293b; border:1px solid #e2e8f0; border-radius:12px; width:44px; height:44px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
-            <h3 class="profile-section-title" style="margin:0; font-weight:800; font-size:1.35rem; color:#1e293b;">Company</h3>
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Company Details</h3>
+              <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight:600;">Primary business profile and administrative information.</p>
+            </div>
           </div>
-          <button class="btn-primary" onclick="openEditModal('company', ${m.id}, 0)" style="padding: 8px 24px; border-radius: 12px; display:flex; align-items:center; gap:8px;">
-            <span class="material-icons-round" style="font-size:18px;">edit</span> Edit
+          <button class="btn-primary" onclick="openEditModal('company', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
+            <span class="material-icons-round">edit</span> Edit Details
           </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
           <!-- Field Box: Company Name -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Company Name</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Company Name</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.company}</div>
           </div>
           
           <!-- Field Box: Business Type -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Business Type</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Business Type</div>
             <div style="display:inline-block; padding: 4px 12px; border-radius: 8px; background: #eff6ff; color: #3b82f6; font-size: 0.85rem; font-weight: 700;">${m.companyType}</div>
           </div>
 
           <!-- Field Box: Website -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Website</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Website</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">www.${m.company.toLowerCase().replace(/ /g, '')}.com</div>
           </div>
 
           <!-- Field Box: Email ID -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Email ID</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Email ID</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.email}</div>
           </div>
 
           <!-- Field Box: GST No -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">GST No</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">GST No</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.gst || '29ABCDE1234F1Z5'}</div>
           </div>
 
           <!-- Field Box: Phone No 1 -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Phone No 1</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Phone No 1</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.mobile}</div>
           </div>
 
           <!-- Field Box: Phone No 2 -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Phone No 2</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Phone No 2</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.phone2 || '+91 —'}</div>
           </div>
 
           <!-- Field Box: Member Since -->
-          <div style="padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Member Since</div>
+          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Member Since</div>
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.date}</div>
           </div>
 
           <!-- Field Box: About Business (Full Width) -->
-          <div style="grid-column: span 2; padding: 16px 20px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">About Business</div>
+          <div style="grid-column: span 2; padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">About Business</div>
             <p style="font-size: 1rem; font-weight: 600; color: #475569; line-height: 1.6; margin: 0;">
               ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
             </p>
@@ -503,22 +507,23 @@ function renderProfileTab(m, tab) {
     const contacts = m.contacts || [];
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">people</span></div>
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">people</span></div>
             <div>
-              <h3 class="profile-section-title">Key Contacts</h3>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Key Contacts</h3>
+              <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight:600;">Manage primary and secondary company stakeholders.</p>
             </div>
           </div>
-          <button class="btn-primary" onclick="openAddModal('contact', ${m.id})">
-            <span class="material-icons-round">add</span> Add
+          <button class="btn-primary" onclick="openAddModal('contact', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
+            <span class="material-icons-round">add</span> Add Contact
           </button>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-top: 24px;">
           ${contacts.map((c, ci) => {
       const status = c.status || 'Active';
       return `
-              <div class="employee-card" style="position:relative; display:flex; flex-direction:column; gap:16px; padding:20px;">
+              <div class="employee-card" style="height: 100%; gap: 16px;">
                 <div style="position:absolute; top:16px; right:12px; z-index:10;">
                   <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}', this)">
                     <span class="material-icons-round">more_vert</span>
@@ -530,7 +535,7 @@ function renderProfileTab(m, tab) {
                 </div>
 
                 <div style="display:flex; gap:16px; align-items:center;">
-                  <img src="https://randomuser.me/api/portraits/${ci % 2 === 0 ? 'men' : 'women'}/${ci + 20}.jpg" class="employee-avatar" style="width:52px; height:52px; border-radius:14px; object-fit:cover; border:2px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                  <img src="https://randomuser.me/api/portraits/${ci % 2 === 0 ? 'men' : 'women'}/${ci + 20}.jpg" class="employee-avatar" style="width:52px; height:52px; border-radius:6px; object-fit:cover; border:2px solid #fff; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
                   <div>
                     <div style="font-weight:800; color:var(--text); font-size:1.05rem; letter-spacing:-0.2px;">${c.name}</div>
                     <div style="font-weight:700; color:var(--text-soft); font-size:0.8rem;">${c.role}</div>
@@ -544,23 +549,25 @@ function renderProfileTab(m, tab) {
                   ${c.isMain ? '<span class="bubble-tag blue" style="font-size:0.7rem; padding:4px 12px; font-weight:800; letter-spacing:0.3px;">MAIN CONTACT</span>' : ''}
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:14px; background:#f8fafc; border-radius:12px; border:1px solid #f1f5f9;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:14px; background:#f8fafc; border-radius:6px; border:1px solid #f1f5f9;">
                   <div>
-                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">MOBILE</div>
-                    <div style="font-size:0.85rem; font-weight:700; color:var(--text);">${c.phone}</div>
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); margin-bottom:4px;">Mobile</div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--text);">${c.phone}</div>
                   </div>
                   <div>
-                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">EMAIL</div>
-                    <div style="font-size:0.85rem; font-weight:700; color:var(--text); word-break:break-all;">${c.email}</div>
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); margin-bottom:4px;">Email</div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--text); word-break:break-all;">${c.email}</div>
                   </div>
                 </div>
 
                 ${c.reason ? `
-                  <div style="padding:14px; border:1px solid #f1f5f9; border-radius:12px; background:#fff;">
-                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">INTERNAL NOTE</div>
-                    <div style="font-size:0.8rem; font-weight:600; color:var(--text-mid); line-height:1.5;">${c.reason}</div>
+                  <div style="padding:14px; border:1px solid #f1f5f9; border-radius:6px; background:#fff; flex-grow: 1; min-height: 85px;">
+                    <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); margin-bottom:4px;">Internal note</div>
+                    <div style="font-size:0.82rem; font-weight:600; color:var(--text-mid); line-height:1.5;">${c.reason}</div>
                   </div>
-                ` : ''}
+                ` : `
+                  <div style="padding:14px; border:1px solid transparent; flex-grow: 1; min-height: 85px;"></div>
+                `}
               </div>
             `;
     }).join('') || '<p style="color:var(--text-soft)">No contacts added.</p>'}
@@ -571,18 +578,19 @@ function renderProfileTab(m, tab) {
     const addresses = m.addresses || [];
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">location_city</span></div>
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
             <div>
-              <h3 class="profile-section-title">Registered Addresses</h3>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Registered Addresses</h3>
+              <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight:600;">Official headquarters and business addresses.</p>
             </div>
           </div>
-          <button class="btn-primary" onclick="openAddModal('address', ${m.id})">
-            <span class="material-icons-round">add</span> Add
+          <button class="btn-primary" onclick="openAddModal('address', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
+            <span class="material-icons-round">add</span> Add Address
           </button>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px;">
           ${addresses.map((a, ai) => {
       const title = a.title || a.type || 'Address';
       const isDefault = a.isDefault || false;
@@ -593,15 +601,15 @@ function renderProfileTab(m, tab) {
         fullAddress = a.detail; // fallback
       }
       return `
-            <div class="employee-card address-card-item" style="position:relative; padding: 28px; border-radius: 20px; border: 1px solid #f1f5f9; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 20px;">
+            <div class="employee-card address-card-item" style="gap: 20px;">
               <div style="display:flex; align-items:center; justify-content:space-between;">
                 <div style="display:flex; align-items:center; gap:16px;">
-                  <div style="width:48px; height:48px; border-radius:14px; background:#f8fafc; display:flex; align-items:center; justify-content:center; border: 1px solid #e2e8f0; color:#1e293b;">
+                  <div style="width:48px; height:48px; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; border: 1px solid #e2e8f0; color:#1e293b;">
                     <span class="material-icons-round" style="font-size:24px;">location_on</span>
                   </div>
-                  <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="font-size:1.15rem; font-weight: 800; color: #1e293b;">${title}</div>
-                    ${isDefault ? '<span style="font-size:0.65rem; padding: 2px 10px; border-radius: 20px; font-weight:700; background:#1e293b; color:#fff; width:fit-content; margin-top:4px;">Default Address</span>' : ''}
+                  <div style="display:flex; flex-direction:column; gap:2px; min-height: 48px; justify-content: center;">
+                    <div style="font-size:1.1rem; font-weight: 800; color: #1e293b;">${title}</div>
+                    ${isDefault ? '<span style="font-size:0.65rem; padding: 2px 8px; border-radius: 4px; font-weight:800; background:#eff6ff; color:#2563eb; width:fit-content; margin-top:2px; border: 1px solid #dbeafe;">Default Address</span>' : ''}
                   </div>
                 </div>
                 <div style="position:relative;">
@@ -615,22 +623,24 @@ function renderProfileTab(m, tab) {
                 </div>
               </div>
               
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div style="grid-column: span 2; padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Address Line 1</div>
-                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.line1 || a.detail || ''}</div>
+              <div style="display: flex; flex-direction: column; gap: 16px; border-top: 1px solid #f8fafc; padding-top: 16px;">
+                <div>
+                  <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">Address line 1</div>
+                  <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.line1 || a.detail || ''}</div>
                 </div>
-                <div style="grid-column: span 2; padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Address Line 2</div>
-                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.line2 || '-'}</div>
+                <div>
+                  <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">Address line 2</div>
+                  <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.line2 || ''}</div>
                 </div>
-                <div style="padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">City</div>
-                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.city || ''}</div>
-                </div>
-                <div style="padding: 14px 18px; border-radius: 12px; border: 1px solid #f1f5f9; background: #fff;">
-                  <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Pincode</div>
-                  <div style="font-size: 1rem; font-weight: 700; color: #1e293b;">${a.pincode || ''}</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f8fafc; padding-top: 16px;">
+                  <div>
+                    <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">City</div>
+                    <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.city || ''}</div>
+                  </div>
+                  <div style="border-left: 1px solid #f1f5f9; padding-left: 16px;">
+                    <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">Pincode</div>
+                    <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.pincode || ''}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -961,10 +971,10 @@ function renderProfileTab(m, tab) {
                     <div style="font-weight:800; color:var(--text);">${l.datetime.split(' ')[0]}</div>
                     <div style="font-size:0.75rem; color:var(--text-soft);">${l.datetime.split(' ')[1]} ${l.datetime.split(' ')[2] || ''}</div>
                   </td>
-                  <td style="font-family:monospace; font-weight:700;">${l.ip}</td>
-                  <td style="font-family:monospace;">${l.deviceId}</td>
+                  <td style="font-weight:700;">${l.ip}</td>
+                  <td>${l.deviceId}</td>
                   <td>${l.geo}</td>
-                  <td style="font-family:monospace; color:var(--text-soft);">${l.mac}</td>
+                  <td style="color:var(--text-soft);">${l.mac}</td>
                 </tr>
               `).join('') : `
                 <tr>
@@ -1150,7 +1160,7 @@ function openEditModal(type, memberId, index) {
             <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
               <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:64px; height:64px; border-radius:50%; flex-shrink:0;">
               <div style="display:flex; flex-direction:column; gap:6px;">
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700;">Choose File</button>
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700; border-radius: 4px;">Choose File</button>
                 <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
               </div>
             </div>
@@ -1408,7 +1418,7 @@ function openEditModal(type, memberId, index) {
                 <span class="material-icons-round" style="font-size:32px;">person</span>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px;">
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700;">Choose File</button>
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700; border-radius: 4px;">Choose File</button>
                 <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
               </div>
             </div>
@@ -1502,7 +1512,7 @@ function openAddModal(type, memberId) {
                 <span class="material-icons-round" style="font-size:36px;">person</span>
               </div>
               <div style="display:flex; flex-direction:column; gap:6px;">
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700;">Choose File</button>
+                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700; border-radius: 4px;">Choose File</button>
                 <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
               </div>
             </div>

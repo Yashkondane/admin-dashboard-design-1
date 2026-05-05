@@ -21,7 +21,7 @@ function renderTable(data = invoices) {
   
   tbody.innerHTML = data.map(inv => `
     <tr>
-      <td style="padding-left: 24px; font-family: monospace; font-weight: 700; color: var(--blue); font-size: 0.95rem;">
+      <td style="padding-left: 24px; font-weight: 700; color: var(--blue); font-size: 0.95rem;">
         ${inv.id}
       </td>
       <td style="font-weight: 700; color: var(--text);">${inv.client}</td>

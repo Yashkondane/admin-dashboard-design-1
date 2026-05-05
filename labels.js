@@ -18,7 +18,7 @@ function renderTable() {
       <td>
         <div style="display: flex; align-items: center; gap: 8px;">
           <div style="width: 16px; height: 16px; border-radius: 4px; background: ${l.color};"></div>
-          <span style="font-family: monospace; color: var(--text-mid); font-size: 0.9rem;">${l.color}</span>
+          <span style="color: var(--text-mid); font-size: 0.9rem;">${l.color}</span>
         </div>
       </td>
       <td>
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>
             <div style="display: flex; align-items: center; gap: 8px;">
               <div style="width: 16px; height: 16px; border-radius: 4px; background: ${l.color};"></div>
-              <span style="font-family: monospace; color: var(--text-mid); font-size: 0.9rem;">${l.color}</span>
+          <span style="color: var(--text-mid); font-size: 0.9rem;">${l.color}</span>
             </div>
           </td>
           <td>
