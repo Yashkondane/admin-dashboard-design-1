@@ -433,7 +433,7 @@ body {
 .hidden { display: none !important; }
 
 /* Profile View Restyling */
-.profile-view { width: 100%; max-width: none; margin: 0; padding-right: 40px; }
+.profile-view { max-width: 1280px; width: 100%; margin: 0 auto; }
 
 .breadcrumbs { margin-top: -12px; margin-bottom: 16px; font-size: 1.1rem; font-weight: 700; color: var(--text-soft); display: flex; align-items: center; gap: 8px; }
 .breadcrumbs a { color: var(--text-soft); text-decoration: none; transition: color 0.2s; }

@@ -428,11 +428,11 @@ function switchTab(id, tab) {
 function renderProfileTab(m, tab) {
   if (tab === 'company') {
     return `
-      <div class="content-card" style="padding: 0; border: none; box-shadow: none; background: transparent;">
+      <div class="content-card" style="padding: 24px 28px; border-radius: 20px; background: #fff; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center; padding-bottom: 8px;">
           <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon" style="background:#000; color:#fff; border:none; border-radius:12px;"><span class="material-icons-round">business</span></div>
-            <h3 class="profile-section-title" style="margin:0; font-weight:700; font-size:1.4rem;">Company Profile</h3>
+            <div class="profile-section-icon" style="background:#f8fafc; color:#000; border:1px solid #e2e8f0; border-radius:12px;"><span class="material-icons-round">business</span></div>
+            <h3 class="profile-section-title" style="margin:0; font-weight:900; font-size:1.4rem;">Company Profile</h3>
           </div>
           <div style="display:flex; gap:12px;">
             <button class="btn-primary" onclick="openEditModal('company', ${m.id}, 0)">
@@ -445,25 +445,25 @@ function renderProfileTab(m, tab) {
           <!-- Row 1 -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Company Name</span>
-              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.company}</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Company Name</span>
+              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.company}</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Business Type</span>
-              <span style="font-size: 1rem; font-weight: 700; color: var(--blue);">${m.companyType}</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Business Type</span>
+              <span style="font-size: 1.1rem; font-weight: 900; color: var(--blue);">${m.companyType}</span>
             </div>
           </div>
           
           <!-- Row 2 -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Website</span>
-              <span style="font-size: 1rem; font-weight: 700; color: var(--blue);">www.${m.company.toLowerCase().replace(/ /g, '')}.com</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Website</span>
+              <span style="font-size: 1.1rem; font-weight: 900; color: var(--blue);">www.${m.company.toLowerCase().replace(/ /g, '')}.com</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Email ID</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Email ID</span>
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.email}</span>
+                <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.email}</span>
                 <span class="material-icons-round" style="font-size:18px; color:#cbd5e1; cursor:pointer;">content_copy</span>
               </div>
             </div>
@@ -472,13 +472,13 @@ function renderProfileTab(m, tab) {
           <!-- Row 3 -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">GST No</span>
-              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.gst || '29ABCDE1234F1Z5'}</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">GST No</span>
+              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.gst || '29ABCDE1234F1Z5'}</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Phone No 1</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Phone No 1</span>
               <div style="display:flex; align-items:center; gap:12px;">
-                <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.mobile}</span>
+                <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.mobile}</span>
                 <span class="material-icons-round" style="font-size:18px; color:#cbd5e1; cursor:pointer;">content_copy</span>
               </div>
             </div>
@@ -487,19 +487,19 @@ function renderProfileTab(m, tab) {
           <!-- Row 4 -->
           <div style="display:grid; grid-template-columns: 1fr 1fr; padding: 24px 0; border-bottom: 1px solid #f1f5f9;">
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Phone No 2</span>
-              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.phone2 || '+91 —'}</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Phone No 2</span>
+              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.phone2 || '+91 —'}</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">Member Since</span>
-              <span style="font-size: 1rem; font-weight: 700; color: #000;">${m.date}</span>
+              <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">Member Since</span>
+              <span style="font-size: 1.1rem; font-weight: 900; color: #000;">${m.date}</span>
             </div>
           </div>
           
           <!-- Row 5 -->
           <div style="display:flex; flex-direction:column; gap:12px; padding: 24px 0;">
-            <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: none;">About Business</span>
-            <p style="font-size: 1rem; font-weight: 600; color: #475569; line-height: 1.7; margin: 0; max-width: 100%;">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: none;">About Business</span>
+            <p style="font-size: 1rem; font-weight: 700; color: #475569; line-height: 1.7; margin: 0; max-width: 100%;">
               ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
             </p>
           </div>
@@ -613,22 +613,22 @@ function renderProfileTab(m, tab) {
               </div>
               
               <div class="employee-card-header" style="align-items:center; margin-bottom: 24px;">
-                <div style="width:44px; height:44px; border-radius:12px; background:#000; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:16px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                  <span class="material-icons-round" style="color:#fff; font-size:24px;">location_city</span>
+                <div style="width:44px; height:44px; border-radius:12px; background:#f8fafc; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-right:16px; border:1px solid #e2e8f0;">
+                  <span class="material-icons-round" style="color:#000; font-size:24px;">location_city</span>
                 </div>
                 <div class="employee-info">
                   <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="font-size:1.1rem; font-weight: 700; color: #000;">${title}</div>
-                    ${isDefault ? '<span class="bubble-tag blue" style="font-size:0.65rem; padding: 3px 8px; border-radius: 6px; font-weight:700;">Default</span>' : ''}
+                    <div style="font-size:1.1rem; font-weight: 900; color: #000;">${title}</div>
+                    ${isDefault ? '<span class="bubble-tag blue" style="font-size:0.65rem; padding: 3px 8px; border-radius: 6px; font-weight:800;">Default</span>' : ''}
                   </div>
                 </div>
               </div>
               
-              <div style="display: flex; flex-direction: column; gap: 8px;">
-                <div style="font-size:0.9rem; font-weight:700; color:#000;">Address Line 1: ${a.line1 || a.detail || ''}</div>
-                <div style="font-size:0.9rem; font-weight:700; color:#000;">Address Line 2: ${a.line2 || '-'}</div>
-                <div style="font-size:0.9rem; font-weight:700; color:#000;">City: ${a.city || ''}</div>
-                <div style="font-size:0.9rem; font-weight:700; color:#000;">Pincode: ${a.pincode || ''}</div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="font-size:0.88rem; font-weight:800; color:#000;">Address Line 1: ${a.line1 || a.detail || ''}</div>
+                <div style="font-size:0.88rem; font-weight:800; color:#000;">Address Line 2: ${a.line2 || '-'}</div>
+                <div style="font-size:0.88rem; font-weight:800; color:#000;">City: ${a.city || ''}</div>
+                <div style="font-size:0.88rem; font-weight:800; color:#000;">Pincode: ${a.pincode || ''}</div>
               </div>
             </div>
             `;
