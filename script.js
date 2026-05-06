@@ -242,12 +242,12 @@ function renderTable() {
       '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' :
       '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
 
-    let statusBg = '#F2F4F7'; let statusColor = '#667085'; let statusText = m.status;
-    if (m.status === 'active') { statusBg = '#ECFDF3'; statusColor = '#027A48'; statusText = 'Active'; }
-    else if (m.status === 'suspended') { statusBg = '#FEF3F2'; statusColor = '#B42318'; statusText = 'Suspended'; }
-    else if (m.status === 'pending') { statusBg = '#FFFAEB'; statusColor = '#B54708'; statusText = 'Pending'; }
-    else if (m.status === 'incomplete') { statusBg = '#FFF6ED'; statusColor = '#C4320A'; statusText = 'Incomplete'; }
-    else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#F2F4F7'; statusColor = '#667085'; statusText = 'Inactive'; }
+    let statusBg = '#E5E7EB'; let statusColor = '#4B5563'; let statusText = m.status;
+    if (m.status === 'active') { statusBg = '#E8F5EC'; statusColor = '#15803D'; statusBorder = '#22C55E'; statusText = 'Active'; }
+    else if (m.status === 'suspended') { statusBg = '#FEE2E2'; statusColor = '#B91C1C'; statusBorder = '#EF4444'; statusText = 'Suspended'; }
+    else if (m.status === 'pending') { statusBg = '#F3E8FF'; statusColor = '#6D28D9'; statusBorder = '#A855F7'; statusText = 'Pending'; }
+    else if (m.status === 'incomplete') { statusBg = '#E0F2FE'; statusColor = '#1D4ED8'; statusBorder = '#3B82F6'; statusText = 'Incomplete'; }
+    else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#F3F4F6'; statusColor = '#4B5563'; statusBorder = '#D1D5DB'; statusText = 'Inactive'; }
 
     return `
     <tr>
@@ -279,7 +279,7 @@ function renderTable() {
         <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
       </td>
       <td onclick="openProfile(${m.id})" style="text-align:center;">
-        <div class="status-badge" style="min-width: 95px; padding: 5px 12px; font-size: 0.82rem; background: ${statusBg}; color: ${statusColor}; border: none; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
+        <div class="status-badge" style="min-width: 95px; padding: 5px 12px; font-size: 0.82rem; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
           <span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>
           ${statusText}
         </div>
@@ -369,8 +369,12 @@ function openProfile(id, tab = 'company', pushState = true) {
         </div>
         <div class="profile-header-right">
           <div class="profile-plan-text" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8;">Plan: <span style="color:var(--blue); font-weight:800; text-transform: capitalize;">${m.plan || 'enterprise'}</span></div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; text-transform: capitalize; background: ${m.status === 'active' ? '#ECFDF3' : (m.status === 'suspended' ? '#FEF3F2' : (m.status === 'pending' ? '#FFFAEB' : '#F2F4F7'))}; color: ${m.status === 'active' ? '#027A48' : (m.status === 'suspended' ? '#B42318' : (m.status === 'pending' ? '#B54708' : '#667085'))}; border: none; padding: 5px 14px; border-radius: 6px;">
-            <span style="width:6px; height:6px; border-radius:50%; background: ${m.status === 'active' ? '#027A48' : (m.status === 'suspended' ? '#B42318' : (m.status === 'pending' ? '#B54708' : '#667085'))};"></span>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; text-transform: capitalize; 
+            background: ${m.status === 'active' ? '#E8F5EC' : (m.status === 'suspended' ? '#FEE2E2' : (m.status === 'pending' ? '#F3E8FF' : (m.status === 'incomplete' ? '#E0F2FE' : '#F3F4F6')))}; 
+            color: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#6D28D9' : (m.status === 'incomplete' ? '#1D4ED8' : '#4B5563')))}; 
+            border: 1px solid ${m.status === 'active' ? '#22C55E' : (m.status === 'suspended' ? '#EF4444' : (m.status === 'pending' ? '#A855F7' : (m.status === 'incomplete' ? '#3B82F6' : '#D1D5DB')))}; 
+            padding: 5px 14px; border-radius: 6px;">
+            <span style="width:6px; height:6px; border-radius:50%; background: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#6D28D9' : (m.status === 'incomplete' ? '#1D4ED8' : '#4B5563')))}"></span>
             ${m.status ? capitalize(m.status) : 'Suspended'}
           </div>
         </div>
@@ -856,11 +860,11 @@ function renderProfileTab(m, tab) {
             </colgroup>
             <thead>
               <tr>
-                <th style="padding-left: 12px; text-align: center;">#</th>
-                <th style="padding-left: 20px;">Date Sent</th>
-                <th>Subject</th>
-                <th style="text-align: center;">Sent To</th>
-                <th style="text-align: center;">Sender</th>
+                <th style="padding: 12px 8px !important; text-align: center !important;">#</th>
+                <th style="padding: 12px 16px 12px 20px !important; text-align: left !important;">Date Sent</th>
+                <th style="padding: 12px 16px !important; text-align: left !important;">Subject</th>
+                <th style="padding: 12px 16px !important; text-align: left !important;">Sent To</th>
+                <th style="padding: 12px 16px !important; text-align: left !important;">Sender</th>
               </tr>
             </thead>
             <tbody>
@@ -885,14 +889,14 @@ function renderProfileTab(m, tab) {
                       </div>
                     </div>
                   </td>
-                  <td style="padding: 12px 16px; vertical-align: top; text-align: center;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
+                  <td style="padding: 12px 16px; vertical-align: top;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
                       <span style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">${m.member}</span>
                       <span style="font-size: 0.72rem; color: var(--blue); font-weight: 600;">${m.email}</span>
                     </div>
                   </td>
-                  <td style="padding: 12px 16px; vertical-align: top; text-align: center;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
+                  <td style="padding: 12px 16px; vertical-align: top;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
                       <span style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">Jayesh Jain</span>
                       <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">${e.sender}</span>
                     </div>
@@ -944,14 +948,14 @@ function renderProfileTab(m, tab) {
         </div>
 
         <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-          <div style="width:56px; height:56px; border-radius:14px; background:#f0fdf4; color:#16a34a; display:grid; place-items:center; flex-shrink:0;">
+          <div style="width:56px; height:56px; border-radius:14px; background:#ECFDF3; color:#027A48; display:grid; place-items:center; flex-shrink:0;">
             <span class="material-icons-round" style="font-size:28px;">bolt</span>
           </div>
           <div>
             <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Recent Status</div>
             <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
-              <span style="width:8px; height:8px; border-radius:50%; background:#16a34a; display:inline-block;"></span>
-              <span style="font-size:1.1rem; font-weight:900; color:#16a34a;">${broadcasts.length ? broadcasts[0].status : 'N/A'}</span>
+              <span style="width:8px; height:8px; border-radius:50%; background: #027A48; display:inline-block;"></span>
+              <span style="font-size:1.1rem; font-weight:900; color: #027A48;">${broadcasts.length ? broadcasts[0].status : 'N/A'}</span>
             </div>
           </div>
         </div>
@@ -1014,9 +1018,13 @@ function renderProfileTab(m, tab) {
                     <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid); background:#f1f5f9; padding:4px 10px; border-radius:6px;">${b.sendTo}</span>
                   </td>
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
-                    <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:100px; background:#f0fdf4; border:1px solid #dcfce7;">
-                      <span style="width:6px; height:6px; border-radius:50%; background:#16a34a;"></span>
-                      <span style="color:#16a34a; font-size:0.78rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">${b.status}</span>
+                    <div style="display:inline-flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 6px; 
+                      background: ${b.status === 'Live' || b.status === 'Active' ? '#E8F5EC' : (b.status === 'Pending' ? '#F3E8FF' : (b.status === 'Incomplete' ? '#E0F2FE' : '#F3F4F6'))}; 
+                      color: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#6D28D9' : (b.status === 'Incomplete' ? '#1D4ED8' : '#4B5563'))}; 
+                      border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#22C55E' : (b.status === 'Pending' ? '#A855F7' : (b.status === 'Incomplete' ? '#3B82F6' : '#D1D5DB'))}; 
+                      font-weight: 700;">
+                      <span style="width:6px; height:6px; border-radius:50%; background: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#6D28D9' : (b.status === 'Incomplete' ? '#1D4ED8' : '#4B5563'))};"></span>
+                      <span style="font-size:0.8rem; text-transform:capitalize;">${b.status}</span>
                     </div>
                   </td>
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); text-align:right;">
