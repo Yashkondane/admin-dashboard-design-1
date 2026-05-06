@@ -273,7 +273,7 @@ function renderTable() {
       <td onclick="openProfile(${m.id})">
         <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
       </td>
-      <td onclick="openProfile(${m.id})">
+      <td onclick="openProfile(${m.id})" style="text-align:center;">
         <div class="status-badge ${m.status.toLowerCase()}" style="min-width: 90px; padding: 4px 10px; font-size: 0.75rem;">
           ${capitalize(statusText)}
         </div>
@@ -410,6 +410,7 @@ function openProfile(id, tab = 'company', pushState = true) {
     <div class="profile-tabs" id="profile-tabs">
       <button class="profile-tab ${tab === 'company' ? 'active' : ''}" onclick="switchTab(${id},'company')"><span class="material-icons-round">business</span> Company</button>
       <button class="profile-tab ${tab === 'contacts' ? 'active' : ''}" onclick="switchTab(${id},'contacts')"><span class="material-icons-round">people</span> Contacts</button>
+      <button class="profile-tab ${tab === 'contact-table' ? 'active' : ''}" onclick="switchTab(${id},'contact-table')"><span class="material-icons-round">table_rows</span> Contact Table</button>
       <button class="profile-tab ${tab === 'addresses' ? 'active' : ''}" onclick="switchTab(${id},'addresses')"><span class="material-icons-round">location_on</span> Addresses</button>
       <button class="profile-tab ${tab === 'plan' ? 'active' : ''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">assignment</span> Assign Plan</button>
       <button class="profile-tab ${tab === 'email' ? 'active' : ''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email Setup</button>
@@ -435,7 +436,6 @@ function renderProfileTab(m, tab) {
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Company Details</h3>
-              <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight:600;">Primary business profile and administrative information.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openEditModal('company', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
@@ -512,7 +512,6 @@ function renderProfileTab(m, tab) {
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">people</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Key Contacts</h3>
-              <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight:600;">Manage primary and secondary company stakeholders.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('contact', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
@@ -571,6 +570,101 @@ function renderProfileTab(m, tab) {
               </div>
             `;
     }).join('') || '<p style="color:var(--text-soft)">No contacts added.</p>'}
+        </div>
+      </div>
+    `;
+  } else if (tab === 'contact-table') {
+    const contacts = m.contacts || [];
+    return `
+      <div class="content-card">
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 18px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">table_rows</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Contact Table</h3>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="openAddModal('contact', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
+            <span class="material-icons-round">add</span> Add
+          </button>
+        </div>
+
+        <div class="table-scroll-wrap profile-contact-table-wrap">
+          <table class="data-table profile-contact-table">
+            <colgroup>
+              <col style="width: 22%;">
+              <col style="width: 18%;">
+              <col style="width: 24%;">
+              <col style="width: 17%;">
+              <col style="width: 12%;">
+              <col style="width: 7%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Status</th>
+                <th style="text-align:right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${contacts.length ? contacts.map((c, ci) => {
+                const status = c.status || 'Active';
+                const statusClass = status.toLowerCase();
+                const isMainContact = ci === 0 || c.isMain;
+                const portraitType = ci % 2 === 0 ? 'men' : 'women';
+                const avatar = c.photo || `https://randomuser.me/api/portraits/${portraitType}/${ci + 20}.jpg`;
+
+                return `
+                  <tr>
+                    <td>
+                      <div class="cell-member profile-contact-person">
+                        <img src="${avatar}" alt="${c.name}" class="member-avatar profile-contact-avatar">
+                        <div class="profile-contact-name-stack">
+                          <span class="member-name">${c.name}</span>
+                          ${isMainContact ? `
+                            <span class="main-contact-indicator">
+                              <span class="material-icons-round">star</span>
+                              Main Contact
+                            </span>
+                          ` : '<span class="profile-contact-muted">Secondary Contact</span>'}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${c.role || 'Contact'}</span>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.email || '-'}</span>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.phone || '-'}</span>
+                    </td>
+                    <td>
+                      <span class="status-badge ${statusClass}" style="min-width:auto; padding:4px 12px; font-size:0.75rem;">
+                        <span></span> ${status}
+                      </span>
+                    </td>
+                    <td style="text-align:right;">
+                      <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-table-${m.id}-${ci}', this)">
+                        <span class="material-icons-round">more_vert</span>
+                      </button>
+                      <div class="dropdown-menu" id="dropdown-contact-table-${m.id}-${ci}">
+                        <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
+                        <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Contact removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('') : `
+                <tr>
+                  <td colspan="6" style="padding:64px; text-align:center; color:var(--text-soft); font-weight:700;">No contacts added.</td>
+                </tr>
+              `}
+            </tbody>
+          </table>
         </div>
       </div>
     `;

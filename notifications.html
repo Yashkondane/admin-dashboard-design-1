@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Notifications</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <aside class="sidebar" id="sidebar">
     <button class="sidebar-toggle-tab" id="sidebar-toggle" title="Toggle sidebar">
@@ -28,25 +25,15 @@
           </svg></div>
         <span class="brand-name">AdminPanel</span>
       </div>
-
       <div class="nav-section-label">MAIN MENU</div>
-
       <nav class="sidebar-nav">
-        <!-- Dashboard -->
         <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span class="nav-label">Dashboard</span></a>
-
-        <!-- Members -->
         <a href="index.html" class="nav-item" id="nav-members">
-          <span class="material-icons-round">people</span>
-          <span class="nav-label">Members</span>
-          <span class="nav-badge">15</span>
+          <span class="material-icons-round">people</span><span class="nav-label">Members</span><span class="nav-badge">15</span>
         </a>
-
-        <!-- Plans & Billing -->
         <div class="nav-group">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
-            <span class="material-icons-round">credit_card</span>
-            <span class="nav-label">Plans &amp; Billing</span>
+            <span class="material-icons-round">credit_card</span><span class="nav-label">Plans &amp; Billing</span>
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
@@ -55,12 +42,9 @@
             <a href="invoice.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Invoice</a>
           </div>
         </div>
-
-        <!-- Communication -->
         <div class="nav-group open">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
-            <span class="material-icons-round">chat_bubble_outline</span>
-            <span class="nav-label">Communication</span>
+            <span class="material-icons-round">chat_bubble_outline</span><span class="nav-label">Communication</span>
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub" style="height: auto;">
@@ -68,12 +52,9 @@
             <a href="notifications.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Notifications</a>
           </div>
         </div>
-
-        <!-- Requests -->
         <div class="nav-group">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
-            <span class="material-icons-round">assignment</span>
-            <span class="nav-label">Requests</span>
+            <span class="material-icons-round">assignment</span><span class="nav-label">Requests</span>
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
@@ -81,23 +62,17 @@
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
-
-        <!-- Settings -->
         <div class="nav-group">
           <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
-            <span class="material-icons-round">settings</span>
-            <span class="nav-label">Settings</span>
+            <span class="material-icons-round">settings</span><span class="nav-label">Settings</span>
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
             <a href="settings-fields.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Field Setting</a>
           </div>
         </div>
-
-        <!-- Employees (temp) -->
         <a href="employees.html" class="nav-item" id="nav-employees" style="opacity:0.5;">
-          <span class="material-icons-round">badge</span>
-          <span class="nav-label">Employees</span>
+          <span class="material-icons-round">badge</span><span class="nav-label">Employees</span>
         </a>
       </nav>
     </div>
@@ -110,35 +85,50 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
-            placeholder="Search Broadcasts" id="top-search-input"></div>
+        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Search broadcasts…" id="top-search-input"></div>
       </div>
       <div class="top-bar-right">
-        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
-            class="notif-dot"></span></button>
+        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span class="notif-dot"></span></button>
         <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span></button>
         <div class="header-user">
           <img class="header-user-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jane Cooper">
-          <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span
-              class="header-user-email">jane234@example.com</span></div>
+          <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span class="header-user-email">jane234@example.com</span></div>
           <span class="material-icons-round header-user-arrow">expand_more</span>
         </div>
       </div>
     </header>
 
-    <div id="notifications-view" style="background: transparent;">
-      <div class="page-title-row">
+    <div id="notifications-view" style="background: var(--white); border-radius: 16px; padding: 32px 32px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03); border: 1px solid var(--border);">
+      <div class="page-title-row" style="margin-bottom: 12px;">
         <h1 class="page-title">Broadcast History</h1>
         <div class="page-title-actions">
           <button class="btn-primary" onclick="openCreateNotificationModal()"><span class="material-icons-round">campaign</span> Blast Notification</button>
         </div>
       </div>
-      
-      <div style="background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.02); overflow: hidden; padding: 24px;">
-        <div id="notification-feed" style="display: flex; flex-direction: column; gap: 16px;">
-          <!-- Rendered by notifications.js -->
-        </div>
+
+      <div class="tabs-container" style="display: flex; gap: 24px; padding: 0 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border);">
+        <button class="tab-item active" data-filter="all" onclick="setNotifFilter('all')">All <span class="badge">3</span></button>
+        <button class="tab-item" data-filter="info" onclick="setNotifFilter('info')">Info <span class="badge">1</span></button>
+        <button class="tab-item" data-filter="success" onclick="setNotifFilter('success')">Success <span class="badge">1</span></button>
+        <button class="tab-item" data-filter="warning" onclick="setNotifFilter('warning')">Warning <span class="badge">1</span></button>
       </div>
+
+      <section class="table-section" style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
+        <div class="table-scroll-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 8%;">Type</th>
+                <th style="width: 28%;">Title</th>
+                <th style="width: 34%;">Message</th>
+                <th style="width: 16%;">Audience</th>
+                <th style="width: 14%;">Date Sent</th>
+              </tr>
+            </thead>
+            <tbody id="notifications-tbody"></tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </main>
 

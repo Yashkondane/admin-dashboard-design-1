@@ -619,6 +619,74 @@ body {
 .employee-badge.business { background: var(--purple-bg); color: var(--purple); }
 .employee-badge.enterprise { background: #ccfbf1; color: #0f766e; }
 
+/* ===== PROFILE CONTACT TEST TABLE ===== */
+.profile-contact-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.profile-contact-table {
+  min-width: 860px;
+  table-layout: fixed;
+}
+.profile-contact-table th {
+  background: #f8fafc;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+.profile-contact-table td {
+  padding: 12px 28px;
+}
+.profile-contact-table th:nth-child(5),
+.profile-contact-table td:nth-child(5) {
+  text-align: left;
+}
+.profile-contact-table th:nth-child(6),
+.profile-contact-table td:nth-child(6) {
+  padding-left: 12px;
+  padding-right: 24px;
+  text-align: right;
+}
+.profile-contact-table td:nth-child(2),
+.profile-contact-table td:nth-child(3),
+.profile-contact-table td:nth-child(4) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.profile-contact-person {
+  gap: 12px;
+}
+.profile-contact-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+.profile-contact-name-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.profile-contact-muted {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-soft);
+}
+.main-contact-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+.main-contact-indicator .material-icons-round {
+  font-size: 13px;
+}
+
 /* ===== MODAL / POPUP ===== */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);

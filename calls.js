@@ -43,12 +43,9 @@ function renderTable(data = calls) {
 function setFilter(filterType) {
   currentFilter = filterType;
   
-  // Update UI active state
-  document.querySelectorAll('.filter-pill').forEach(btn => {
+  document.querySelectorAll('.tab-item').forEach(btn => {
     btn.classList.remove('active');
-    if (btn.dataset.filter === filterType) {
-      btn.classList.add('active');
-    }
+    if (btn.dataset.filter === filterType) btn.classList.add('active');
   });
   
   applyFilters();

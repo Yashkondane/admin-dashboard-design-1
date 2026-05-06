@@ -25,60 +25,83 @@ const notifications = [
   }
 ];
 
-function renderFeed(data = notifications) {
-  const container = document.getElementById('notification-feed');
-  
+let currentFilter = 'all';
+
+const typeConfig = {
+  success: { icon: 'check_circle', color: '#10b981', bg: '#ecfdf5', label: 'Success' },
+  info:    { icon: 'info',         color: '#2563eb', bg: '#eff6ff', label: 'Info' },
+  warning: { icon: 'warning',      color: '#f59e0b', bg: '#fffbeb', label: 'Warning' }
+};
+
+function renderTable(data = notifications) {
+  const tbody = document.getElementById('notifications-tbody');
+  if (!tbody) return;
+
   if (data.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-soft); font-weight: 600;">No broadcasts found.</div>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-soft); font-weight: 600;">No broadcasts found.</td></tr>';
     return;
   }
-  
-  container.innerHTML = data.map(n => {
-    let icon = 'notifications';
-    let color = 'var(--blue)';
-    let bg = '#eff6ff';
-    
-    if (n.type === 'success') { icon = 'check_circle'; color = '#10b981'; bg = '#ecfdf5'; }
-    if (n.type === 'warning') { icon = 'warning'; color = '#f59e0b'; bg = '#fffbeb'; }
-    
+
+  tbody.innerHTML = data.map(n => {
+    const cfg = typeConfig[n.type] || typeConfig.info;
     return `
-      <div style="display: flex; gap: 16px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="width: 48px; height: 48px; border-radius: 50%; background: ${bg}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-          <span class="material-icons-round" style="color: ${color}; font-size: 24px;">${icon}</span>
-        </div>
-        <div style="flex: 1;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--text);">${n.title}</h3>
-            <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-soft);">${n.date}</span>
+      <tr>
+        <td>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: ${cfg.bg}; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons-round" style="color: ${cfg.color}; font-size: 18px;">${cfg.icon}</span>
           </div>
-          <p style="margin: 0 0 12px 0; font-size: 0.95rem; color: var(--text-mid); line-height: 1.5;">${n.message}</p>
-          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: #f1f5f9; border-radius: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-mid);">
-            <span class="material-icons-round" style="font-size: 14px;">groups</span> Sent to: ${n.audience}
-          </div>
-        </div>
-      </div>
+        </td>
+        <td>
+          <span style="font-weight: 800; color: var(--text); font-size: 0.9rem;">${n.title}</span>
+        </td>
+        <td style="max-width: 300px;">
+          <span style="font-weight: 600; color: var(--text-mid); font-size: 0.85rem; white-space: normal; line-height: 1.4;">${n.message}</span>
+        </td>
+        <td>
+          <span class="bubble-tag">${n.audience}</span>
+        </td>
+        <td style="font-weight: 600; color: var(--text-soft); font-size: 0.85rem;">${n.date}</td>
+      </tr>
     `;
   }).join('');
+}
+
+function setNotifFilter(filterType) {
+  currentFilter = filterType;
+  document.querySelectorAll('.tab-item').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.filter === filterType) btn.classList.add('active');
+  });
+  applyFilters();
+}
+
+function applyFilters() {
+  const searchTerm = (document.getElementById('top-search-input')?.value || '').toLowerCase();
+  let filtered = notifications.filter(n => {
+    const matchesSearch = n.title.toLowerCase().includes(searchTerm) || n.message.toLowerCase().includes(searchTerm);
+    const matchesFilter = currentFilter === 'all' || n.type === currentFilter;
+    return matchesSearch && matchesFilter;
+  });
+  renderTable(filtered);
 }
 
 function openCreateNotificationModal() {
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
-  
   content.innerHTML = `
     <div class="modal-header">
       <h3>Blast Notification</h3>
       <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
     <div class="modal-body">
-      <div class="modal-grid-1">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
         <div>
           <label class="modal-label">Notification Title</label>
           <input class="modal-input" type="text" id="notif-title" placeholder="e.g. Server Maintenance Notice">
         </div>
         <div>
           <label class="modal-label">Message</label>
-          <textarea class="modal-input" id="notif-message" style="height: 100px; resize: none; font-family: inherit;" placeholder="Keep it short and impactful..."></textarea>
+          <textarea class="modal-input" id="notif-message" style="height: 90px; resize: none;" placeholder="Keep it short and impactful..."></textarea>
         </div>
         <div>
           <label class="modal-label">Target Audience</label>
@@ -90,7 +113,7 @@ function openCreateNotificationModal() {
           </select>
         </div>
         <div>
-          <label class="modal-label">Type (Icon)</label>
+          <label class="modal-label">Type</label>
           <select class="modal-input" id="notif-type">
             <option value="info">Info (Blue)</option>
             <option value="success">Success (Green)</option>
@@ -104,7 +127,6 @@ function openCreateNotificationModal() {
       <button class="btn-primary" onclick="sendNotification()"><span class="material-icons-round">campaign</span> Send Now</button>
     </div>
   `;
-  
   modal.classList.remove('hidden');
 }
 
@@ -113,27 +135,13 @@ function sendNotification() {
   const message = document.getElementById('notif-message').value.trim();
   const audience = document.getElementById('notif-audience').value;
   const type = document.getElementById('notif-type').value;
-  
-  if (!title || !message) {
-    showToast('Title and message are required', 'error');
-    return;
-  }
-  
+  if (!title || !message) { showToast('Title and message are required', 'error'); return; }
   const now = new Date();
-  let hours = now.getHours();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12; 
+  let hours = now.getHours(); const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
   const minutes = now.getMinutes().toString().padStart(2, '0');
-  const timeString = `Today, ${hours}:${minutes} ${ampm}`;
-  
-  notifications.unshift({
-    id: Date.now(),
-    title, message, audience, type, date: timeString
-  });
-  
-  closeModal();
-  renderFeed();
+  notifications.unshift({ id: Date.now(), title, message, audience, type, date: `Today, ${hours}:${minutes} ${ampm}` });
+  closeModal(); applyFilters();
   showToast('Notification broadcasted successfully!', 'success');
 }
 
@@ -146,62 +154,30 @@ function showToast(message, type = 'success') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = 'toast';
-  
-  let icon = 'check_circle';
-  let color = '#10b981';
-  if (type === 'error') {
-    icon = 'error';
-    color = '#ef4444';
-  } else if (type === 'warning') {
-    icon = 'warning';
-    color = '#f59e0b';
-  }
-
+  const icons = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' };
+  const colors = { success: '#10b981', error: '#ef4444', warning: '#f59e0b', info: 'var(--blue)' };
   toast.innerHTML = `
-    <span class="material-icons-round" style="color: ${color}; font-size: 20px;">${icon}</span>
+    <span class="material-icons-round" style="color: ${colors[type]}; font-size: 20px;">${icons[type]}</span>
     <span style="font-size: 0.9rem; font-weight: 600; color: var(--text);">${message}</span>
   `;
   container.appendChild(toast);
-
   setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
 }
 
 function toggleNavGroup(btn) {
   const group = btn.closest('.nav-group');
   const sub = group.querySelector('.nav-sub');
   const isOpen = group.classList.contains('open');
-
   document.querySelectorAll('.nav-group.open').forEach(g => {
-    if (g !== group) {
-      g.classList.remove('open');
-      g.querySelector('.nav-sub').style.height = '0px';
-    }
+    if (g !== group) { g.classList.remove('open'); g.querySelector('.nav-sub').style.height = '0px'; }
   });
-
-  if (isOpen) {
-    group.classList.remove('open');
-    sub.style.height = '0px';
-  } else {
-    group.classList.add('open');
-    sub.style.height = sub.scrollHeight + 'px';
-  }
+  if (isOpen) { group.classList.remove('open'); sub.style.height = '0px'; }
+  else { group.classList.add('open'); sub.style.height = sub.scrollHeight + 'px'; }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderFeed();
-  
+  renderTable();
   const searchInput = document.getElementById('top-search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = notifications.filter(n => 
-        n.title.toLowerCase().includes(term) || n.message.toLowerCase().includes(term)
-      );
-      renderFeed(filtered);
-    });
-  }
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
 });
