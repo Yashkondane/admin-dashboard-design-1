@@ -260,14 +260,14 @@ function renderTable() {
       </td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; align-items:center; gap:6px;">
-          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.email}</span>
           ${emailIcon}
+          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.email}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; align-items:center; gap:6px;">
-          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.mobile}</span>
           ${mobileIcon}
+          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.mobile}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
@@ -324,6 +324,7 @@ function goToPage(page) {
 function openProfile(id, tab = 'company', pushState = true) {
   const m = members.find(x => x.id === id);
   if (!m) return;
+  if (tab === 'contacts') tab = 'contact-table';
 
   if (pushState) {
     const url = new URL(window.location);
@@ -409,8 +410,7 @@ function openProfile(id, tab = 'company', pushState = true) {
 
     <div class="profile-tabs" id="profile-tabs">
       <button class="profile-tab ${tab === 'company' ? 'active' : ''}" onclick="switchTab(${id},'company')"><span class="material-icons-round">business</span> Company</button>
-      <button class="profile-tab ${tab === 'contacts' ? 'active' : ''}" onclick="switchTab(${id},'contacts')"><span class="material-icons-round">people</span> Contacts</button>
-      <button class="profile-tab ${tab === 'contact-table' ? 'active' : ''}" onclick="switchTab(${id},'contact-table')"><span class="material-icons-round">table_rows</span> Contact Table</button>
+      <button class="profile-tab ${tab === 'contact-table' ? 'active' : ''}" onclick="switchTab(${id},'contact-table')"><span class="material-icons-round">people</span> Contact</button>
       <button class="profile-tab ${tab === 'addresses' ? 'active' : ''}" onclick="switchTab(${id},'addresses')"><span class="material-icons-round">location_on</span> Addresses</button>
       <button class="profile-tab ${tab === 'plan' ? 'active' : ''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">assignment</span> Assign Plan</button>
       <button class="profile-tab ${tab === 'email' ? 'active' : ''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email Setup</button>
@@ -443,7 +443,7 @@ function renderProfileTab(m, tab) {
           </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
           <!-- Field Box: Company Name -->
           <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
             <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Company Name</div>
@@ -486,13 +486,7 @@ function renderProfileTab(m, tab) {
             <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.phone2 || '+91 —'}</div>
           </div>
 
-          <!-- Field Box: Member Since -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Member Since</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.date}</div>
-          </div>
-
-          <!-- Field Box: About Business (Full Width) -->
+          <!-- Field Box: About Business -->
           <div style="grid-column: span 2; padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
             <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">About Business</div>
             <p style="font-size: 1rem; font-weight: 600; color: #475569; line-height: 1.6; margin: 0;">
@@ -581,7 +575,7 @@ function renderProfileTab(m, tab) {
           <div style="display:flex; gap:16px; align-items:center;">
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">table_rows</span></div>
             <div>
-              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Contact Table</h3>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Contact</h3>
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('contact', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
@@ -602,7 +596,7 @@ function renderProfileTab(m, tab) {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Role</th>
+                <th>Designation</th>
                 <th>Email</th>
                 <th>Mobile</th>
                 <th>Status</th>
@@ -616,6 +610,9 @@ function renderProfileTab(m, tab) {
                 const isMainContact = ci === 0 || c.isMain;
                 const portraitType = ci % 2 === 0 ? 'men' : 'women';
                 const avatar = c.photo || `https://randomuser.me/api/portraits/${portraitType}/${ci + 20}.jpg`;
+                const contactCheckIcon = statusClass === 'active'
+                  ? '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>'
+                  : '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
 
                 return `
                   <tr>
@@ -637,10 +634,16 @@ function renderProfileTab(m, tab) {
                       <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${c.role || 'Contact'}</span>
                     </td>
                     <td>
-                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.email || '-'}</span>
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        ${contactCheckIcon}
+                        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.email || '-'}</span>
+                      </div>
                     </td>
                     <td>
-                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.phone || '-'}</span>
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        ${contactCheckIcon}
+                        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.phone || '-'}</span>
+                      </div>
                     </td>
                     <td>
                       <span class="status-badge ${statusClass}" style="min-width:auto; padding:4px 12px; font-size:0.75rem;">
@@ -672,74 +675,79 @@ function renderProfileTab(m, tab) {
     const addresses = m.addresses || [];
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 18px;">
           <div style="display:flex; gap:16px; align-items:center;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">location_on</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Registered Addresses</h3>
-              <p style="margin:0; font-size:0.8rem; color:#94a3b8; font-weight:600;">Official headquarters and business addresses.</p>
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('address', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
             <span class="material-icons-round">add</span> Add
           </button>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px;">
-          ${addresses.map((a, ai) => {
-      const title = a.title || a.type || 'Address';
-      const isDefault = a.isDefault || false;
-      let fullAddress = '';
-      if (a.line1) {
-        fullAddress = [a.line1, a.line2, a.city, a.pincode].filter(Boolean).join(', ');
-      } else {
-        fullAddress = a.detail; // fallback
-      }
-      return `
-            <div class="employee-card address-card-item" style="gap: 20px;">
-              <div style="display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:16px;">
-                  <div style="width:48px; height:48px; border-radius:6px; background:#f8fafc; display:flex; align-items:center; justify-content:center; border: 1px solid #e2e8f0; color:#1e293b;">
-                    <span class="material-icons-round" style="font-size:24px;">location_on</span>
-                  </div>
-                  <div style="display:flex; flex-direction:column; gap:2px; min-height: 48px; justify-content: center;">
-                    <div style="font-size:1.1rem; font-weight: 800; color: #1e293b;">${title}</div>
-                    ${isDefault ? '<span style="font-size:0.65rem; padding: 2px 8px; border-radius: 4px; font-weight:800; background:#eff6ff; color:#2563eb; width:fit-content; margin-top:2px; border: 1px solid #dbeafe;">Default Address</span>' : ''}
-                  </div>
-                </div>
-                <div style="position:relative;">
-                  <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
-                    <span class="material-icons-round">more_horiz</span>
-                  </button>
-                  <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}" style="right:0;top:100%;margin-top:8px">
-                    <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-                    <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
-                  </div>
-                </div>
-              </div>
-              
-              <div style="display: flex; flex-direction: column; gap: 16px; border-top: 1px solid #f8fafc; padding-top: 16px;">
-                <div>
-                  <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">Address line 1</div>
-                  <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.line1 || a.detail || ''}</div>
-                </div>
-                <div>
-                  <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">Address line 2</div>
-                  <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.line2 || ''}</div>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f8fafc; padding-top: 16px;">
-                  <div>
-                    <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">City</div>
-                    <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.city || ''}</div>
-                  </div>
-                  <div style="border-left: 1px solid #f1f5f9; padding-left: 16px;">
-                    <div style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px;">Pincode</div>
-                    <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${a.pincode || ''}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            `;
-    }).join('') || '<p style="color:var(--text-soft)">No addresses found.</p>'}
+        <div class="table-scroll-wrap profile-contact-table-wrap">
+          <table class="data-table profile-contact-table profile-address-table">
+            <colgroup>
+              <col style="width: 22%;">
+              <col style="width: 26%;">
+              <col style="width: 22%;">
+              <col style="width: 13%;">
+              <col style="width: 11%;">
+              <col style="width: 6%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Address Line 1</th>
+                <th>Address Line 2</th>
+                <th>City</th>
+                <th>Pincode</th>
+                <th style="text-align:right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${addresses.length ? addresses.map((a, ai) => {
+                const title = a.title || a.type || 'Address';
+                const isDefault = a.isDefault || false;
+                return `
+                  <tr>
+                    <td>
+                      <div style="display:flex; flex-direction:column; gap:2px;">
+                        <span style="color: var(--text); font-weight: 800; font-size: 0.85rem;">${title}</span>
+                        ${isDefault ? '<span class="main-contact-indicator">Default Address</span>' : '<span class="profile-contact-muted">Secondary Address</span>'}
+                      </div>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${a.line1 || a.detail || '-'}</span>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${a.line2 || '-'}</span>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${a.city || '-'}</span>
+                    </td>
+                    <td>
+                      <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${a.pincode || '-'}</span>
+                    </td>
+                    <td style="text-align:right;">
+                      <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
+                        <span class="material-icons-round">more_vert</span>
+                      </button>
+                      <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}">
+                        <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
+                        <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('') : `
+                <tr>
+                  <td colspan="6" style="padding:64px; text-align:center; color:var(--text-soft); font-weight:700;">No addresses found.</td>
+                </tr>
+              `}
+            </tbody>
+          </table>
         </div>
       </div>
     `;
@@ -777,7 +785,7 @@ function renderProfileTab(m, tab) {
         </div>
 
         <!-- Stats Row -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px;">
           <div style="border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:#fff;">
             <div style="font-size:0.72rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Billing Cycle</div>
             <div style="font-size:1.1rem;font-weight:900;color:var(--text);">Monthly</div>
@@ -785,10 +793,6 @@ function renderProfileTab(m, tab) {
           <div style="border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:#fff;">
             <div style="font-size:0.72rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Next Payment</div>
             <div style="font-size:1.1rem;font-weight:900;color:var(--text);">Aug 15, 2026</div>
-          </div>
-          <div style="border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:#fff;">
-            <div style="font-size:0.72rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Member Since</div>
-            <div style="font-size:1.1rem;font-weight:900;color:var(--text);">Nov 24, 2025</div>
           </div>
         </div>
 
@@ -1091,65 +1095,18 @@ function renderProfileTab(m, tab) {
     ];
 
     return `
-      <!-- Condensed Top Row: Stats, Badges & Action -->
-      <div style="display: flex; gap: 16px; margin-bottom: 16px; align-items: stretch;">
-        <div class="content-card" style="margin-bottom:0; padding:16px; display:flex; align-items:center; gap:16px; border:1px solid var(--border); flex: 1;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; flex-shrink:0;">
-            <span class="material-icons-round" style="font-size:20px;">verified</span>
-          </div>
-          <div>
-            <div style="font-size:0.65rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Stamps Applied</div>
-            <div style="font-size:1.3rem; font-weight:900; color:var(--text); line-height:1;">${stamps.length}</div>
-          </div>
-        </div>
-
-        <div class="content-card" style="margin-bottom:0; padding:16px; display:flex; align-items:center; gap:16px; border:1px solid var(--border); flex: 1;">
-          <div style="width:40px; height:40px; border-radius:10px; background:#f0fdf4; color:#16a34a; display:grid; place-items:center; flex-shrink:0;">
-            <span class="material-icons-round" style="font-size:20px;">calendar_today</span>
-          </div>
-          <div>
-            <div style="font-size:0.65rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;">Last Verified</div>
-            <div style="font-size:1.1rem; font-weight:900; color:var(--text);">${stamps.length ? stamps[0].date : 'Never'}</div>
-          </div>
-        </div>
-
-        <div class="content-card" style="margin-bottom:0; padding:16px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:8px; border:1px solid var(--border); flex: 1.5; background: #f8fafc;">
-          <div style="font-size:0.65rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Current Status</div>
-          <div style="display: flex; gap: 8px;">
-            ${badgeConfig.map(b => {
-              const isActive = stamps.some(s => s.badges && s.badges.includes(b.key));
-              return `
-                <div title="${b.label}: ${isActive ? 'Verified' : 'Pending'}" style="width:32px; height:32px; border-radius:50%; background:${isActive ? b.bg : '#fff'}; color:${isActive ? b.color : '#cbd5e1'}; display:grid; place-items:center; border:2px solid ${isActive ? b.color : 'var(--border)'}; position:relative; box-shadow:${isActive ? '0 2px 8px '+b.color+'20' : 'none'};">
-                  <span class="material-icons-round" style="font-size:16px;">${b.icon}</span>
-                  ${isActive ? `
-                    <div style="position:absolute; bottom:-2px; right:-2px; width:12px; height:12px; border-radius:50%; background:#16a34a; color:#fff; display:grid; place-items:center; border:1px solid #fff;">
-                      <span class="material-icons-round" style="font-size:8px;">check</span>
-                    </div>
-                  ` : ''}
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-
-        <div class="content-card" style="margin-bottom:0; padding:12px; display:flex; align-items:center; justify-content:center; border:1.5px dashed var(--blue); background:var(--blue-light); width:180px; border-radius:12px;">
-           <button class="btn-primary" onclick="openStampModal(${m.id})">
-            <span class="material-icons-round">add</span> Add
-          </button>
-        </div>
-      </div>
-
-
-
       <!-- History Table -->
       <div class="content-card">
-        <div class="profile-section-header" style="border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
+        <div class="profile-section-header" style="border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px; justify-content:space-between; align-items:center;">
           <div style="display:flex; align-items:center; gap:12px;">
             <div class="profile-section-icon" style="background:#f1f5f9; color:var(--text-mid);"><span class="material-icons-round">history</span></div>
             <div>
-              <h3 class="profile-section-title" style="margin:0;">Verification History</h3>
+              <h3 class="profile-section-title" style="margin:0;">Stamp History</h3>
             </div>
           </div>
+          <button class="btn-primary" onclick="openStampModal(${m.id})">
+            <span class="material-icons-round">add</span> Add
+          </button>
         </div>
         <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
           <table class="data-table" style="width: 100%; border-collapse: collapse;">
@@ -1181,7 +1138,6 @@ function renderProfileTab(m, tab) {
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:flex; align-items:center; justify-content:space-between;">
                       <div style="display:flex; align-items:center; gap:8px;">
-                        <div style="width:24px; height:24px; border-radius:50%; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; font-size:0.65rem; font-weight:900;">A</div>
                         <span style="font-size:0.85rem; font-weight:700; color:var(--text);">${s.admin || 'Admin'}</span>
                       </div>
                       <button class="header-icon-btn delete-stamp-btn" onclick="deleteStamp(${m.id}, ${idx})" style="color:var(--red); opacity:0; transition:opacity 0.2s;">
@@ -1756,7 +1712,7 @@ function saveNewContact(memberId) {
   });
   closeModal();
   showToast('Contact added successfully', 'success');
-  switchTab(memberId, 'contacts');
+  switchTab(memberId, 'contact-table');
 }
 
 function saveNewAddress(memberId) {
@@ -1798,7 +1754,7 @@ function saveContact(memberId, index) {
   m.contacts[index].reason = document.getElementById('edit-c-reason')?.value || '';
   closeModal();
   showToast('Contact updated successfully.', 'success');
-  openProfile(memberId, 'contacts');
+  openProfile(memberId, 'contact-table');
 }
 
 function saveAddress(memberId, index) {
@@ -1837,31 +1793,6 @@ function saveCompany(memberId) {
 document.getElementById('modal-container').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });
-
-// Events
-document.getElementById('top-search-input').addEventListener('input', e => {
-  searchQuery = e.target.value;
-  currentPage = 1;
-  renderTable();
-});
-
-document.getElementById('rows-per-page').addEventListener('change', e => {
-  rowsPerPage = parseInt(e.target.value);
-  currentPage = 1;
-  renderTable();
-});
-
-document.getElementById('sidebar-toggle').addEventListener('click', () => {
-  const sidebar = document.getElementById('sidebar');
-  const main = document.querySelector('.main-content');
-  const icon = document.getElementById('sidebar-toggle-icon');
-  sidebar.classList.toggle('collapsed');
-  main.classList.toggle('expanded');
-  icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
-});
-
-
-
 
 function toggleNavGroup(btn) {
   const group = btn.closest('.nav-group');
@@ -1998,31 +1929,6 @@ function saveStamp(memberId) {
 document.getElementById('modal-container').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });
-
-// Events
-document.getElementById('top-search-input')?.addEventListener('input', e => {
-  searchQuery = e.target.value;
-  currentPage = 1;
-  renderTable();
-});
-
-document.getElementById('rows-per-page')?.addEventListener('change', e => {
-  rowsPerPage = parseInt(e.target.value);
-  currentPage = 1;
-  renderTable();
-});
-
-document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
-  const sidebar = document.getElementById('sidebar');
-  const main = document.querySelector('.main-content');
-  const icon = document.getElementById('sidebar-toggle-icon');
-  sidebar?.classList.toggle('collapsed');
-  main?.classList.toggle('expanded');
-  if(icon) icon.textContent = sidebar?.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
-});
-
-
-
 
 function toggleNavGroup(btn) {
   const group = btn.closest('.nav-group');
