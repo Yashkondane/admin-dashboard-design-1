@@ -734,12 +734,12 @@ body {
 }
 
 /* Badge Color Coding */
-.badge-all { color: #334155 !important; background: rgba(51, 65, 85, 0.1) !important; }
-.badge-active { color: #10b981 !important; background: rgba(16, 185, 129, 0.1) !important; }
-.badge-inactive { color: #ef4444 !important; background: rgba(239, 68, 68, 0.1) !important; }
-.badge-suspended { color: #f59e0b !important; background: rgba(245, 158, 11, 0.1) !important; }
-.badge-pending { color: var(--blue) !important; background: rgba(72, 128, 255, 0.1) !important; }
-.badge-incomplete { color: #94a3b8 !important; background: rgba(148, 163, 184, 0.1) !important; }
+.badge-all { color: #334155 !important; background: #f1f5f9 !important; }
+.badge-active { color: #027A48 !important; background: #ECFDF3 !important; }
+.badge-inactive { color: #667085 !important; background: #F2F4F7 !important; }
+.badge-suspended { color: #B42318 !important; background: #FEF3F2 !important; }
+.badge-pending { color: #B54708 !important; background: #FFFAEB !important; }
+.badge-incomplete { color: #C4320A !important; background: #FFF6ED !important; }
 
 .tab-item.active .badge {
   /* Keep specific colors even when active, or adjust if needed */

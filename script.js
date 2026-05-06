@@ -255,8 +255,8 @@ function renderTable() {
         <div style="display: flex; align-items: center; gap: 10px;">
           <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" alt="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: #f1f5f9;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 700; color: var(--text-mid); font-size: 0.88rem;">${m.member}</span>
-            <span style="font-size: 0.8rem; color: #000; font-weight: 800; margin-top:1px;">${m.company}</span>
+            <span style="font-weight: 800; color: #1e293b; font-size: 0.88rem;">${m.member}</span>
+            <span style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-top:1px;">${m.company}</span>
           </div>
         </div>
       </td>
@@ -859,8 +859,8 @@ function renderProfileTab(m, tab) {
                 <th style="padding-left: 12px; text-align: center;">#</th>
                 <th style="padding-left: 20px;">Date Sent</th>
                 <th>Subject</th>
-                <th>Sent To</th>
-                <th>Sender</th>
+                <th style="text-align: center;">Sent To</th>
+                <th style="text-align: center;">Sender</th>
               </tr>
             </thead>
             <tbody>
@@ -885,14 +885,14 @@ function renderProfileTab(m, tab) {
                       </div>
                     </div>
                   </td>
-                  <td style="padding: 12px 16px; vertical-align: top;">
-                    <div style="display: flex; flex-direction: column;">
+                  <td style="padding: 12px 16px; vertical-align: top; text-align: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
                       <span style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">${m.member}</span>
                       <span style="font-size: 0.72rem; color: var(--blue); font-weight: 600;">${m.email}</span>
                     </div>
                   </td>
-                  <td style="padding: 12px 16px; vertical-align: top;">
-                    <div style="display: flex; flex-direction: column;">
+                  <td style="padding: 12px 16px; vertical-align: top; text-align: center;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
                       <span style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">Jayesh Jain</span>
                       <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">${e.sender}</span>
                     </div>
