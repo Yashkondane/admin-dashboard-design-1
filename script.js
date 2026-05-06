@@ -432,7 +432,7 @@ function renderProfileTab(m, tab) {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <div style="display:flex; gap:16px; align-items:center;">
+          <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
             <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">business</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Company Details</h3>
@@ -443,56 +443,41 @@ function renderProfileTab(m, tab) {
           </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
-          <!-- Field Box: Company Name -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Company Name</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.company}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">
+          <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Company</div>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.company}</span>
+              <span style="font-size: 0.7rem; color: #2563eb; font-weight: 700; background: #eff6ff; border-radius: 999px; padding: 3px 8px;">${m.companyType}</span>
+            </div>
           </div>
-          
-          <!-- Field Box: Business Type -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Business Type</div>
-            <div style="display:inline-block; padding: 4px 12px; border-radius: 8px; background: #eff6ff; color: #3b82f6; font-size: 0.85rem; font-weight: 700;">${m.companyType}</div>
+          <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Website</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">www.${m.company.toLowerCase().replace(/ /g, '')}.com</div>
           </div>
+          <div style="padding: 16px 24px; border-bottom: 1px solid #cbd5e1;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Email</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.email}</div>
+          </div>
+          <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">GST</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.gst || '29ABCDE1234F1Z5'}</div>
+          </div>
+          <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Phone</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.mobile}</div>
+          </div>
+          <div style="padding: 16px 24px;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Phone 2</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.phone2 || '+91 —'}</div>
+          </div>
+        </div>
 
-          <!-- Field Box: Website -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Website</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">www.${m.company.toLowerCase().replace(/ /g, '')}.com</div>
-          </div>
-
-          <!-- Field Box: Email ID -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Email ID</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.email}</div>
-          </div>
-
-          <!-- Field Box: GST No -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">GST No</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.gst || '29ABCDE1234F1Z5'}</div>
-          </div>
-
-          <!-- Field Box: Phone No 1 -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Phone No 1</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.mobile}</div>
-          </div>
-
-          <!-- Field Box: Phone No 2 -->
-          <div style="padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Phone No 2</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: #1e293b;">${m.phone2 || '+91 —'}</div>
-          </div>
-
-          <!-- Field Box: About Business -->
-          <div style="grid-column: span 2; padding: 14px 18px; border-radius: 6px; border: 1px solid #f1f5f9; background: #fff;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">About Business</div>
-            <p style="font-size: 1rem; font-weight: 600; color: #475569; line-height: 1.6; margin: 0;">
-              ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
-            </p>
-          </div>
+        <div style="padding: 16px 24px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; margin-top: 16px;">
+          <h3 style="margin: 0 0 12px 0; font-size: 0.78rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">About Business</h3>
+          <p style="margin:0; color:#475569; font-size:0.88rem; line-height:1.6;">
+            ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
+          </p>
         </div>
       </div>
     `;
