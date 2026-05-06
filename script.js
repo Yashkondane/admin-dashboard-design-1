@@ -15,6 +15,11 @@ const members = [
     stamps: [
       { date: '12 Apr 2026', badges: ['identity', 'email', 'docs', 'account'], remark: 'Verified via onsite visit and document audit.', admin: 'Admin User' },
       { date: '15 Mar 2026', badges: ['identity', 'email'], remark: 'Initial identity and email check completed.', admin: 'System' }
+    ],
+    emails: [
+      { id: 101, subject: 'Your plan is about to expire', sender: 'admin@example.com', date: '23-04-2026 18 : 19', body: 'This is a reminder that your current plan is expiring soon. Please renew to continue accessing all features.\n\n— Team Admin' },
+      { id: 102, subject: 'Welcome to the Platform', sender: 'admin@example.com', date: '24-11-2025 09 : 00', body: 'Welcome to our premium management suite. We are glad to have you on board!' },
+      { id: 103, subject: 'Your monthly invoice is ready', sender: 'admin@example.com', date: '12-07-2026 14 : 00', body: 'Your invoice for the current billing cycle has been generated and is ready for download.' }
     ]
   },
   {
@@ -228,54 +233,55 @@ function renderTable() {
   tbodyEl.innerHTML = pageItems.map((m, i) => {
     const hasEmailCheck = m.status === 'active' || m.status === 'suspended' || m.id % 2 !== 0;
     const hasMobileCheck = m.status === 'active' || m.id % 3 !== 0;
-    
-    const emailIcon = hasEmailCheck ? 
-      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' : 
-      '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
-      
-    const mobileIcon = hasMobileCheck ? 
-      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' : 
+
+    const emailIcon = hasEmailCheck ?
+      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' :
       '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
 
-    let statusBg = '#f1f5f9'; let statusColor = '#64748b'; let statusText = m.status;
-    if (m.status === 'active') { statusBg = '#dcfce7'; statusColor = '#16a34a'; statusText = 'Active'; }
-    else if (m.status === 'suspended') { statusBg = '#ffedd5'; statusColor = '#ea580c'; statusText = 'Suspended'; }
-    else if (m.status === 'pending') { statusBg = '#dbeafe'; statusColor = '#3b82f6'; statusText = 'Pending'; }
-    else if (m.status === 'incomplete') { statusBg = '#f1f5f9'; statusColor = '#94a3b8'; statusText = 'Incomplete'; }
-    else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#f1f5f9'; statusColor = '#94a3b8'; statusText = 'Inactive'; }
+    const mobileIcon = hasMobileCheck ?
+      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' :
+      '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
+
+    let statusBg = '#F2F4F7'; let statusColor = '#667085'; let statusText = m.status;
+    if (m.status === 'active') { statusBg = '#ECFDF3'; statusColor = '#027A48'; statusText = 'Active'; }
+    else if (m.status === 'suspended') { statusBg = '#FEF3F2'; statusColor = '#B42318'; statusText = 'Suspended'; }
+    else if (m.status === 'pending') { statusBg = '#FFFAEB'; statusColor = '#B54708'; statusText = 'Pending'; }
+    else if (m.status === 'incomplete') { statusBg = '#FFF6ED'; statusColor = '#C4320A'; statusText = 'Incomplete'; }
+    else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#F2F4F7'; statusColor = '#667085'; statusText = 'Inactive'; }
 
     return `
     <tr>
       <td onclick="openProfile(${m.id})">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" alt="" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #f1f5f9;">
+          <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" alt="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: #f1f5f9;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 700; color: var(--text-mid); font-size: 0.8rem;">${m.member}</span>
-            <span style="font-size: 0.72rem; color: #000; font-weight: 800; margin-top:1px;">${m.company}</span>
+            <span style="font-weight: 700; color: var(--text-mid); font-size: 0.88rem;">${m.member}</span>
+            <span style="font-size: 0.8rem; color: #000; font-weight: 800; margin-top:1px;">${m.company}</span>
           </div>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.location}</span>
+        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${m.location}</span>
       </td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; align-items:center; gap:6px;">
           ${emailIcon}
-          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.email}</span>
+          <span style="color: var(--text-mid); font-weight: 600; font-size:0.88rem;">${m.email}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; align-items:center; gap:6px;">
           ${mobileIcon}
-          <span style="color: var(--text-mid); font-weight: 600; font-size:0.82rem;">${m.mobile}</span>
+          <span style="color: var(--text-mid); font-weight: 600; font-size:0.88rem;">${m.mobile}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
+        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
       </td>
       <td onclick="openProfile(${m.id})" style="text-align:center;">
-        <div class="status-badge ${m.status.toLowerCase()}" style="min-width: 90px; padding: 4px 10px; font-size: 0.75rem;">
-          ${capitalize(statusText)}
+        <div class="status-badge" style="min-width: 95px; padding: 5px 12px; font-size: 0.82rem; background: ${statusBg}; color: ${statusColor}; border: none; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>
+          ${statusText}
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
@@ -362,9 +368,9 @@ function openProfile(id, tab = 'company', pushState = true) {
           </div>
         </div>
         <div class="profile-header-right">
-          <div class="profile-plan-text" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8; text-transform: lowercase;">Plan: <span style="color:var(--blue); font-weight:800;">${m.plan || 'enterprise'}</span></div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; color: var(--orange); text-transform: capitalize;">
-            <span style="width:6px; height:6px; border-radius:50%; background:var(--orange);"></span>
+          <div class="profile-plan-text" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8;">Plan: <span style="color:var(--blue); font-weight:800; text-transform: capitalize;">${m.plan || 'enterprise'}</span></div>
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; text-transform: capitalize; background: ${m.status === 'active' ? '#ECFDF3' : (m.status === 'suspended' ? '#FEF3F2' : (m.status === 'pending' ? '#FFFAEB' : '#F2F4F7'))}; color: ${m.status === 'active' ? '#027A48' : (m.status === 'suspended' ? '#B42318' : (m.status === 'pending' ? '#B54708' : '#667085'))}; border: none; padding: 5px 14px; border-radius: 6px;">
+            <span style="width:6px; height:6px; border-radius:50%; background: ${m.status === 'active' ? '#027A48' : (m.status === 'suspended' ? '#B42318' : (m.status === 'pending' ? '#B54708' : '#667085'))};"></span>
             ${m.status ? capitalize(m.status) : 'Suspended'}
           </div>
         </div>
@@ -445,33 +451,34 @@ function renderProfileTab(m, tab) {
 
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
-            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Company</div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Company</div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-              <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.company}</span>
-              <span style="font-size: 0.7rem; color: #2563eb; font-weight: 700; background: #eff6ff; border-radius: 999px; padding: 3px 8px;">${m.companyType}</span>
+              <span style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.company}</span>
+              <span style="font-size: 0.65rem; color: #2563eb; font-weight: 700; background: #eff6ff; border-radius: 4px; padding: 2px 6px;">${m.companyType}</span>
             </div>
           </div>
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
-            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Website</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">www.${m.company.toLowerCase().replace(/ /g, '')}.com</div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Website</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">www.${m.company.toLowerCase().replace(/ /g, '')}.com</div>
           </div>
           <div style="padding: 16px 24px; border-bottom: 1px solid #cbd5e1;">
-            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Email</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.email}</div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Email</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.email}</div>
           </div>
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1;">
-            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">GST</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.gst || '29ABCDE1234F1Z5'}</div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">GST</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.gst || '29ABCDE1234F1Z5'}</div>
           </div>
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1;">
-            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Phone</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.mobile}</div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phone</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.mobile}</div>
           </div>
           <div style="padding: 16px 24px;">
-            <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Phone 2</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">${m.phone2 || '+91 —'}</div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phone 2</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.phone2 || '+91 —'}</div>
           </div>
         </div>
+
 
         <div style="padding: 16px 24px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; margin-top: 16px;">
           <h3 style="margin: 0 0 12px 0; font-size: 0.78rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">About Business</h3>
@@ -590,16 +597,16 @@ function renderProfileTab(m, tab) {
             </thead>
             <tbody>
               ${contacts.length ? contacts.map((c, ci) => {
-                const status = c.status || 'Active';
-                const statusClass = status.toLowerCase();
-                const isMainContact = ci === 0 || c.isMain;
-                const portraitType = ci % 2 === 0 ? 'men' : 'women';
-                const avatar = c.photo || `https://randomuser.me/api/portraits/${portraitType}/${ci + 20}.jpg`;
-                const contactCheckIcon = statusClass === 'active'
-                  ? '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>'
-                  : '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
+      const status = c.status || 'Active';
+      const statusClass = status.toLowerCase();
+      const isMainContact = ci === 0 || c.isMain;
+      const portraitType = ci % 2 === 0 ? 'men' : 'women';
+      const avatar = c.photo || `https://randomuser.me/api/portraits/${portraitType}/${ci + 20}.jpg`;
+      const contactCheckIcon = statusClass === 'active'
+        ? '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>'
+        : '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
 
-                return `
+      return `
                   <tr>
                     <td>
                       <div class="cell-member profile-contact-person">
@@ -646,7 +653,7 @@ function renderProfileTab(m, tab) {
                     </td>
                   </tr>
                 `;
-              }).join('') : `
+    }).join('') : `
                 <tr>
                   <td colspan="6" style="padding:64px; text-align:center; color:var(--text-soft); font-weight:700;">No contacts added.</td>
                 </tr>
@@ -674,18 +681,16 @@ function renderProfileTab(m, tab) {
         <div class="table-scroll-wrap profile-contact-table-wrap">
           <table class="data-table profile-contact-table profile-address-table">
             <colgroup>
-              <col style="width: 22%;">
-              <col style="width: 26%;">
-              <col style="width: 22%;">
-              <col style="width: 13%;">
-              <col style="width: 11%;">
-              <col style="width: 6%;">
+              <col style="width: 20%;">
+              <col style="width: 32%;">
+              <col style="width: 15%;">
+              <col style="width: 15%;">
+              <col style="width: 18%;">
             </colgroup>
             <thead>
               <tr>
                 <th>Title</th>
-                <th>Address Line 1</th>
-                <th>Address Line 2</th>
+                <th>Address</th>
                 <th>City</th>
                 <th>Pincode</th>
                 <th style="text-align:right;">Action</th>
@@ -693,21 +698,20 @@ function renderProfileTab(m, tab) {
             </thead>
             <tbody>
               ${addresses.length ? addresses.map((a, ai) => {
-                const title = a.title || a.type || 'Address';
-                const isDefault = a.isDefault || false;
-                return `
+      const title = a.title || a.type || 'Address';
+      const isDefault = a.isDefault || false;
+      return `
                   <tr>
                     <td>
                       <div style="display:flex; flex-direction:column; gap:2px;">
                         <span style="color: var(--text); font-weight: 800; font-size: 0.85rem;">${title}</span>
-                        ${isDefault ? '<span class="main-contact-indicator">Default Address</span>' : '<span class="profile-contact-muted">Secondary Address</span>'}
+                        ${isDefault ? '<span class="main-contact-indicator">Default</span>' : '<span class="profile-contact-muted">Secondary</span>'}
                       </div>
                     </td>
                     <td>
-                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${a.line1 || a.detail || '-'}</span>
-                    </td>
-                    <td>
-                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${a.line2 || '-'}</span>
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">
+                        ${a.line1 || a.detail || '-'} ${a.line2 ? ', ' + a.line2 : ''}
+                      </span>
                     </td>
                     <td>
                       <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${a.city || '-'}</span>
@@ -726,7 +730,7 @@ function renderProfileTab(m, tab) {
                     </td>
                   </tr>
                 `;
-              }).join('') : `
+    }).join('') : `
                 <tr>
                   <td colspan="6" style="padding:64px; text-align:center; color:var(--text-soft); font-weight:700;">No addresses found.</td>
                 </tr>
@@ -821,99 +825,106 @@ function renderProfileTab(m, tab) {
     `;
 
   } else if (tab === 'email') {
+    const emails = m.emails || [
+      { id: 1, subject: 'Your plan is about to expire', sender: 'admin@example.com', date: '23 Apr 2026, 18:19', body: 'This is a reminder that your current plan is expiring soon. Please renew to continue accessing all features.\n\n— Team Admin' },
+      { id: 2, subject: 'Welcome to the Platform', sender: 'admin@example.com', date: '24 Nov 2025, 09:00', body: 'Welcome! Your account is now active and ready to use.\n\n— Team Admin' },
+      { id: 3, subject: 'Your monthly invoice is ready', sender: 'admin@example.com', date: '12 Jul 2026, 14:00', body: 'Invoice for Jul 2026 has been generated. Please review and make payment.\n\n— Team Admin' }
+    ];
+
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon" style="width:44px;height:44px;flex-shrink:0;border:1px solid var(--border);background:var(--white);"><span class="material-icons-round">mail</span></div>
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 18px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">mail</span></div>
             <div>
-              <h3 class="profile-section-title">Email &amp; Communication</h3>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Communication History</h3>
             </div>
           </div>
+          <button class="btn-primary" onclick="openComposeModal(${m.id})" style="padding: 10px 24px; border-radius:10px;">
+            Compose
+          </button>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:flex-start;">
-
-          <!-- LEFT: COMPOSE -->
-          <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden;">
-            <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:#f8fafc;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;">// Compose</div>
-            </div>
-            <div style="padding:20px;">
-              <div style="margin-bottom:14px;">
-                <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">Quick Templates</div>
-                <div style="display:flex;flex-wrap:wrap;gap:8px;">
-                  <button onclick="document.getElementById('email-subj-${m.id}').value='Welcome to the Platform'; document.getElementById('email-body-${m.id}').value='Hi ${m.member},\n\nWelcome! Your account is now active.\n\n— Admin Team';" style="border:1px solid var(--border);background:#fff;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:inherit;">Welcome Email</button>
-                  <button onclick="document.getElementById('email-subj-${m.id}').value='Your plan is about to expire'; document.getElementById('email-body-${m.id}').value='Hi ${m.member},\n\nThis is a reminder that your current plan is expiring soon. Please renew to continue access.\n\n— Admin Team';" style="border:1px solid var(--border);background:#fff;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:inherit;">Plan Expiry Reminder</button>
-                  <button onclick="document.getElementById('email-subj-${m.id}').value='Account Under Review'; document.getElementById('email-body-${m.id}').value='Hi ${m.member},\n\nYour account is currently under review. We will notify you shortly.\n\n— Admin Team';" style="border:1px solid var(--border);background:#fff;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--text-mid);cursor:pointer;font-family:inherit;">Account Under Review</button>
-                </div>
-              </div>
-              <div style="margin-bottom:12px;">
-                <label style="display:block;font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Subject</label>
-                <input id="email-subj-${m.id}" type="text" placeholder="e.g. Account verification required" style="width:100%;padding:10px 14px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:0.88rem;font-weight:700;color:var(--text);outline:none;font-family:inherit;box-sizing:border-box;">
-              </div>
-              <div style="margin-bottom:16px;">
-                <label style="display:block;font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Body</label>
-                <textarea id="email-body-${m.id}" rows="6" placeholder="Write your message here..." style="width:100%;padding:10px 14px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:0.88rem;font-weight:600;color:var(--text);outline:none;font-family:inherit;resize:vertical;box-sizing:border-box;"></textarea>
-              </div>
-              <button class="btn-primary" style="width:100%;border-radius:8px;justify-content:center;" onclick="showToast('Email sent successfully','success')">
-                <span class="material-icons-round">send</span> Send Email
-              </button>
-            </div>
-          </div>
-
-          <!-- RIGHT: HISTORY -->
-          <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden;">
-            <div style="padding:14px 20px; border-bottom:1px solid var(--border); background:#f8fafc; display:flex; justify-content:space-between; align-items:center;">
-              <div style="font-size:0.7rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.8px;">// History (3)</div>
-              <button style="background:none;border:none;font-size:0.75rem;font-weight:800;color:var(--blue);cursor:pointer;font-family:inherit;" onclick="showToast('Refreshed','success')">REFRESH</button>
-            </div>
-            <div style="padding:0;">
-              <div style="padding:16px 20px; border-bottom:1px solid var(--border);">
-                <div style="cursor:pointer; display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" onclick="const b=this.nextElementSibling.nextElementSibling; b.style.display=b.style.display==='none'?'block':'none'; const i=this.querySelector('.material-icons-round'); i.textContent=i.textContent==='expand_more'?'expand_less':'expand_more';">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <span class="material-icons-round" style="font-size:18px; color:var(--text-soft); transition:0.2s;">expand_more</span>
-                    <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your plan is about to expire</div>
-                  </div>
-                  <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">23 Apr 2026, 18:19</div>
-                </div>
-                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px; padding-left:26px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
-                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6; display:none; padding-left:26px; padding-top:8px; border-top:1px dashed var(--border); margin-top:8px;">This is a reminder that your current plan is expiring soon. Please renew to continue accessing all features.<br>— Team Admin</div>
-              </div>
-              <div style="padding:16px 20px; border-bottom:1px solid var(--border);">
-                <div style="cursor:pointer; display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" onclick="const b=this.nextElementSibling.nextElementSibling; b.style.display=b.style.display==='none'?'block':'none'; const i=this.querySelector('.material-icons-round'); i.textContent=i.textContent==='expand_more'?'expand_less':'expand_more';">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <span class="material-icons-round" style="font-size:18px; color:var(--text-soft); transition:0.2s;">expand_more</span>
-                    <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Welcome to the Platform</div>
-                  </div>
-                  <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">24 Nov 2025, 09:00</div>
-                </div>
-                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px; padding-left:26px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
-                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6; display:none; padding-left:26px; padding-top:8px; border-top:1px dashed var(--border); margin-top:8px;">Welcome! Your account is now active and ready to use.<br>— Team Admin</div>
-              </div>
-              <div style="padding:16px 20px;">
-                <div style="cursor:pointer; display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;" onclick="const b=this.nextElementSibling.nextElementSibling; b.style.display=b.style.display==='none'?'block':'none'; const i=this.querySelector('.material-icons-round'); i.textContent=i.textContent==='expand_more'?'expand_less':'expand_more';">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <span class="material-icons-round" style="font-size:18px; color:var(--text-soft); transition:0.2s;">expand_more</span>
-                    <div style="font-size:0.88rem;font-weight:800;color:var(--text);">Your monthly invoice is ready</div>
-                  </div>
-                  <div style="font-size:0.75rem;color:var(--text-soft);font-weight:700;white-space:nowrap;margin-left:12px;">12 Jul 2026, 14:00</div>
-                </div>
-                <div style="font-size:0.78rem;color:var(--blue);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:4px; padding-left:26px;"><span class="material-icons-round" style="font-size:13px;">person</span>by admin@example.com</div>
-                <div style="font-size:0.82rem;color:var(--text-mid);font-weight:600;line-height:1.6; display:none; padding-left:26px; padding-top:8px; border-top:1px dashed var(--border); margin-top:8px;">Invoice for Jul 2026 has been generated. Please review and make payment.<br>— Team Admin</div>
-              </div>
-            </div>
-          </div>
-
+        <div class="table-scroll-wrap profile-contact-table-wrap">
+          <table class="data-table profile-contact-table">
+            <colgroup>
+              <col style="width: 5%;">
+              <col style="width: 15%;">
+              <col style="width: 30%;">
+              <col style="width: 25%;">
+              <col style="width: 25%;">
+            </colgroup>
+            <thead>
+              <tr>
+                <th style="padding-left: 12px; text-align: center;">#</th>
+                <th style="padding-left: 20px;">Date Sent</th>
+                <th>Subject</th>
+                <th>Sent To</th>
+                <th>Sender</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${emails.length ? emails.map((e, ei) => {
+                const words = e.body.split(' ');
+                const bodySnippet = words.length > 4 ? words.slice(0, 4).join(' ') + '...' : e.body;
+                return `
+                <tr class="email-row" style="cursor: pointer;" onclick="toggleEmailRow(${ei})">
+                  <td style="padding: 12px 8px; text-align: center; vertical-align: top;">
+                    <span style="font-size: 0.82rem; color: #94a3b8; font-weight: 800;">${ei + 1}</span>
+                  </td>
+                  <td style="padding: 12px 16px 12px 20px; vertical-align: top;">
+                    <div style="font-size: 0.82rem; color: #475569; font-weight: 700;">${e.date.split(' ')[0]}</div>
+                    <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; margin-top:2px;">${e.date.split(' ').slice(1).join(' ')}</div>
+                  </td>
+                  <td style="padding: 12px 16px; vertical-align: top;">
+                    <div style="display:flex; align-items:flex-start; gap:8px;">
+                      <span class="material-icons-round" id="email-icon-${ei}" style="font-size:16px; color:#94a3b8; transition: transform 0.2s; margin-top: 2px;">chevron_right</span>
+                      <div style="display:flex; flex-direction:column;">
+                        <span class="member-name" style="font-size: 0.85rem;">${e.subject}</span>
+                        <span style="font-size: 0.7rem; color: #64748b; font-weight: 600; margin-top: 1px;">(${bodySnippet})</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="padding: 12px 16px; vertical-align: top;">
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">${m.member}</span>
+                      <span style="font-size: 0.72rem; color: var(--blue); font-weight: 600;">${m.email}</span>
+                    </div>
+                  </td>
+                  <td style="padding: 12px 16px; vertical-align: top;">
+                    <div style="display: flex; flex-direction: column;">
+                      <span style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">Jayesh Jain</span>
+                      <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">${e.sender}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr id="email-body-${ei}" style="display: none; background: #fcfcfc;">
+                  <td colspan="5" style="padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+                    <div style="background: #fff; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
+                      <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display:flex; align-items:center; gap:6px;">
+                        Full Message Content
+                      </div>
+                      <div style="font-size: 0.85rem; color: #475569; line-height: 1.6; white-space: pre-line; font-weight: 600;">${e.body}</div>
+                    </div>
+                  </td>
+                </tr>
+              `}).join('') : `
+                <tr>
+                  <td colspan="5" style="padding: 64px; text-align: center; color: var(--text-soft); font-weight: 700;">No communication history found.</td>
+                </tr>
+              `}
+            </tbody>
+          </table>
         </div>
       </div>
     `;
 
+
   } else if (tab === 'broadcasts') {
     const broadcasts = m.broadcasts || [
-      { id: 'BRD-001', date: '02-May-2026 04:04:28 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Mobile Iphone | Qty : 5 Pcs | Price', sendTo: 'SendToAll', status: 'Live' },
-      { id: 'BRD-002', date: '01-May-2026 06:34:49 PM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 10 Pcs | Call', sendTo: 'SendToAll', status: 'Live' },
-      { id: 'BRD-003', date: '30-Apr-2026 05:20:35 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 15 Pcs | Call', sendTo: 'SendToAll', status: 'Live' }
+      { id: 'BRD-001', date: '02-05-2026 04:04:28 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Mobile Iphone | Qty : 5 Pcs | Price', sendTo: 'SendToAll', status: 'Live' },
+      { id: 'BRD-002', date: '01-05-2026 06:34:49 PM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 10 Pcs | Call', sendTo: 'SendToAll', status: 'Live' },
+      { id: 'BRD-003', date: '30-04-2026 05:20:35 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 15 Pcs | Call', sendTo: 'SendToAll', status: 'Live' }
     ];
 
     const totalCreations = broadcasts.length;
@@ -1049,7 +1060,7 @@ function renderProfileTab(m, tab) {
             <tbody>
               ${loginHistory.length ? loginHistory.map((l, i) => `
                 <tr>
-                  <td><span style="color:var(--text-soft); font-weight:800;">${i+1}</span></td>
+                  <td><span style="color:var(--text-soft); font-weight:800;">${i + 1}</span></td>
                   <td>
                     <div style="font-weight:800; color:var(--text);">${l.datetime.split(' ')[0]}</div>
                     <div style="font-size:0.75rem; color:var(--text-soft);">${l.datetime.split(' ')[1]} ${l.datetime.split(' ')[2] || ''}</div>
@@ -1073,10 +1084,10 @@ function renderProfileTab(m, tab) {
   } else if (tab === 'stamp') {
     const stamps = m.stamps || [];
     const badgeConfig = [
-      { key: 'identity', label: 'Identity',  icon: 'badge',           color: '#3b82f6', bg: '#dbeafe' },
-      { key: 'email',    label: 'Email',     icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7' },
-      { key: 'docs',     label: 'Documents', icon: 'verified_user',   color: '#7c3aed', bg: '#ede9fe' },
-      { key: 'account',  label: 'Account',   icon: 'account_circle',  color: '#d97706', bg: '#fef3c7' },
+      { key: 'identity', label: 'Identity', icon: 'badge', color: '#3b82f6', bg: '#dbeafe' },
+      { key: 'email', label: 'Email', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7' },
+      { key: 'docs', label: 'Documents', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe' },
+      { key: 'account', label: 'Account', icon: 'account_circle', color: '#d97706', bg: '#fef3c7' },
     ];
 
     return `
@@ -1112,9 +1123,9 @@ function renderProfileTab(m, tab) {
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:flex; align-items:center; gap:6px;">
                       ${(s.badges || []).map(bk => {
-                        const cfg = badgeConfig.find(b => b.key === bk);
-                        return cfg ? `<div title="${cfg.label}" style="width:28px; height:28px; border-radius:50%; background:${cfg.color}; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-right:-8px;"><span class="material-icons-round" style="font-size:14px; color:#fff;">${cfg.icon}</span></div>` : '';
-                      }).join('')}
+      const cfg = badgeConfig.find(b => b.key === bk);
+      return cfg ? `<div title="${cfg.label}" style="width:28px; height:28px; border-radius:50%; background:${cfg.color}; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-right:-8px;"><span class="material-icons-round" style="font-size:14px; color:#fff;">${cfg.icon}</span></div>` : '';
+    }).join('')}
                     </div>
                   </td>
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); max-width:250px;">
@@ -1153,7 +1164,7 @@ function closeProfile(pushState = true) {
   profileView.innerHTML = '';
   directoryView.classList.remove('hidden');
   document.querySelector('.top-bar-search').style.display = '';
-  
+
   if (pushState) {
     const url = new URL(window.location);
     url.searchParams.delete('p');
@@ -1278,7 +1289,7 @@ function openEditModal(type, memberId, index) {
         <button class="btn-primary" onclick="saveContact(${memberId}, ${index})">Save</button>
       </div>
     `;
-  
+
   } else if (type === 'plan') {
     content.className = 'modal-content modal-wide';
     const planName = m.plan ? capitalize(m.plan) : 'Starter';
@@ -1350,13 +1361,13 @@ function openEditModal(type, memberId, index) {
             
             <div style="display:flex; flex-direction:column; gap:4px;">
               ${[
-                { key: 'sendall', label: 'Send to All', desc: 'Broadcast to all users' },
-                { key: 'state', label: 'State Targeting', desc: 'Filter by state' },
-                { key: 'city', label: 'City Targeting', desc: 'Filter by city' },
-                { key: 'contacts', label: 'Add Contacts', desc: 'Allow adding contacts in profile' },
-                { key: 'phone', label: 'Phone Visibility', desc: 'User can toggle phone visibility' },
-                { key: 'address', label: 'Address Button', desc: 'User can add more addresses' }
-              ].map(f => `
+        { key: 'sendall', label: 'Send to All', desc: 'Broadcast to all users' },
+        { key: 'state', label: 'State Targeting', desc: 'Filter by state' },
+        { key: 'city', label: 'City Targeting', desc: 'Filter by city' },
+        { key: 'contacts', label: 'Add Contacts', desc: 'Allow adding contacts in profile' },
+        { key: 'phone', label: 'Phone Visibility', desc: 'User can toggle phone visibility' },
+        { key: 'address', label: 'Address Button', desc: 'User can add more addresses' }
+      ].map(f => `
                 <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom: 1px solid #f8fafc;">
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     <div style="font-size:0.88rem; font-weight:700; color:var(--text);">${f.label}</div>
@@ -1808,10 +1819,10 @@ function openStampModal(memberId) {
   const modalContent = document.getElementById('modal-content');
 
   const badgeConfig = [
-    { key: 'identity', label: 'Identity Verified',  icon: 'badge',           color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
-    { key: 'email',    label: 'Email Verified',     icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
-    { key: 'docs',     label: 'Documents Verified', icon: 'verified_user',   color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
-    { key: 'account',  label: 'Account Verified',   icon: 'account_circle',  color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
+    { key: 'identity', label: 'Identity Verified', icon: 'badge', color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
+    { key: 'email', label: 'Email Verified', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
+    { key: 'docs', label: 'Documents Verified', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
+    { key: 'account', label: 'Account Verified', icon: 'account_circle', color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
   ];
 
   modalContent.className = 'modal-content modal-stamp';
@@ -1944,10 +1955,10 @@ function openStampModal(memberId) {
   const modalContent = document.getElementById('modal-content');
 
   const badgeConfig = [
-    { key: 'identity', label: 'Identity Verified',  icon: 'badge',           color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
-    { key: 'email',    label: 'Email Verified',     icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
-    { key: 'docs',     label: 'Documents Verified', icon: 'verified_user',   color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
-    { key: 'account',  label: 'Account Verified',   icon: 'account_circle',  color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
+    { key: 'identity', label: 'Identity Verified', icon: 'badge', color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
+    { key: 'email', label: 'Email Verified', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
+    { key: 'docs', label: 'Documents Verified', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
+    { key: 'account', label: 'Account Verified', icon: 'account_circle', color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
   ];
 
   modalContent.className = 'modal-content modal-stamp';
@@ -2044,6 +2055,141 @@ function saveStamp(memberId) {
   closeModal();
   showToast('Verification stamp applied successfully!', 'success');
   switchTab(memberId, 'stamp');
+}
+
+// ===== EMAIL / COMMUNICATION FUNCTIONS =====
+function toggleEmailRow(index) {
+  const body = document.getElementById(`email-body-${index}`);
+  const icon = document.getElementById(`email-icon-${index}`);
+  if (!body || !icon) return;
+
+  const isHidden = body.style.display === 'none';
+  body.style.display = isHidden ? 'table-row' : 'none';
+  icon.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+}
+
+function openComposeModal(memberId) {
+  const modal = document.getElementById('modal-container');
+  const content = document.getElementById('modal-content');
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+
+  content.className = 'modal-content modal-wide';
+  content.style.maxWidth = '900px';
+
+  content.innerHTML = `
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
+          <span class="material-icons-round">send</span>
+        </div>
+        <h3>Compose Email to ${m.member}</h3>
+      </div>
+      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="modal-body" style="padding: 0; display: flex !important; flex-direction: row !important; min-height: 500px;">
+      <!-- Left Sidebar: Templates -->
+      <div style="width: 280px; border-right: 1px solid var(--border); background: #f8fafc; display: flex; flex-direction: column; flex-shrink: 0;">
+        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border);">
+          <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Templates</div>
+        </div>
+        <div style="flex: 1; overflow-y: auto; padding: 12px;">
+          <div class="template-item" onclick="loadEmailTemplate('welcome', ${m.id})" style="padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; background: #fff; border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: var(--text); font-size: 0.85rem; margin-bottom: 4px;">Welcome Email</div>
+            <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Official welcome message for new members.</div>
+          </div>
+          <div class="template-item" onclick="loadEmailTemplate('expiry', ${m.id})" style="padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; background: #fff; border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: var(--text); font-size: 0.85rem; margin-bottom: 4px;">Plan Expiry</div>
+            <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Friendly reminder about upcoming plan expiration.</div>
+          </div>
+          <div class="template-item" onclick="loadEmailTemplate('invoice', ${m.id})" style="padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; background: #fff; border: 1px solid var(--border);">
+            <div style="font-weight: 700; color: var(--text); font-size: 0.85rem; margin-bottom: 4px;">Monthly Invoice</div>
+            <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Notification about newly generated invoice.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side: Compose Form -->
+      <div style="flex: 1; padding: 32px; display: flex; flex-direction: column; gap: 20px; background: #fff;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Recipient</label>
+          <div style="padding: 12px 16px; background: #f1f5f9; border-radius: 8px; font-weight: 700; color: var(--text-mid); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
+            <span class="material-icons-round" style="font-size: 16px;">mail_outline</span> ${m.email}
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Subject</label>
+          <input class="modal-input" type="text" id="compose-subject" placeholder="Enter email subject" style="background:#f8fafc;">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; flex: 1;">
+          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Message</label>
+          <textarea class="modal-input" id="compose-message" style="flex: 1; background:#f8fafc; resize:none; min-height: 180px;" placeholder="Type your message here..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="sendProfileEmail(${m.id})" style="padding: 10px 32px;">
+        Send
+      </button>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+}
+
+function loadEmailTemplate(temp, memberId) {
+  const m = members.find(x => x.id === memberId);
+  const subj = document.getElementById('compose-subject');
+  const msg = document.getElementById('compose-message');
+  if (!subj || !msg || !m) return;
+
+  const templates = {
+    welcome: {
+      subject: 'Welcome to the Platform',
+      body: `Dear ${m.member},\n\nWe are excited to welcome you to our platform! Your account for ${m.company} has been successfully activated.\n\nYou can now access all your dashboard features. If you have any questions, feel free to reply to this email.\n\nBest regards,\nAdmin Team`
+    },
+    expiry: {
+      subject: 'Action Required: Your plan is about to expire',
+      body: `Hi ${m.member},\n\nThis is a friendly reminder that your current plan for ${m.company} is set to expire in 7 days.\n\nTo ensure uninterrupted service, please renew your plan from the dashboard.\n\nBest regards,\nAdmin Team`
+    },
+    invoice: {
+      subject: 'Your monthly invoice is ready',
+      body: `Hello ${m.member},\n\nYour monthly invoice for ${m.company} has been generated and is now available for review in your account.\n\nThank you for your business!\n\nBest regards,\nAdmin Team`
+    }
+  };
+
+  subj.value = templates[temp].subject;
+  msg.value = templates[temp].body;
+  showToast('Template loaded', 'success');
+}
+
+function sendProfileEmail(memberId) {
+  const subj = document.getElementById('compose-subject').value.trim();
+  const msg = document.getElementById('compose-message').value.trim();
+  if (!subj || !msg) { showToast('Subject and message are required', 'error'); return; }
+
+  const m = members.find(x => x.id === memberId);
+  if (!m.emails) m.emails = [];
+
+  const now = new Date();
+  const d = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = now.getFullYear();
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const formattedDate = `${d}-${month}-${year} ${hh} : ${mm}`;
+
+  m.emails.unshift({
+    id: Date.now(),
+    subject: subj,
+    sender: 'admin@example.com',
+    date: formattedDate,
+    body: msg
+  });
+
+  closeModal();
+  showToast('Email sent successfully', 'success');
+  switchTab(memberId, 'email');
 }
 
 // ===== NAV GROUP TOGGLE =====
