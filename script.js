@@ -234,19 +234,13 @@ function renderTable() {
     const hasEmailCheck = m.status === 'active' || m.status === 'suspended' || m.id % 2 !== 0;
     const hasMobileCheck = m.status === 'active' || m.id % 3 !== 0;
 
-    const emailIcon = hasEmailCheck ?
-      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' :
-      '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
-
-    const mobileIcon = hasMobileCheck ?
-      '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>' :
-      '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
+    // No icons needed, using text color instead
 
     let statusBg = '#E5E7EB'; let statusColor = '#4B5563'; let statusText = m.status;
     if (m.status === 'active') { statusBg = '#E8F5EC'; statusColor = '#15803D'; statusBorder = '#22C55E'; statusText = 'Active'; }
     else if (m.status === 'suspended') { statusBg = '#FEE2E2'; statusColor = '#B91C1C'; statusBorder = '#EF4444'; statusText = 'Suspended'; }
-    else if (m.status === 'pending') { statusBg = '#F3E8FF'; statusColor = '#6D28D9'; statusBorder = '#A855F7'; statusText = 'Pending'; }
-    else if (m.status === 'incomplete') { statusBg = '#E0F2FE'; statusColor = '#1D4ED8'; statusBorder = '#3B82F6'; statusText = 'Incomplete'; }
+    else if (m.status === 'pending') { statusBg = '#FFF7ED'; statusColor = '#A34E0C'; statusBorder = '#FB923C'; statusText = 'Pending'; }
+    else if (m.status === 'incomplete') { statusBg = '#F3E8FF'; statusColor = '#6D28D9'; statusBorder = '#A855F7'; statusText = 'Incomplete'; }
     else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#F3F4F6'; statusColor = '#4B5563'; statusBorder = '#D1D5DB'; statusText = 'Inactive'; }
 
     return `
@@ -264,15 +258,13 @@ function renderTable() {
         <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${m.location}</span>
       </td>
       <td onclick="openProfile(${m.id})">
-        <div style="display:flex; align-items:center; gap:6px;">
-          ${emailIcon}
-          <span style="color: var(--text-mid); font-weight: 600; font-size:0.88rem;">${m.email}</span>
+        <div style="display:flex; flex-direction:column; align-items:flex-start;">
+          <span style="color: ${hasEmailCheck ? 'var(--text-mid)' : '#f97316'}; font-weight: 600; font-size:0.88rem;">${m.email}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
-        <div style="display:flex; align-items:center; gap:6px;">
-          ${mobileIcon}
-          <span style="color: var(--text-mid); font-weight: 600; font-size:0.88rem;">${m.mobile}</span>
+        <div style="display:flex; flex-direction:column; align-items:flex-start;">
+          <span style="color: ${hasMobileCheck ? 'var(--text-mid)' : '#f97316'}; font-weight: 600; font-size:0.88rem;">${m.mobile}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
@@ -280,7 +272,7 @@ function renderTable() {
       </td>
       <td onclick="openProfile(${m.id})" style="text-align:center;">
         <div class="status-badge" style="min-width: 95px; padding: 5px 12px; font-size: 0.82rem; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
-          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>
+          ${m.status === 'pending' ? '' : `<span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>`}
           ${statusText}
         </div>
       </td>
@@ -370,11 +362,11 @@ function openProfile(id, tab = 'company', pushState = true) {
         <div class="profile-header-right">
           <div class="profile-plan-text" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8;">Plan: <span style="color:var(--blue); font-weight:800; text-transform: capitalize;">${m.plan || 'enterprise'}</span></div>
           <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; text-transform: capitalize; 
-            background: ${m.status === 'active' ? '#E8F5EC' : (m.status === 'suspended' ? '#FEE2E2' : (m.status === 'pending' ? '#F3E8FF' : (m.status === 'incomplete' ? '#E0F2FE' : '#F3F4F6')))}; 
-            color: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#6D28D9' : (m.status === 'incomplete' ? '#1D4ED8' : '#4B5563')))}; 
-            border: 1px solid ${m.status === 'active' ? '#22C55E' : (m.status === 'suspended' ? '#EF4444' : (m.status === 'pending' ? '#A855F7' : (m.status === 'incomplete' ? '#3B82F6' : '#D1D5DB')))}; 
+            background: ${m.status === 'active' ? '#E8F5EC' : (m.status === 'suspended' ? '#FEE2E2' : (m.status === 'pending' ? '#FFF7ED' : (m.status === 'incomplete' ? '#F3E8FF' : '#F3F4F6')))}; 
+            color: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#A34E0C' : (m.status === 'incomplete' ? '#6D28D9' : '#4B5563')))}; 
+            border: 1px solid ${m.status === 'active' ? '#22C55E' : (m.status === 'suspended' ? '#EF4444' : (m.status === 'pending' ? '#FB923C' : (m.status === 'incomplete' ? '#A855F7' : '#D1D5DB')))}; 
             padding: 5px 14px; border-radius: 6px;">
-            <span style="width:6px; height:6px; border-radius:50%; background: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#6D28D9' : (m.status === 'incomplete' ? '#1D4ED8' : '#4B5563')))}"></span>
+            ${m.status === 'pending' ? '' : `<span style="width:6px; height:6px; border-radius:50%; background: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#A34E0C' : (m.status === 'incomplete' ? '#6D28D9' : '#4B5563')))}"></span>`}
             ${m.status ? capitalize(m.status) : 'Suspended'}
           </div>
         </div>
@@ -616,7 +608,7 @@ function renderProfileTab(m, tab) {
                       <div class="cell-member profile-contact-person">
                         <img src="${avatar}" alt="${c.name}" class="member-avatar profile-contact-avatar">
                         <div class="profile-contact-name-stack">
-                          <span class="member-name">${c.name}</span>
+                          <span class="member-name" style="font-size: 0.88rem; font-weight: 800; color: #1e293b;">${c.name}</span>
                           ${isMainContact ? `
                             <span class="main-contact-indicator">
                               <span class="material-icons-round">star</span>
@@ -626,6 +618,9 @@ function renderProfileTab(m, tab) {
                         </div>
                       </div>
                     </td>
+                    <td style="padding: 16px 24px;"><span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.designation || '-'}</span></td>
+                    <td style="padding: 16px 24px;"><span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.email}</span></td>
+                    <td style="padding: 16px 24px;"><span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.phone}</span></td>
                     <td>
                       <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${c.role || 'Contact'}</span>
                     </td>
@@ -706,22 +701,22 @@ function renderProfileTab(m, tab) {
       const isDefault = a.isDefault || false;
       return `
                   <tr>
-                    <td>
+                    <td style="padding: 16px 24px;">
                       <div style="display:flex; flex-direction:column; gap:2px;">
-                        <span style="color: var(--text); font-weight: 800; font-size: 0.85rem;">${title}</span>
+                        <span style="color: #1e293b; font-weight: 800; font-size: 0.88rem;">${title}</span>
                         ${isDefault ? '<span class="main-contact-indicator">Default</span>' : '<span class="profile-contact-muted">Secondary</span>'}
                       </div>
                     </td>
-                    <td>
-                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">
+                    <td style="padding: 16px 24px;">
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">
                         ${a.line1 || a.detail || '-'} ${a.line2 ? ', ' + a.line2 : ''}
                       </span>
                     </td>
-                    <td>
-                      <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${a.city || '-'}</span>
+                    <td style="padding: 16px 24px;">
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${a.city || '-'}</span>
                     </td>
-                    <td>
-                      <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${a.pincode || '-'}</span>
+                    <td style="padding: 16px 24px;">
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${a.pincode || '-'}</span>
                     </td>
                     <td style="text-align:right;">
                       <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
@@ -745,85 +740,66 @@ function renderProfileTab(m, tab) {
       </div>
     `;
   } else if (tab === 'plan') {
+    const assignedPlans = m.assignedPlans || [
+      { sr: 1, name: 'TK-Premium', date: '28-Apr-2026 to 28-Apr-2027', remark: '', invoice: 'ISPL/1002/2026-27', status: 'UnPaid' },
+      { sr: 2, name: 'TK-Premium', date: '24-Apr-2026 to 24-Apr-2026', remark: '', invoice: 'ISPL/1001/2026-27', status: 'Paid' },
+      { sr: 3, name: 'TK-Premium', date: '22-Apr-2026 to 22-May-2026', remark: '', invoice: '', status: 'UnPaid' },
+      { sr: 4, name: 'TK-Lite', date: '16-Apr-2026 to 16-May-2026', remark: '', invoice: '', status: 'UnPaid' }
+    ];
+
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white);"><span class="material-icons-round">payment</span></div>
+        <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#1e293b;">
+              <span class="material-icons-round">assignment_ind</span>
+            </div>
             <div>
-              <h3 class="profile-section-title">Current Plan Overview</h3>
+              <h3 class="profile-section-title" style="margin:0;">Assign Plan</h3>
             </div>
           </div>
-          <button class="btn-primary" onclick="openEditModal('plan', ${m.id})">
-            <span class="material-icons-round">settings</span> Edit
+          <button class="btn-primary" onclick="showAssignPlanModal(${m.id})" style="background: var(--blue);">
+            Assign Plan
           </button>
         </div>
-
-        <!-- Plan Banner -->
-        <div style="margin-top:24px; border: 1px solid var(--border); border-radius:16px; background: #fff; padding:28px 32px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-              <span style="font-size:0.75rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:1px;background:#f1f5f9;padding:4px 10px;border-radius:100px;">Active Plan</span>
-              <span style="display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;padding:4px 10px;border-radius:100px;">
-                <span style="width:6px;height:6px;border-radius:50%;background:#16a34a;display:inline-block;"></span>
-                <span style="font-size:0.75rem;font-weight:800;color:#16a34a;">Auto-renew ON</span>
-              </span>
-            </div>
-            <div style="font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;margin-bottom:8px;">${capitalize(m.plan)} Plan</div>
-            <div style="font-size:0.9rem;font-weight:600;color:var(--text-mid);">Renews automatically on Aug 15, 2026</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:2.8rem;font-weight:900;color:var(--blue);line-height:1;">$99<span style="font-size:1.1rem;color:var(--text-mid);font-weight:700;">/mo</span></div>
-          </div>
-        </div>
-
-        <!-- Stats Row -->
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px;">
-          <div style="border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:#fff;">
-            <div style="font-size:0.72rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Billing Cycle</div>
-            <div style="font-size:1.1rem;font-weight:900;color:var(--text);">Monthly</div>
-          </div>
-          <div style="border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:#fff;">
-            <div style="font-size:0.72rem;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Next Payment</div>
-            <div style="font-size:1.1rem;font-weight:900;color:var(--text);">Aug 15, 2026</div>
-          </div>
-        </div>
-
-        <!-- Billing History -->
-        <div style="margin-top:24px;">
-          <h4 style="font-size:1rem;font-weight:900;color:var(--text);margin-bottom:16px;">Billing History</h4>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:12px;padding:16px 20px;background:#fff;">
-              <div style="display:flex;align-items:center;gap:14px;">
-                <div style="width:38px;height:38px;border-radius:10px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <span class="material-icons-round" style="color:#16a34a;font-size:20px;">receipt_long</span>
-                </div>
-                <div>
-                  <div style="font-weight:800;color:var(--text);font-size:0.95rem;">Jul 15, 2026</div>
-                  <a href="#" style="color:var(--blue);font-weight:700;font-size:0.82rem;text-decoration:none;">INV-2026-07</a>
-                </div>
-              </div>
-              <div style="display:flex;align-items:center;gap:20px;">
-                <div style="font-weight:900;font-size:1rem;color:var(--text);">$99.00</div>
-                <span class="bubble-tag" style="background:#dcfce7;color:#16a34a;">Paid</span>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:12px;padding:16px 20px;background:#fff;">
-              <div style="display:flex;align-items:center;gap:14px;">
-                <div style="width:38px;height:38px;border-radius:10px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <span class="material-icons-round" style="color:#16a34a;font-size:20px;">receipt_long</span>
-                </div>
-                <div>
-                  <div style="font-weight:800;color:var(--text);font-size:0.95rem;">Jun 15, 2026</div>
-                  <a href="#" style="color:var(--blue);font-weight:700;font-size:0.82rem;text-decoration:none;">INV-2026-06</a>
-                </div>
-              </div>
-              <div style="display:flex;align-items:center;gap:20px;">
-                <div style="font-weight:900;font-size:1rem;color:var(--text);">$99.00</div>
-                <span class="bubble-tag" style="background:#dcfce7;color:#16a34a;">Paid</span>
-              </div>
-            </div>
-          </div>
+        
+        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
+          <table class="data-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">SR No.</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Plan Name</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Remark</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Invoice No.</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
+                <th style="padding: 16px 24px; text-align: right; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${assignedPlans.map(p => `
+                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; color: #64748b;">${p.sr}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b; letter-spacing:-0.2px;">${p.name}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; color: #94a3b8;">${p.date}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; color: var(--text-soft);">${p.remark || '-'}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: var(--blue);">${p.invoice || '-'}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+                    <span class="bubble-tag" style="background: ${p.status === 'Paid' ? '#dcfce7' : '#e0f2fe'}; color: ${p.status === 'Paid' ? '#16a34a' : '#1d4ed8'}; font-weight:800; font-size:0.75rem; padding:4px 12px;">${p.status}</span>
+                  </td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: right; position: relative;">
+                    <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('plan-${p.sr}', this)"><span class="material-icons-round">more_vert</span></button>
+                    <div class="dropdown-menu" id="dropdown-plan-${p.sr}" style="right: 16px; top: 80%;">
+                      <button class="dropdown-item" onclick="showToast('Editing plan...', 'success')"><span class="material-icons-round">edit</span> Edit Plan</button>
+                      <button class="dropdown-item" onclick="showToast('Invoice sent', 'success')"><span class="material-icons-round">send</span> Send Invoice</button>
+                      <button class="dropdown-item" onclick="showToast('Viewing details...', 'success')"><span class="material-icons-round">visibility</span> View</button>
+                      <button class="dropdown-item" onclick="showToast('Downloading invoice...', 'success')"><span class="material-icons-round">download</span> Download</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
         </div>
       </div>
     `;
@@ -934,49 +910,14 @@ function renderProfileTab(m, tab) {
     const totalCreations = broadcasts.length;
 
     let html = `
-      <!-- Stats Row -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 24px;">
-        
-        <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-          <div style="width:56px; height:56px; border-radius:14px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center; flex-shrink:0;">
-            <span class="material-icons-round" style="font-size:28px;">campaign</span>
-          </div>
-          <div>
-            <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Total Broadcasts</div>
-            <div style="font-size:1.8rem; font-weight:900; color:var(--text); line-height:1;">${totalCreations}</div>
-          </div>
-        </div>
-
-        <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-          <div style="width:56px; height:56px; border-radius:14px; background:#ECFDF3; color:#027A48; display:grid; place-items:center; flex-shrink:0;">
-            <span class="material-icons-round" style="font-size:28px;">bolt</span>
-          </div>
-          <div>
-            <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Recent Status</div>
-            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
-              <span style="width:8px; height:8px; border-radius:50%; background: #027A48; display:inline-block;"></span>
-              <span style="font-size:1.1rem; font-weight:900; color: #027A48;">${broadcasts.length ? broadcasts[0].status : 'N/A'}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="content-card" style="margin-bottom:0; padding:24px; display:flex; align-items:center; gap:20px; border:1px solid var(--border); transition: transform 0.2s; cursor:default;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-          <div style="width:56px; height:56px; border-radius:14px; background:#fff7ed; color:#ea580c; display:grid; place-items:center; flex-shrink:0;">
-            <span class="material-icons-round" style="font-size:28px;">person</span>
-          </div>
-          <div>
-            <div style="font-size:0.75rem; color:var(--text-soft); font-weight:800; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Primary Broadcaster</div>
-            <div style="font-size:1.1rem; font-weight:900; color:var(--text); margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;">${broadcasts.length ? broadcasts[0].broadcaster : 'N/A'}</div>
-          </div>
-        </div>
-
-      </div>
 
       <!-- History Table -->
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
           <div style="display:flex; align-items:center; gap:12px;">
-            <div class="profile-section-icon" style="background:var(--blue-light); color:var(--blue);"><span class="material-icons-round">history</span></div>
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#1e293b;">
+              <span class="material-icons-round">campaign</span>
+            </div>
             <div>
               <h3 class="profile-section-title" style="margin:0;">Broadcast History</h3>
             </div>
@@ -1019,11 +960,11 @@ function renderProfileTab(m, tab) {
                   </td>
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:inline-flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 6px; 
-                      background: ${b.status === 'Live' || b.status === 'Active' ? '#E8F5EC' : (b.status === 'Pending' ? '#F3E8FF' : (b.status === 'Incomplete' ? '#E0F2FE' : '#F3F4F6'))}; 
-                      color: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#6D28D9' : (b.status === 'Incomplete' ? '#1D4ED8' : '#4B5563'))}; 
-                      border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#22C55E' : (b.status === 'Pending' ? '#A855F7' : (b.status === 'Incomplete' ? '#3B82F6' : '#D1D5DB'))}; 
+                      background: ${b.status === 'Live' || b.status === 'Active' ? '#E8F5EC' : (b.status === 'Pending' ? '#FFF7ED' : (b.status === 'Incomplete' ? '#F3E8FF' : '#F3F4F6'))}; 
+                      color: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#A34E0C' : (b.status === 'Incomplete' ? '#6D28D9' : '#4B5563'))}; 
+                      border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#22C55E' : (b.status === 'Pending' ? '#FB923C' : (b.status === 'Incomplete' ? '#A855F7' : '#D1D5DB'))}; 
                       font-weight: 700;">
-                      <span style="width:6px; height:6px; border-radius:50%; background: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#6D28D9' : (b.status === 'Incomplete' ? '#1D4ED8' : '#4B5563'))};"></span>
+                      ${b.status === 'Pending' ? '' : `<span style="width:6px; height:6px; border-radius:50%; background: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#A34E0C' : (b.status === 'Incomplete' ? '#1D4ED8' : '#4B5563'))};"></span>`}
                       <span style="font-size:0.8rem; text-transform:capitalize;">${b.status}</span>
                     </div>
                   </td>
@@ -1929,142 +1870,6 @@ function saveStamp(memberId) {
   switchTab(memberId, 'stamp');
 }
 
-// Close modal on overlay click
-document.getElementById('modal-container').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
-
-function toggleNavGroup(btn) {
-  const group = btn.closest('.nav-group');
-  const sub = group.querySelector('.nav-sub');
-  const isOpen = group.classList.contains('open');
-  document.querySelectorAll('.nav-group.open').forEach(g => {
-    if (g !== group) { g.classList.remove('open'); g.querySelector('.nav-sub').style.height = '0px'; }
-  });
-  if (isOpen) { group.classList.remove('open'); sub.style.height = '0px'; }
-  else { group.classList.add('open'); sub.style.height = sub.scrollHeight + 'px'; }
-}
-
-// ===== ASSIGN PLAN =====
-function assignPlan(memberId, plan) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-  m.plan = plan.toLowerCase();
-  showToast(`Plan changed to ${plan}`, 'success');
-  switchTab(memberId, 'plan');
-}
-
-// ===== STAMP MODAL =====
-function openStampModal(memberId) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-
-  const modalContainer = document.getElementById('modal-container');
-  const modalContent = document.getElementById('modal-content');
-
-  const badgeConfig = [
-    { key: 'identity', label: 'Identity Verified', icon: 'badge', color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
-    { key: 'email', label: 'Email Verified', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
-    { key: 'docs', label: 'Documents Verified', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
-    { key: 'account', label: 'Account Verified', icon: 'account_circle', color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
-  ];
-
-  modalContent.className = 'modal-content modal-stamp';
-  modalContent.style.maxWidth = '1000px';
-  modalContent.innerHTML = `
-    <div class="modal-header" style="background:#fff; border-bottom:1px solid var(--border); padding:20px 24px;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div style="width:36px; height:36px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-          <span class="material-icons-round" style="font-size:20px;">verified</span>
-        </div>
-        <h3 style="margin:0; font-size:1.25rem; font-weight:900;">Add Verification Stamp</h3>
-      </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body" style="padding:32px; background:#fff;">
-      
-      <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
-        <!-- Left Column: Date & Badges -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <div>
-            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">DATE <span style="color:var(--red);">*</span></label>
-            <div style="position:relative;">
-              <span class="material-icons-round" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-soft); font-size:20px;">calendar_today</span>
-              <input type="date" id="stamp-date" class="modal-input" style="padding-left:44px; background:#f8fafc;" value="${new Date().toISOString().split('T')[0]}">
-            </div>
-          </div>
-
-          <div>
-            <label class="modal-label" style="display:block; margin-bottom:12px; color:var(--text); font-weight:800; font-size:0.8rem;">VERIFICATION BADGES <span style="color:var(--red);">*</span></label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-              ${badgeConfig.map(b => `
-                <label class="badge-select-item" style="display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
-                  <input type="checkbox" id="badge-${b.key}" value="${b.key}" style="width:18px; height:18px; accent-color:var(--blue); cursor:pointer;">
-                  <div style="width:30px; height:30px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
-                    <span class="material-icons-round" style="font-size:16px;">${b.icon}</span>
-                  </div>
-                  <div>
-                    <div style="font-size:0.8rem; font-weight:800; color:var(--text); line-height:1.2;">${b.label}</div>
-                    <div style="font-size:0.7rem; color:var(--text-soft); font-weight:600; line-height:1.2;">${b.desc}</div>
-                  </div>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Remark -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <div style="flex:1; display:flex; flex-direction:column;">
-            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">REMARK <span style="color:var(--text-soft); font-weight:600; text-transform:none;">(Optional)</span></label>
-            <div style="position:relative; flex:1;">
-              <span class="material-icons-round" style="position:absolute; left:14px; top:14px; color:var(--text-soft); font-size:20px;">chat_bubble_outline</span>
-              <textarea id="stamp-remark" class="modal-input" style="width:100%; height:100%; min-height:200px; padding:12px 16px 12px 44px; background:#f8fafc; resize:none;" placeholder="Enter remark (optional)"></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-outline" onclick="closeModal()">Close</button>
-      <button class="btn-primary" onclick="saveStamp(${m.id})">
-        <span class="material-icons-round">save</span> Save Stamp
-      </button>
-    </div>
-  `;
-  modalContainer.classList.remove('hidden');
-}
-
-function saveStamp(memberId) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-
-  const dateRaw = document.getElementById('stamp-date').value;
-  const remark = document.getElementById('stamp-remark').value.trim();
-  const badges = ['identity', 'email', 'docs', 'account'].filter(k => {
-    const el = document.getElementById('badge-' + k);
-    return el && el.checked;
-  });
-
-  if (!dateRaw) { showToast('Please select a verification date', 'error'); return; }
-  if (badges.length < 3) { showToast('Please select at least 3 verification badges', 'error'); return; }
-
-  const d = new Date(dateRaw);
-  const dateFormatted = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-  if (!m.stamps) m.stamps = [];
-  m.stamps.unshift({
-    date: dateFormatted,
-    badges,
-    remark: remark || 'Verified and badges assigned.',
-    admin: 'Admin User'
-  });
-
-  closeModal();
-  showToast('Verification stamp applied successfully!', 'success');
-  switchTab(memberId, 'stamp');
-}
-
 // ===== EMAIL / COMMUNICATION FUNCTIONS =====
 function toggleEmailRow(index) {
   const body = document.getElementById(`email-body-${index}`);
@@ -2200,28 +2005,6 @@ function sendProfileEmail(memberId) {
   switchTab(memberId, 'email');
 }
 
-// ===== NAV GROUP TOGGLE =====
-function toggleNavGroup(btn) {
-  const group = btn.closest('.nav-group');
-  const sub = group.querySelector('.nav-sub');
-  const isOpen = group.classList.contains('open');
-
-  document.querySelectorAll('.nav-group.open').forEach(g => {
-    if (g !== group) {
-      g.classList.remove('open');
-      g.querySelector('.nav-sub').style.height = '0px';
-    }
-  });
-
-  if (isOpen) {
-    group.classList.remove('open');
-    sub.style.height = '0px';
-  } else {
-    group.classList.add('open');
-    sub.style.height = sub.scrollHeight + 'px';
-  }
-}
-
 // ===== DELETE STAMP =====
 function deleteStamp(memberId, index) {
   if (confirm('Are you sure you want to remove this verification stamp?')) {
@@ -2287,4 +2070,76 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initApp);
 } else {
   initApp();
+}
+
+function showAssignPlanModal(memberId) {
+  const modal = document.getElementById('modal-container');
+  const content = document.getElementById('modal-content');
+  if (!modal || !content) return;
+
+  content.className = 'modal-content';
+  content.style.maxWidth = '600px';
+
+  content.innerHTML = `
+        <div class="modal-header" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: #1e293b;">Plan Activation</h3>
+            <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+        </div>
+        <div class="modal-body" style="padding: 40px 32px;">
+            <div style="display:flex; flex-direction:column; gap:28px;">
+                
+                <!-- Active Row -->
+                <div style="display:flex; align-items:center; gap:24px;">
+                    <label style="display:flex; align-items:center; gap:10px; font-weight:700; width:100px; cursor:pointer; color: #1e293b; font-size: 0.95rem;">
+                        <input type="radio" name="plan-status" value="Active" checked style="width: 18px; height: 18px; accent-color:var(--blue);"> Active
+                    </label>
+                    <div style="flex:1; position:relative;">
+                        <select class="modal-input" style="width: 100%; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600; color: #334155; appearance: none;">
+                            <option>Choose any one</option>
+                            <option>TK-Premium</option>
+                            <option>TK-Lite</option>
+                        </select>
+                        <span class="material-icons-round" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#64748b; font-size:20px;">expand_more</span>
+                    </div>
+                </div>
+
+                <!-- Inactive Row -->
+                <div style="display:flex; align-items:center; gap:24px;">
+                    <label style="display:flex; align-items:center; gap:10px; font-weight:700; width:100px; cursor:pointer; color: #1e293b; font-size: 0.95rem;">
+                        <input type="radio" name="plan-status" value="Inactive" style="width: 18px; height: 18px; accent-color:var(--blue);"> Inactive
+                    </label>
+                    <div style="flex:1; position:relative;">
+                        <select class="modal-input" style="width: 100%; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600; color: #334155; appearance: none;">
+                            <option>Choose Inactive Status</option>
+                            <option>Cancel (Failed to pay)</option>
+                            <option>Inactive</option>
+                        </select>
+                        <span class="material-icons-round" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#64748b; font-size:20px;">expand_more</span>
+                    </div>
+                </div>
+
+                <!-- Dates Row -->
+                <div style="display:flex; align-items:center; gap:24px;">
+                    <div style="width:100px; font-weight:700; color: #1e293b; font-size: 0.95rem;">Start Date</div>
+                    <div style="display:flex; align-items:center; gap:16px; flex:1;">
+                        <input type="text" class="modal-input" placeholder="05/07/2026" style="flex:1; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600;">
+                        <div style="font-weight:700; color: #1e293b; font-size: 0.95rem;">End Date</div>
+                        <input type="text" class="modal-input" placeholder="05/07/2027" style="flex:1; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600;">
+                    </div>
+                </div>
+
+                <!-- Remark -->
+                <div style="display:flex; gap:24px;">
+                    <div style="width:100px; font-weight:700; color: #1e293b; font-size: 0.95rem; padding-top: 12px;">Remark</div>
+                    <textarea class="modal-input" rows="4" style="flex:1; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; font-weight: 600; resize: none;" placeholder="Enter internal notes..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid var(--border); padding: 24px 32px; display:flex; justify-content: flex-end; gap: 12px;">
+            <button class="btn-outline" onclick="closeModal()" style="background: #cbd5e1; border: none; color: #475569; font-weight: 800; padding: 10px 28px;">Close</button>
+            <button class="btn-primary" onclick="closeModal(); showToast('Plan updated successfully', 'success')" style="padding: 10px 32px; font-weight: 800; background: var(--blue);">Save</button>
+        </div>
+    `;
+
+  modal.classList.remove('hidden');
 }
