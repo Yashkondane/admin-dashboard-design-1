@@ -574,33 +574,30 @@ function renderProfileTab(m, tab) {
         <div class="table-scroll-wrap profile-contact-table-wrap">
           <table class="data-table profile-contact-table">
             <colgroup>
-              <col style="width: 22%;">
-              <col style="width: 18%;">
-              <col style="width: 24%;">
-              <col style="width: 17%;">
-              <col style="width: 12%;">
-              <col style="width: 7%;">
+              <col style="width: 25%;">
+              <col style="width: 15%;">
+              <col style="width: 20%;">
+              <col style="width: 15%;">
+              <col style="width: 15%;">
+              <col style="width: 10%;">
             </colgroup>
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Designation</th>
-                <th>Email</th>
-                <th>Mobile</th>
-                <th>Status</th>
-                <th style="text-align:right;">Action</th>
+                <th>NAME</th>
+                <th>DESIGNATION</th>
+                <th>EMAIL</th>
+                <th>MOBILE</th>
+                <th>STATUS</th>
+                <th style="text-align:right;">ACTION</th>
               </tr>
             </thead>
             <tbody>
               ${contacts.length ? contacts.map((c, ci) => {
       const status = c.status || 'Active';
-      const statusClass = status.toLowerCase();
+      const isInactive = status === 'Inactive';
       const isMainContact = ci === 0 || c.isMain;
       const portraitType = ci % 2 === 0 ? 'men' : 'women';
       const avatar = c.photo || `https://randomuser.me/api/portraits/${portraitType}/${ci + 20}.jpg`;
-      const contactCheckIcon = statusClass === 'active'
-        ? '<span class="material-icons-round" style="color: #10b981; font-size: 14px;">check_circle_outline</span>'
-        : '<span class="material-icons-round" style="color: #ef4444; font-size: 14px;">highlight_off</span>';
 
       return `
                   <tr>
@@ -618,28 +615,20 @@ function renderProfileTab(m, tab) {
                         </div>
                       </div>
                     </td>
-                    <td style="padding: 16px 24px;"><span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.designation || '-'}</span></td>
-                    <td style="padding: 16px 24px;"><span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.email}</span></td>
-                    <td style="padding: 16px 24px;"><span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.phone}</span></td>
-                    <td>
-                      <span style="color: var(--text-mid); font-weight: 700; font-size: 0.82rem;">${c.role || 'Contact'}</span>
+                    <td style="padding: 16px 24px;">
+                      <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.role || '-'}</span>
                     </td>
-                    <td>
-                      <div style="display:flex; align-items:center; gap:6px;">
-                        ${contactCheckIcon}
-                        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.email || '-'}</span>
+                    <td style="padding: 16px 24px;">
+                      <span style="color: ${isInactive ? '#f97316' : 'var(--text-mid)'}; font-weight: 600; font-size: 0.88rem;">${c.email}</span>
+                    </td>
+                    <td style="padding: 16px 24px;">
+                      <span style="color: ${isInactive ? '#f97316' : 'var(--text-mid)'}; font-weight: 600; font-size: 0.88rem;">${c.phone}</span>
+                    </td>
+                    <td style="padding: 16px 24px;">
+                      <div class="status-badge" style="min-width: 85px; padding: 5px 12px; font-size: 0.8rem; background: ${status === 'Active' ? '#E8F5EC' : '#F3F4F6'}; color: ${status === 'Active' ? '#15803D' : '#4B5563'}; border: 1px solid ${status === 'Active' ? '#22C55E' : '#D1D5DB'}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
+                        <span style="width: 6px; height: 6px; border-radius: 50%; background: ${status === 'Active' ? '#15803D' : '#4B5563'};"></span>
+                        ${status}
                       </div>
-                    </td>
-                    <td>
-                      <div style="display:flex; align-items:center; gap:6px;">
-                        ${contactCheckIcon}
-                        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${c.phone || '-'}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <span class="status-badge ${statusClass}" style="min-width:auto; padding:4px 12px; font-size:0.75rem;">
-                        <span></span> ${status}
-                      </span>
                     </td>
                     <td style="text-align:right;">
                       <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-table-${m.id}-${ci}', this)">
