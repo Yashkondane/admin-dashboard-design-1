@@ -417,6 +417,7 @@ function openProfile(id, tab = 'company', pushState = true) {
       <button class="profile-tab ${tab === 'plan' ? 'active' : ''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">assignment</span> Assign Plan</button>
       <button class="profile-tab ${tab === 'email' ? 'active' : ''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email Setup</button>
       <button class="profile-tab ${tab === 'broadcasts' ? 'active' : ''}" onclick="switchTab(${id},'broadcasts')"><span class="material-icons-round">campaign</span> Broadcasts</button>
+      <button class="profile-tab ${tab === 'broadcast-settings' ? 'active' : ''}" onclick="switchTab(${id},'broadcast-settings')"><span class="material-icons-round">settings_input_antenna</span> Broadcast Settings</button>
       <button class="profile-tab ${tab === 'history' ? 'active' : ''}" onclick="switchTab(${id},'history')"><span class="material-icons-round">login</span> Login History</button>
       <button class="profile-tab ${tab === 'stamp' ? 'active' : ''}" onclick="switchTab(${id},'stamp')"><span class="material-icons-round">verified</span> Stamp</button>
     </div>
@@ -971,6 +972,50 @@ function renderProfileTab(m, tab) {
     `;
     return html;
 
+  } else if (tab === 'broadcast-settings') {
+    const settings = [
+      { category: 'Stainless Steel', sub: 'Circle, Plate' },
+      { category: 'Mobile', sub: 'Iphone' },
+      { category: 'Components', sub: 'Motherboard, Memory, Processor' },
+      { category: 'Aluminium', sub: 'Sheet' },
+      { category: 'Server', sub: 'Hard Drive' },
+      { category: 'PC', sub: 'Motherboard, Screen, Hard drive, Processor' },
+      { category: 'Laptop', sub: 'Hard drive 2.5", Battery, Motherboard, Laptop' }
+    ];
+    return `
+      <div class="content-card">
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="background:var(--white); border:1px solid var(--border); border-radius:8px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--text);"><span class="material-icons-round">settings_input_antenna</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem;">Broadcast Settings</h3>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="openEditModal('broadcast-settings', ${m.id})" style="border-radius:10px; padding:10px 24px;">
+            <span class="material-icons-round" style="font-size:18px;">edit</span> Edit
+          </button>
+        </div>
+        
+        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px; border-top:1px solid var(--border);">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="padding: 16px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Category</th>
+                <th style="padding: 16px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Subcategory</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${settings.map(s => `
+                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                  <td style="padding: 16px 24px; font-weight:800; color:var(--text); font-size:0.88rem;">${s.category}</td>
+                  <td style="padding: 16px 24px; font-weight:600; color:var(--text-mid); font-size:0.88rem;">${s.sub}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
   } else if (tab === 'history') {
     const loginHistory = m.loginHistory || [];
     return `
@@ -1118,7 +1163,124 @@ function openEditModal(type, memberId, index) {
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
   let html = '';
-  if (type === 'contact') {
+
+  if (type === 'broadcast-settings') {
+    content.className = 'modal-content modal-full';
+    content.style.maxWidth = '1300px';
+    
+    const categories = [
+      { id: 'ss', name: 'Stainless Steel', icon: 'shield', selected: 2, total: 2, active: true },
+      { id: 'mo', name: 'Mobile', icon: 'phone_iphone', selected: 1, total: 1, active: false },
+      { id: 'co', name: 'Components', icon: 'layers', selected: 3, total: 3, active: false },
+      { id: 'al', name: 'Aluminium', icon: 'architecture', selected: 1, total: 1, active: false },
+      { id: 'se', name: 'Server', icon: 'storage', selected: 1, total: 1, active: false },
+      { id: 'pc', name: 'PC', icon: 'desktop_windows', selected: 4, total: 6, active: false },
+      { id: 'lp', name: 'Laptop', icon: 'laptop', selected: 4, total: 5, active: false }
+    ];
+
+    const subs = {
+      'ss': ['Circle', 'Plate'],
+      'mo': ['Iphone'],
+      'co': ['Motherboard', 'Memory', 'Processor'],
+      'al': ['Sheet'],
+      'se': ['Hard Drive'],
+      'pc': ['Motherboard', 'Screen', 'Hard drive', 'Processor', 'Memory', 'SSD'],
+      'lp': ['Hard drive 2.5"', 'Battery', 'Motherboard', 'Laptop', 'Screen']
+    };
+
+    const themeColor = 'var(--blue)';
+    const themeBg = 'var(--blue-light)';
+
+    html = `
+      <div class="modal-header" style="padding: 24px 32px; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;">
+        <div style="display:flex; gap:16px; align-items:center;">
+          <div style="width:48px; height:48px; border-radius:12px; background:${themeBg}; color:${themeColor}; display:grid; place-items:center;">
+            <span class="material-icons-round" style="font-size:24px;">settings_input_antenna</span>
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:1.15rem; font-weight:900; color: #1e293b;">Broadcast Settings</h3>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+              <span style="font-size:0.75rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">Live Configuration</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <button class="btn-outline" onclick="showToast('Settings Reset', 'info')" style="padding:10px 20px; font-weight:800; display:flex; align-items:center; gap:8px; border-radius:10px; border-color:#cbd5e1; color:#64748b;">
+            <span class="material-icons-round" style="font-size:20px;">refresh</span> Reset
+          </button>
+          <button class="btn-primary" onclick="showToast('Broadcast Settings Updated', 'success'); closeModal();" style="padding:10px 28px; font-weight:800; display:flex; align-items:center; gap:10px; background:${themeColor}; border-radius:10px; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
+            <span class="material-icons-round" style="font-size:20px;">save</span> Save Changes
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="padding: 32px; background: #f8fafc; min-height: 500px;">
+        <div style="margin-bottom: 40px;">
+          <div style="display:flex; align-items:center; margin-bottom:20px; padding:0 4px;">
+            <h4 style="margin:0; font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px;">Category</h4>
+          </div>
+          
+          <div class="custom-scrollbar" style="display:flex; gap:16px; overflow-x:auto; padding:4px 4px 16px 4px;">
+            ${categories.map(c => `
+              <div style="flex:0 0 170px; padding:20px; background:${c.active ? '#fff' : '#f1f5f9'}; border:2px solid ${c.active ? themeColor : 'transparent'}; border-radius:16px; display:flex; flex-direction:column; align-items:center; gap:14px; cursor:pointer; transition:all 0.3s; position:relative; 
+                ${c.active ? `box-shadow: 0 12px 24px -8px rgba(37,99,235,0.15);` : 'opacity:0.7;'}" 
+                onmouseover="this.style.transform='translateY(-4px)'; this.style.opacity='1'" 
+                onmouseout="this.style.transform='translateY(0)'; ${c.active ? '' : "this.style.opacity='0.7'"}">
+                
+                <div style="width:44px; height:44px; border-radius:12px; background:${c.active ? themeBg : '#fff'}; color:${themeColor}; display:grid; place-items:center; border:1px solid ${c.active ? themeColor + '30' : '#e2e8f0'};">
+                  <span class="material-icons-round" style="font-size:24px;">${c.icon}</span>
+                </div>
+                
+                <div style="text-align:center;">
+                  <div style="font-size:0.88rem; font-weight:800; color:${c.active ? '#1e293b' : '#64748b'}; margin-bottom:4px;">${c.name}</div>
+                  <div style="font-size:0.75rem; font-weight:800; color:${c.active ? themeColor : '#94a3b8'}; text-transform:uppercase; letter-spacing:0.5px;">
+                    ${c.selected}/${c.total} Selected
+                  </div>
+                </div>
+                ${c.active ? `<div style="position:absolute; top:12px; right:12px; width:8px; height:8px; border-radius:50%; background:${themeColor};"></div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex; align-items:center; margin-bottom:24px; padding:0 4px;">
+            <h4 style="margin:0; font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px;">Subcategory</h4>
+          </div>
+          
+          <div class="custom-scrollbar" style="display:flex; gap:24px; overflow-x:auto; padding:4px 4px 20px 4px;">
+            ${categories.map(c => `
+              <div style="flex:0 0 280px; background:#fff; border:1.5px solid #e2e8f0; border-radius:20px; padding:24px; transition:all 0.3s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='${themeColor}'; this.style.boxShadow='0 12px 24px -8px rgba(0,0,0,0.05)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                  <div style="width:36px; height:36px; border-radius:10px; background:${themeBg}; color:${themeColor}; display:grid; place-items:center;">
+                    <span class="material-icons-round" style="font-size:20px;">${c.icon}</span>
+                  </div>
+                  <span style="font-size:1rem; font-weight:900; color:#1e293b;">${c.name}</span>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                  <label style="display:flex; align-items:center; gap:12px; cursor:pointer; padding:12px; border-radius:12px; transition:background 0.2s; background:#f8fafc; border:1px solid #f1f5f9;">
+                    <input type="checkbox" style="width:20px; height:20px; accent-color:${themeColor}; border-radius:6px; cursor:pointer;">
+                    <span style="font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">Select All Fields</span>
+                  </label>
+                  
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    ${(subs[c.id] || []).map(s => `
+                      <label style="display:flex; align-items:center; gap:12px; cursor:pointer; padding:10px; border-radius:10px; transition:all 0.2s;" onmouseover="this.style.background='${themeBg}50'" onmouseout="this.style.background='transparent'">
+                        <input type="checkbox" checked style="width:20px; height:20px; accent-color:${themeColor}; border-radius:6px; cursor:pointer;">
+                        <span style="font-size:0.88rem; font-weight:800; color:#334155;">${s}</span>
+                      </label>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (type === 'contact') {
     const c = m.contacts[index];
     const nameParts = c.name.split(' ');
     const firstName = nameParts[0] || '';
@@ -1138,17 +1300,10 @@ function openEditModal(type, memberId, index) {
       </div>
       <div class="modal-body" style="padding: 32px;">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
-          
-          <!-- Column 1: Info -->
           <div style="display:flex; flex-direction:column; gap:20px;">
             <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
               <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:64px; height:64px; border-radius:50%; flex-shrink:0;">
-              <div style="display:flex; flex-direction:column; gap:6px;">
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700; border-radius: 4px;">Choose File</button>
-                <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
-              </div>
             </div>
-
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
               <div style="display:flex; flex-direction:column; gap:8px;">
                 <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">First Name</label>
@@ -1159,67 +1314,32 @@ function openEditModal(type, memberId, index) {
                 <input class="modal-input" type="text" value="${lastName}" id="edit-c-lname" placeholder="Last name" style="background:#f8fafc;">
               </div>
             </div>
-
             <div style="display:flex; flex-direction:column; gap:8px;">
               <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Designation</label>
               <select class="modal-input" id="edit-c-role" style="background:#f8fafc;">
-                <option value="" disabled ${!['CEO', 'Proprietor', 'Director', 'Manager', 'Partner'].includes(c.role) ? 'selected' : ''}>Choose Designation</option>
                 <option value="CEO" ${c.role === 'CEO' ? 'selected' : ''}>CEO</option>
                 <option value="Proprietor" ${c.role === 'Proprietor' ? 'selected' : ''}>Proprietor</option>
                 <option value="Director" ${c.role === 'Director' ? 'selected' : ''}>Director</option>
                 <option value="Manager" ${c.role === 'Manager' ? 'selected' : ''}>Manager</option>
                 <option value="Partner" ${c.role === 'Partner' ? 'selected' : ''}>Partner</option>
-                ${!['CEO', 'Proprietor', 'Director', 'Manager', 'Partner'].includes(c.role) && c.role ? `<option value="${c.role}" selected>${c.role}</option>` : ''}
               </select>
             </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Mobile</label>
-              <input class="modal-input" type="text" value="${c.phone}" id="edit-c-phone" placeholder="+91 —" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Address</label>
-              <input class="modal-input" type="email" value="${c.email}" id="edit-c-email" placeholder="email@example.com" style="background:#f8fafc;">
-            </div>
           </div>
-
-          <!-- Column 2: Status & Settings -->
           <div style="display:flex; flex-direction:column; gap:24px;">
             <div style="padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:16px;">
               <label class="modal-label" style="display:block; margin-bottom:16px; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Status & Permissions</label>
-              
-              <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
-                <input type="checkbox" id="edit-c-main" style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
-                <label for="edit-c-main" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Mark as Main Contact</label>
-              </div>
-
               <div style="display:flex; flex-direction:column; gap:12px;">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--text);">Account Status</div>
                 <div style="display:flex; gap: 20px;">
                   <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
-                    <input type="radio" name="edit-status" value="Active" ${status === 'Active' ? 'checked' : ''} style="accent-color: var(--blue);" onchange="document.getElementById('edit-inactive-options').style.display='none';"> Active
+                    <input type="radio" name="edit-status" value="Active" ${status === 'Active' ? 'checked' : ''} style="accent-color: var(--blue);"> Active
                   </label>
                   <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
-                    <input type="radio" name="edit-status" value="Inactive" ${status === 'Inactive' ? 'checked' : ''} style="accent-color: var(--blue);" onchange="document.getElementById('edit-inactive-options').style.display='block';"> Inactive
+                    <input type="radio" name="edit-status" value="Inactive" ${status === 'Inactive' ? 'checked' : ''} style="accent-color: var(--blue);"> Inactive
                   </label>
-                </div>
-                <div id="edit-inactive-options" style="display: ${status === 'Inactive' ? 'block' : 'none'}; margin-top: 4px;">
-                  <select class="modal-input" style="background:#fff;">
-                    <option value="" disabled selected>Select Inactive Reason</option>
-                    <option value="Block">Block</option>
-                    <option value="AllowedForNewRegistration">Allowed For New Registration</option>
-                  </select>
                 </div>
               </div>
             </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Reason / Internal Note</label>
-              <textarea class="modal-input" id="edit-c-reason" style="flex:1; background:#f8fafc; resize:none; min-height:120px;" placeholder="Add internal notes about this contact..."></textarea>
-            </div>
           </div>
-
         </div>
       </div>
       <div class="modal-footer">
@@ -1227,10 +1347,8 @@ function openEditModal(type, memberId, index) {
         <button class="btn-primary" onclick="saveContact(${memberId}, ${index})">Save</button>
       </div>
     `;
-
   } else if (type === 'plan') {
     content.className = 'modal-content modal-wide';
-    const planName = m.plan ? capitalize(m.plan) : 'Starter';
     const planRate = m.planRate || '999';
     const planValidity = m.planValidity || 'monthly';
     const planBroadcast = m.planBroadcast || '5';
