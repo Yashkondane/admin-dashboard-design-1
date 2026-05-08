@@ -415,7 +415,7 @@ function openProfile(id, tab = 'company', pushState = true) {
       <button class="profile-tab ${tab === 'contact-table' ? 'active' : ''}" onclick="switchTab(${id},'contact-table')"><span class="material-icons-round">people</span> Contact</button>
       <button class="profile-tab ${tab === 'addresses' ? 'active' : ''}" onclick="switchTab(${id},'addresses')"><span class="material-icons-round">location_on</span> Addresses</button>
       <button class="profile-tab ${tab === 'plan' ? 'active' : ''}" onclick="switchTab(${id},'plan')"><span class="material-icons-round">assignment</span> Assign Plan</button>
-      <button class="profile-tab ${tab === 'email' ? 'active' : ''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email Setup</button>
+      <button class="profile-tab ${tab === 'email' ? 'active' : ''}" onclick="switchTab(${id},'email')"><span class="material-icons-round">mail</span> Email</button>
       <button class="profile-tab ${tab === 'broadcasts' ? 'active' : ''}" onclick="switchTab(${id},'broadcasts')"><span class="material-icons-round">campaign</span> Broadcasts</button>
       <button class="profile-tab ${tab === 'broadcast-settings' ? 'active' : ''}" onclick="switchTab(${id},'broadcast-settings')"><span class="material-icons-round">settings_input_antenna</span> Broadcast Settings</button>
       <button class="profile-tab ${tab === 'history' ? 'active' : ''}" onclick="switchTab(${id},'history')"><span class="material-icons-round">login</span> Login History</button>
@@ -927,21 +927,21 @@ function renderProfileTab(m, tab) {
           <table class="data-table" style="width: 100%; border-collapse: collapse;">
             <thead>
               <tr>
-                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date & Time</th>
-                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Message Detail</th>
-                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Recipient</th>
-                <th style="padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
-                <th style="padding: 12px 16px; text-align: right; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Actions</th>
+                <th style="padding: 12px 16px 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date & Time</th>
+                <th style="padding: 12px 16px 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Message Detail</th>
+                <th style="padding: 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Recipient</th>
+                <th style="padding: 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
+                <th style="padding: 12px 16px !important; text-align: right; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Actions</th>
               </tr>
             </thead>
             <tbody>
               ${broadcasts.map(b => `
                 <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
+                  <td style="padding: 12px 16px !important; border-bottom: 1px solid var(--border);">
                     <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${b.date.split(' ')[0]}</div>
                     <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">${b.date.split(' ').slice(1).join(' ')}</div>
                   </td>
-                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); max-width:300px;">
+                  <td style="padding: 12px 16px !important; border-bottom: 1px solid var(--border); max-width:300px;">
                     <div style="font-size: 0.88rem; color: var(--text); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
                     <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">Sent by ${b.broadcaster}</div>
                   </td>
