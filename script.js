@@ -1259,17 +1259,17 @@ function openEditModal(type, memberId, index) {
                   <span style="font-size:1rem; font-weight:900; color:#1e293b;">${c.name}</span>
                 </div>
 
-                <div style="display:flex; flex-direction:column; gap:14px;">
-                  <label style="display:flex; align-items:center; gap:12px; cursor:pointer; padding:12px; border-radius:12px; transition:background 0.2s; background:#f8fafc; border:1px solid #f1f5f9;">
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                  <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:8px 12px; border-radius:10px; transition:background 0.2s; background:#f8fafc; border:1px solid #f1f5f9;">
                     <input type="checkbox" style="width:20px; height:20px; accent-color:${themeColor}; border-radius:6px; cursor:pointer;">
-                    <span style="font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">Select All Fields</span>
+                    <span style="font-size:0.75rem; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">Select All Fields</span>
                   </label>
                   
-                  <div style="display:flex; flex-direction:column; gap:4px;">
+                  <div style="display:flex; flex-direction:column; gap:0px;">
                     ${(subs[c.id] || []).map(s => `
-                      <label style="display:flex; align-items:center; gap:12px; cursor:pointer; padding:10px; border-radius:10px; transition:all 0.2s;" onmouseover="this.style.background='${themeBg}50'" onmouseout="this.style.background='transparent'">
+                      <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:6px 10px; border-radius:10px; transition:all 0.2s;" onmouseover="this.style.background='${themeBg}50'" onmouseout="this.style.background='transparent'">
                         <input type="checkbox" checked style="width:20px; height:20px; accent-color:${themeColor}; border-radius:6px; cursor:pointer;">
-                        <span style="font-size:0.88rem; font-weight:800; color:#334155;">${s}</span>
+                        <span style="font-size:0.88rem; font-weight:600; color:#334155;">${s}</span>
                       </label>
                     `).join('')}
                   </div>
