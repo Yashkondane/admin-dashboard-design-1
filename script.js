@@ -1215,9 +1215,9 @@ function openEditModal(type, memberId, index) {
         </div>
       </div>
 
-      <div class="modal-body" style="padding: 32px; background: #f8fafc; min-height: 500px;">
-        <div style="margin-bottom: 40px;">
-          <div style="display:flex; align-items:center; margin-bottom:20px; padding:0 4px;">
+      <div class="modal-body" style="padding: 20px 32px 32px 32px; background: #f8fafc; min-height: 500px;">
+        <div style="margin-bottom: 24px;">
+          <div style="display:flex; align-items:center; margin-bottom:8px; padding:0 4px;">
             <h4 style="margin:0; font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px;">Category</h4>
           </div>
           
@@ -1245,13 +1245,13 @@ function openEditModal(type, memberId, index) {
         </div>
 
         <div>
-          <div style="display:flex; align-items:center; margin-bottom:24px; padding:0 4px;">
+          <div style="display:flex; align-items:center; margin-bottom:10px; padding:0 4px;">
             <h4 style="margin:0; font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px;">Subcategory</h4>
           </div>
           
           <div class="custom-scrollbar" style="display:flex; gap:24px; overflow-x:auto; padding:4px 4px 20px 4px;">
             ${categories.map(c => `
-              <div style="flex:0 0 280px; background:#fff; border:1.5px solid #e2e8f0; border-radius:20px; padding:24px; transition:all 0.3s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='${themeColor}'; this.style.boxShadow='0 12px 24px -8px rgba(0,0,0,0.05)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+              <div style="flex:0 0 220px; background:#fff; border:1.5px solid #e2e8f0; border-radius:16px; padding:20px; transition:all 0.3s; position:relative; overflow:hidden;" onmouseover="this.style.borderColor='${themeColor}'; this.style.boxShadow='0 12px 24px -8px rgba(0,0,0,0.05)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
                 <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
                   <div style="width:36px; height:36px; border-radius:10px; background:${themeBg}; color:${themeColor}; display:grid; place-items:center;">
                     <span class="material-icons-round" style="font-size:20px;">${c.icon}</span>
