@@ -111,7 +111,7 @@ const members = [
   }
 ];
 
-let currentFilter = 'all';
+var currentFilter = 'all';
 let searchQuery = '';
 let sortCol = 'date';
 let sortDir = 'desc';
@@ -218,6 +218,7 @@ function getFiltered() {
 
 function renderTable() {
   const filtered = getFiltered();
+  const total = filtered.length;
   const start = (currentPage - 1) * rowsPerPage;
   const end = start + rowsPerPage;
   const pageItems = filtered.slice(start, end);
@@ -234,51 +235,56 @@ function renderTable() {
     const hasEmailCheck = m.status === 'active' || m.status === 'suspended' || m.id % 2 !== 0;
     const hasMobileCheck = m.status === 'active' || m.id % 3 !== 0;
 
-    // No icons needed, using text color instead
-
-    let statusBg = '#E5E7EB'; let statusColor = '#4B5563'; let statusText = m.status;
+    let statusBg = '#E5E7EB'; let statusColor = '#4B5563'; let statusBorder = '#D1D5DB'; let statusText = m.status;
     if (m.status === 'active') { statusBg = '#E8F5EC'; statusColor = '#15803D'; statusBorder = '#22C55E'; statusText = 'Active'; }
     else if (m.status === 'suspended') { statusBg = '#FEE2E2'; statusColor = '#B91C1C'; statusBorder = '#EF4444'; statusText = 'Suspended'; }
     else if (m.status === 'pending') { statusBg = '#FFF7ED'; statusColor = '#A34E0C'; statusBorder = '#FB923C'; statusText = 'Pending'; }
     else if (m.status === 'incomplete') { statusBg = '#F3E8FF'; statusColor = '#6D28D9'; statusBorder = '#A855F7'; statusText = 'Incomplete'; }
     else if (m.status === 'inactive' || m.status === 'expire') { statusBg = '#F3F4F6'; statusColor = '#4B5563'; statusBorder = '#D1D5DB'; statusText = 'Inactive'; }
 
+    const planColors = {
+      enterprise: '#8b5cf6',
+      business: '#475569',
+      starter: '#10b981',
+      free: '#94a3b8',
+      nil: '#94a3b8',
+      premium: '#f59e0b'
+    };
+    const pColor = planColors[m.plan] || '#94a3b8';
+    const pName = m.plan === 'nil' ? 'Free' : capitalize(m.plan);
+
     return `
-    <tr>
+    <tr style="cursor: pointer; transition: all 0.1s;">
       <td onclick="openProfile(${m.id})">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" alt="" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: #f1f5f9;">
+        <div class="cell-member">
+          <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" class="member-avatar" alt="${m.member}">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: 800; color: #1e293b; font-size: 0.88rem;">${m.member}</span>
-            <span style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-top:1px;">${m.company}</span>
+            <span class="cell-member-name">${m.member}</span>
+            <span class="cell-member-sub">${m.company}</span>
           </div>
         </div>
       </td>
-      <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${m.location}</span>
-      </td>
+      <td onclick="openProfile(${m.id})" style="font-weight:700; color:#475569; font-size:0.82rem;">${m.location}</td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; flex-direction:column; align-items:flex-start;">
-          <span style="color: ${hasEmailCheck ? 'var(--text-mid)' : '#f97316'}; font-weight: 600; font-size:0.88rem;">${m.email}</span>
+          <span style="color: ${hasEmailCheck ? '#1e293b' : '#f97316'}; font-weight: 700; font-size:0.82rem;">${m.email}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
         <div style="display:flex; flex-direction:column; align-items:flex-start;">
-          <span style="color: ${hasMobileCheck ? 'var(--text-mid)' : '#f97316'}; font-weight: 600; font-size:0.88rem;">${m.mobile}</span>
+          <span style="color: ${hasMobileCheck ? '#1e293b' : '#f97316'}; font-weight: 700; font-size:0.82rem;">${m.mobile}</span>
         </div>
       </td>
       <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${m.plan === 'nil' ? 'Free' : capitalize(m.plan)}</span>
+        <span style="font-weight: 600; color: #475569; font-size: 0.82rem;">${pName}</span>
       </td>
       <td onclick="openProfile(${m.id})" style="text-align:center;">
-        <div class="status-badge" style="min-width: 95px; padding: 5px 12px; font-size: 0.82rem; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
+        <div class="status-badge" style="min-width: 100px; padding: 6px 14px; font-size: 0.75rem; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; text-transform: capitalize; letter-spacing: 0.01em;">
           ${m.status === 'pending' ? '' : `<span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>`}
           ${statusText}
         </div>
       </td>
-      <td onclick="openProfile(${m.id})">
-        <span style="color: var(--text-mid); font-weight: 600; font-size: 0.82rem;">${m.date}</span>
-      </td>
+      <td onclick="openProfile(${m.id})" style="font-weight:600; color:#64748b; font-size:0.85rem;">${m.date}</td>
     </tr>
     `;
   }).join('');
@@ -730,61 +736,151 @@ function renderProfileTab(m, tab) {
       </div>
     `;
   } else if (tab === 'plan') {
-    const assignedPlans = m.assignedPlans || [
-      { sr: 1, name: 'TK-Premium', date: '28-Apr-2026 to 28-Apr-2027', remark: '', invoice: 'ISPL/1002/2026-27', status: 'UnPaid' },
-      { sr: 2, name: 'TK-Premium', date: '24-Apr-2026 to 24-Apr-2026', remark: '', invoice: 'ISPL/1001/2026-27', status: 'Paid' },
-      { sr: 3, name: 'TK-Premium', date: '22-Apr-2026 to 22-May-2026', remark: '', invoice: '', status: 'UnPaid' },
-      { sr: 4, name: 'TK-Lite', date: '16-Apr-2026 to 16-May-2026', remark: '', invoice: '', status: 'UnPaid' }
-    ];
+    // Initialize assignedPlans on the member if not present
+    if (!m.assignedPlans) {
+      m.assignedPlans = [
+        { sr: 1, name: 'TK-Premium', date: '28-Apr-2026 to 28-Apr-2027', remark: 'Verified and badges assigned.', invoice: 'ISPL/1002/2026-27', status: 'UnPaid' },
+        { sr: 2, name: 'TK-Premium', date: '24-Apr-2026 to 24-Apr-2026', remark: '', invoice: 'ISPL/1001/2026-27', status: 'Paid' },
+        { sr: 3, name: 'TK-Premium', date: '22-Apr-2026 to 22-May-2026', remark: '', invoice: '', status: 'UnPaid' },
+        { sr: 4, name: 'TK-Lite', date: '16-Apr-2026 to 16-May-2026', remark: '', invoice: '', status: 'UnPaid' }
+      ];
+    }
+    const assignedPlans = m.assignedPlans;
+    const actualPlan = assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {};
+    const hasPlan = actualPlan.name && actualPlan.name !== 'None';
+    const latestInvoice = assignedPlans.find(p => p.invoice) || {};
+    
+    // Check if plan is expired
+    const activePlanExpiry = actualPlan.date ? actualPlan.date.split(' to ')[1] : 'N/A';
+    let isExpired = false;
+    if (activePlanExpiry !== 'N/A') {
+      const expDate = new Date(activePlanExpiry);
+      if (expDate < new Date()) isExpired = true;
+    }
+
+    const memberIsSuspended = m.status === 'suspended';
 
     return `
-      <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#1e293b;">
-              <span class="material-icons-round">assignment_ind</span>
-            </div>
+      <!-- Active Plan Overview -->
+      <div style="display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 24px; margin-bottom: 24px;">
+        
+        <!-- Left: Plan Details & Action Buttons -->
+        <div class="content-card" style="padding: 28px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px;">
             <div>
-              <h3 class="profile-section-title" style="margin:0;">Assign Plan</h3>
+              <div style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Current Plan</div>
+              <div style="font-size: 2rem; font-weight: 900; color: #1e293b; letter-spacing: -1px; line-height: 1;">${actualPlan.name || 'No Active Plan'}</div>
+              ${hasPlan ? `
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
+                  <span class="material-icons-round" style="font-size: 16px; color: ${isExpired ? '#ef4444' : '#64748b'};">event</span>
+                  <div style="font-size: 0.85rem; color: ${isExpired ? '#ef4444' : '#64748b'}; font-weight: 700;">
+                    ${isExpired ? 'Expired on:' : 'Expires on:'} <span style="color: #1e293b; font-weight: 800;">${activePlanExpiry}</span>
+                  </div>
+                </div>
+              ` : `
+                <div style="font-size: 0.85rem; color: #94a3b8; font-weight: 600; margin-top: 10px;">Assign a plan to enable member features.</div>
+              `}
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+               <div style="background: ${m.status === 'active' ? '#E8F5EC' : (m.status === 'suspended' ? '#FEE2E2' : '#F1F5F9')}; color: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : '#475569')}; border: 1px solid ${m.status === 'active' ? '#22C55E' : (m.status === 'suspended' ? '#EF4444' : '#D1D5DB')}; font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
+                 ${m.status === 'active' ? '<span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>' : ''}
+                 ${m.status}
+               </div>
             </div>
           </div>
-          <button class="btn-primary" onclick="showAssignPlanModal(${m.id})" style="background: var(--blue);">
-            Assign Plan
-          </button>
+          
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; border-top: 1px solid #f1f5f9; padding-top: 24px;">
+            <button onclick="setPlanActionMode(${m.id}, 'assign')" style="background: #1e293b; color: #fff; border: none; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(30,41,59,0.1); display: flex; align-items: center; gap: 8px;">
+              <span class="material-icons-round" style="font-size: 18px;">add_task</span> Assign New
+            </button>
+            ${hasPlan ? `
+              <button onclick="setPlanActionMode(${m.id}, 'extend')" style="background: #fff; color: #475569; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;">Extend</button>
+              <button onclick="setPlanActionMode(${m.id}, 'upgrade')" style="background: #fff; color: #475569; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;">Upgrade</button>
+            ` : ''}
+            <div style="flex: 1;"></div>
+            ${m.status === 'active' ? `
+              <button onclick="setPlanActionMode(${m.id}, 'suspend')" style="background: #fff0f2; color: #e11d48; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">Suspend</button>
+            ` : ''}
+            ${m.status === 'suspended' ? `
+              <button onclick="setPlanActionMode(${m.id}, 'reactivate')" style="background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">Reactivate</button>
+            ` : ''}
+          </div>
         </div>
-        
-        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
+
+        <!-- Right: Latest Invoice -->
+        <div class="content-card" style="padding: 28px; background: #fafafa; border: 1px solid #e2e8f0; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+            <div>
+              <div style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Latest Invoice</div>
+              <div style="font-size: 1.15rem; font-weight: 800; color: #1e293b; letter-spacing: -0.2px;">${latestInvoice.invoice || 'None Generated'}</div>
+            </div>
+            ${latestInvoice.status ? `
+              <div style="background: ${latestInvoice.status === 'Paid' ? '#dcfce7' : (latestInvoice.status === 'N/A' ? '#f1f5f9' : '#FEF3C7')}; color: ${latestInvoice.status === 'Paid' ? '#16a34a' : (latestInvoice.status === 'N/A' ? '#64748b' : '#92400E')}; font-size: 0.72rem; font-weight: 800; padding: 6px 12px; border-radius: 6px; border: 1px solid ${latestInvoice.status === 'Paid' ? '#bbf7d0' : (latestInvoice.status === 'N/A' ? '#e2e8f0' : '#FDE68A')}; display: flex; align-items: center; gap: 6px;">
+                <span style="width: 5px; height: 5px; border-radius: 50%; background: ${latestInvoice.status === 'Paid' ? '#16a34a' : (latestInvoice.status === 'N/A' ? '#94a3b8' : '#F59E0B')};"></span>
+                ${latestInvoice.status}
+              </div>
+            ` : ''}
+          </div>
+          
+          <div style="margin-top: auto; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <div style="font-size: 0.68rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">History Count</div>
+                <div style="font-weight: 800; color: #1e293b; font-size: 1rem;">${assignedPlans.length} <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Events</span></div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 0.68rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Quick Action</div>
+                ${latestInvoice.status === 'UnPaid' ? `
+                  <button onclick="markLatestPaid(${m.id})" style="background: #1e293b; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 800; font-size: 0.75rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">Mark Paid</button>
+                ` : `
+                  <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">No pending task</span>
+                `}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Action Form Container -->
+      <div id="plan-action-container" style="display: none; margin-bottom: 24px;"></div>
+
+      <!-- Plan Timeline Table -->
+      <div class="content-card" style="padding: 0; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+        <div style="padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; border: 1.5px solid #f1f5f9; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #1e293b;">
+              <span class="material-icons-round" style="font-size: 20px;">history</span>
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 1.1rem; font-weight: 900; color: #1e293b; letter-spacing: -0.3px;">Plan Timeline</h3>
+              <p style="margin: 2px 0 0 0; font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Comprehensive audit log of billing events</p>
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll-wrap">
           <table class="data-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">SR No.</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Plan Name</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Remark</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Invoice No.</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
-                <th style="padding: 16px 24px; text-align: right; border-bottom: 1px solid var(--border); background: #fff; color: #64748b; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;"></th>
+              <tr style="background: #fdfdfd;">
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 60px;">Sr</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Plan Detail</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Timeline</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Event Remark</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice</th>
+                <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px;">Status</th>
               </tr>
             </thead>
             <tbody>
               ${assignedPlans.map(p => `
-                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; color: #64748b;">${p.sr}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b; letter-spacing:-0.2px;">${p.name}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; color: #94a3b8;">${p.date}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 600; color: var(--text-soft);">${p.remark || '-'}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: var(--blue);">${p.invoice || '-'}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
-                    <span class="bubble-tag" style="background: ${p.status === 'Paid' ? '#dcfce7' : '#e0f2fe'}; color: ${p.status === 'Paid' ? '#16a34a' : '#1d4ed8'}; font-weight:800; font-size:0.75rem; padding:4px 12px;">${p.status}</span>
-                  </td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: right; position: relative;">
-                    <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('plan-${p.sr}', this)"><span class="material-icons-round">more_vert</span></button>
-                    <div class="dropdown-menu" id="dropdown-plan-${p.sr}" style="right: 16px; top: 80%;">
-                      <button class="dropdown-item" onclick="showToast('Editing plan...', 'success')"><span class="material-icons-round">edit</span> Edit Plan</button>
-                      <button class="dropdown-item" onclick="showToast('Invoice sent', 'success')"><span class="material-icons-round">send</span> Send Invoice</button>
-                      <button class="dropdown-item" onclick="showToast('Viewing details...', 'success')"><span class="material-icons-round">visibility</span> View</button>
-                      <button class="dropdown-item" onclick="showToast('Downloading invoice...', 'success')"><span class="material-icons-round">download</span> Download</button>
-                    </div>
+                <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #94a3b8;">${p.sr}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.remark || '—'}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
+                    <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
+                      ${p.status}
+                    </span>
                   </td>
                 </tr>
               `).join('')}
@@ -1067,7 +1163,7 @@ function renderProfileTab(m, tab) {
   } else if (tab === 'stamp') {
     const stamps = m.stamps || [];
     const badgeConfig = [
-      { key: 'identity', label: 'Identity', icon: 'badge', color: '#3b82f6', bg: '#dbeafe' },
+      { key: 'identity', label: 'Identity', icon: 'badge', color: '#1e293b', bg: '#f1f5f9' },
       { key: 'email', label: 'Email', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7' },
       { key: 'docs', label: 'Documents', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe' },
       { key: 'account', label: 'Account', icon: 'account_circle', color: '#d97706', bg: '#fef3c7' },
@@ -1201,7 +1297,7 @@ function openEditModal(type, memberId, index) {
             <h3 style="margin:0; font-size:1.15rem; font-weight:900; color: #1e293b;">Broadcast Settings</h3>
             <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
               <span style="width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
-              <span style="font-size:0.75rem; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">Live Configuration</span>
+              <span style="font-size:12px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Live Configuration</span>
             </div>
           </div>
         </div>
@@ -1218,7 +1314,7 @@ function openEditModal(type, memberId, index) {
       <div class="modal-body" style="padding: 20px 32px 32px 32px; background: #f8fafc; min-height: 500px;">
         <div style="margin-bottom: 24px;">
           <div style="display:flex; align-items:center; margin-bottom:8px; padding:0 4px;">
-            <h4 style="margin:0; font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px;">Category</h4>
+            <h4 style="margin:0; font-size:12px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Category</h4>
           </div>
           
           <div class="custom-scrollbar" style="display:flex; gap:16px; overflow-x:auto; padding:4px 4px 16px 4px;">
@@ -1234,7 +1330,7 @@ function openEditModal(type, memberId, index) {
                 
                 <div style="text-align:center;">
                   <div style="font-size:0.88rem; font-weight:800; color:${c.active ? '#1e293b' : '#64748b'}; margin-bottom:4px;">${c.name}</div>
-                  <div style="font-size:0.75rem; font-weight:800; color:${c.active ? themeColor : '#94a3b8'}; text-transform:uppercase; letter-spacing:0.5px;">
+                  <div style="font-size:12px; font-weight:600; color:${c.active ? themeColor : '#94a3b8'}; text-transform:uppercase; letter-spacing:0.06em;">
                     ${c.selected}/${c.total} Selected
                   </div>
                 </div>
@@ -1246,7 +1342,7 @@ function openEditModal(type, memberId, index) {
 
         <div>
           <div style="display:flex; align-items:center; margin-bottom:10px; padding:0 4px;">
-            <h4 style="margin:0; font-size:0.75rem; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:1px;">Subcategory</h4>
+            <h4 style="margin:0; font-size:12px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Subcategory</h4>
           </div>
           
           <div class="custom-scrollbar" style="display:flex; gap:24px; overflow-x:auto; padding:4px 4px 20px 4px;">
@@ -1261,8 +1357,8 @@ function openEditModal(type, memberId, index) {
 
                 <div style="display:flex; flex-direction:column; gap:2px;">
                   <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:8px 12px; border-radius:10px; transition:background 0.2s; background:#f8fafc; border:1px solid #f1f5f9;">
-                    <input type="checkbox" style="width:20px; height:20px; accent-color:${themeColor}; border-radius:6px; cursor:pointer;">
-                    <span style="font-size:0.75rem; font-weight:600; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">Select All Fields</span>
+                    <input type="checkbox" style="width:18px; height:18px; accent-color:${themeColor}; border-radius:6px; cursor:pointer;">
+                    <span style="font-size:12px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Select All Fields</span>
                   </label>
                   
                   <div style="display:flex; flex-direction:column; gap:0px;">
@@ -1305,18 +1401,18 @@ function openEditModal(type, memberId, index) {
               <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:64px; height:64px; border-radius:50%; flex-shrink:0;">
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">First Name</label>
-                <input class="modal-input" type="text" value="${firstName}" id="edit-c-fname" placeholder="First name" style="background:#f8fafc;">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label class="modal-label">First Name</label>
+                <input class="modal-input" type="text" value="${firstName}" id="edit-c-fname" placeholder="First name">
               </div>
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Last Name</label>
-                <input class="modal-input" type="text" value="${lastName}" id="edit-c-lname" placeholder="Last name" style="background:#f8fafc;">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label class="modal-label">Last Name</label>
+                <input class="modal-input" type="text" value="${lastName}" id="edit-c-lname" placeholder="Last name">
               </div>
             </div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Designation</label>
-              <select class="modal-input" id="edit-c-role" style="background:#f8fafc;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label class="modal-label">Designation</label>
+              <select class="modal-input" id="edit-c-role">
                 <option value="CEO" ${c.role === 'CEO' ? 'selected' : ''}>CEO</option>
                 <option value="Proprietor" ${c.role === 'Proprietor' ? 'selected' : ''}>Proprietor</option>
                 <option value="Director" ${c.role === 'Director' ? 'selected' : ''}>Director</option>
@@ -1373,11 +1469,11 @@ function openEditModal(type, memberId, index) {
           
           <!-- LEFT COLUMN: Plan Info -->
           <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-soft); padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px;">Plan Information</div>
+            <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px;">Plan Information</div>
             
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Select Plan</label>
-              <select class="modal-input" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label class="modal-label">Select Plan</label>
+              <select class="modal-input">
                 <option value="starter" ${m.plan === 'starter' ? 'selected' : ''}>Starter Plan</option>
                 <option value="business" ${m.plan === 'business' ? 'selected' : ''}>Business Plan</option>
                 <option value="enterprise" ${m.plan === 'enterprise' ? 'selected' : ''}>Enterprise Plan</option>
@@ -1385,13 +1481,13 @@ function openEditModal(type, memberId, index) {
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Plan Rate (₹)</label>
-                <input class="modal-input" type="number" value="${planRate}" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label class="modal-label">Plan Rate</label>
+                <input class="modal-input" type="number" value="${planRate}">
               </div>
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Validity</label>
-                <select class="modal-input" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+              <div style="display:flex; flex-direction:column; gap:4px;">
+                <label class="modal-label">Validity</label>
+                <select class="modal-input">
                   <option value="monthly" ${planValidity === 'monthly' ? 'selected' : ''}>Monthly</option>
                   <option value="quarterly" ${planValidity === 'quarterly' ? 'selected' : ''}>Quarterly</option>
                   <option value="halfyearly" ${planValidity === 'halfyearly' ? 'selected' : ''}>Half Yearly</option>
@@ -1400,14 +1496,14 @@ function openEditModal(type, memberId, index) {
               </div>
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Daily Broadcast Limit</label>
-              <input class="modal-input" type="number" value="${planBroadcast}" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label class="modal-label">Daily Broadcast Limit</label>
+              <input class="modal-input" type="number" value="${planBroadcast}">
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label style="font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-soft);">Notification Email</label>
-              <input class="modal-input" type="email" value="${planEmail}" style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:9px; padding:10px 14px; font-weight:700;">
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <label class="modal-label">Notification Email</label>
+              <input class="modal-input" type="email" value="${planEmail}">
             </div>
           </div>
 
@@ -1426,8 +1522,8 @@ function openEditModal(type, memberId, index) {
       ].map(f => `
                 <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom: 1px solid #f8fafc;">
                   <div style="display:flex; flex-direction:column; gap:2px;">
-                    <div style="font-size:0.88rem; font-weight:700; color:var(--text);">${f.label}</div>
-                    <div style="font-size:0.75rem; font-weight:600; color:var(--text-soft); max-width:200px;">${f.desc}</div>
+                    <div style="font-size:0.85rem; font-weight:700; color:#1e293b;">${f.label}</div>
+                    <div style="font-size:0.72rem; font-weight:500; color:#64748b; max-width:200px;">${f.desc}</div>
                   </div>
                   <label style="position:relative; width:40px; height:22px; flex-shrink:0;">
                     <input type="checkbox" ${flags[f.key] ? 'checked' : ''} style="opacity:0; width:0; height:0;" onchange="this.nextElementSibling.style.background = this.checked ? 'var(--blue)' : '#e2e8f0'; this.nextElementSibling.querySelector('span').style.transform = this.checked ? 'translateX(18px)' : 'translateX(0)';">
@@ -1463,7 +1559,7 @@ function openEditModal(type, memberId, index) {
       </div>
       <div class="modal-body" style="padding: 40px 32px;">
         <div class="modal-form-row">
-          <label>Address Title</label>
+          <label class="modal-label">Address Title</label>
           <select class="modal-input" id="edit-addr-title">
             <option value="Company Address" ${title === 'Company Address' ? 'selected' : ''}>Company Address</option>
             <option value="Work" ${title === 'Work' ? 'selected' : ''}>Work</option>
@@ -1472,24 +1568,24 @@ function openEditModal(type, memberId, index) {
           </select>
         </div>
         <div class="modal-form-row">
-          <label>Address Line 1</label>
+          <label class="modal-label">Address Line 1</label>
           <input class="modal-input" type="text" value="${a.line1 || a.detail || ''}" id="edit-addr-line1" placeholder="Building, Street">
         </div>
         <div class="modal-form-row">
-          <label>Address Line 2</label>
+          <label class="modal-label">Address Line 2</label>
           <input class="modal-input" type="text" value="${a.line2 || ''}" id="edit-addr-line2" placeholder="Enter Address Line">
         </div>
         <div class="modal-form-row">
-          <label>City</label>
+          <label class="modal-label">City</label>
           <input class="modal-input" type="text" value="${a.city || m.location}" id="edit-addr-city" placeholder="Ahmedabad Gujarat">
         </div>
         <div class="modal-form-row">
-          <label>Pincode</label>
+          <label class="modal-label">Pincode</label>
           <input class="modal-input" type="text" value="${a.pincode || ''}" id="edit-addr-pincode" placeholder="125558">
         </div>
         <div class="modal-form-row" style="margin-top: 24px;">
-          <label>Set as default</label>
-          <input type="checkbox" id="edit-addr-default" ${isDefault ? 'checked' : ''}>
+          <label class="modal-label" style="margin-bottom:0;">Set as default</label>
+          <input type="checkbox" id="edit-addr-default" ${isDefault ? 'checked' : ''} style="width:18px; height:18px;">
         </div>
       </div>
       <div class="modal-footer">
@@ -1866,6 +1962,198 @@ function assignPlan(memberId, plan) {
   switchTab(memberId, 'plan');
 }
 
+function markLatestPaid(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m || !m.assignedPlans) return;
+  const unpaid = m.assignedPlans.find(p => p.status === 'UnPaid');
+  if (unpaid) { unpaid.status = 'Paid'; showToast('Marked as paid!', 'success'); switchTab(memberId, 'plan'); }
+  else { showToast('No unpaid entries found', 'warning'); }
+}
+
+function applyPlanAction(memberId, action) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+  if (!m.assignedPlans) m.assignedPlans = [];
+
+  if (action === 'suspend' && m.status === 'suspended') { showToast('Member is already suspended', 'error'); return; }
+  if (action === 'reactivate' && m.status === 'active') { showToast('Member is already active', 'error'); return; }
+
+  const actualPlan = m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {};
+  const currentPlanName = actualPlan.name || 'None';
+
+  const fmtDate = (d) => d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const today = new Date();
+  const newSr = m.assignedPlans.length > 0 ? Math.max(...m.assignedPlans.map(p => p.sr)) + 1 : 1;
+  const invNo = 'ISPL/' + (1000 + newSr) + '/' + today.getFullYear() + '-' + String(today.getFullYear() + 1).slice(-2);
+
+  if (action === 'assign' || action === 'upgrade') {
+    const sel = document.getElementById('plan-select-field');
+    if (!sel) { showToast('Select a plan', 'error'); return; }
+    const planName = sel.value;
+    const startVal = document.getElementById('plan-start-date');
+    const startDate = startVal ? new Date(startVal.value) : today;
+    const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === planName) || {};
+    
+    // Invoice Independence Logic
+    const isFree = planData.price === 0;
+    const invOpt = document.getElementById('plan-generate-invoice') ? document.getElementById('plan-generate-invoice').value : 'generate_unpaid';
+    const shouldGenerateInvoice = (invOpt !== 'skip') && !isFree;
+    const assignedInvNo = shouldGenerateInvoice ? invNo : '';
+    const assignedStatus = shouldGenerateInvoice ? (invOpt === 'generate_paid' ? 'Paid' : 'UnPaid') : 'N/A';
+    
+    const days = planData.validity ? ({ monthly: 30, quarterly: 90, halfyearly: 180, yearly: 365, '15days': 15 }[planData.validity] || 30) : 30;
+    const endDate = new Date(startDate); endDate.setDate(endDate.getDate() + days);
+    
+    m.plan = planName.toLowerCase().replace('tk-', '');
+    if (m.status === 'suspended') m.status = 'active';
+    m.assignedPlans.unshift({ sr: newSr, name: planName, date: fmtDate(startDate) + ' to ' + fmtDate(endDate), remark: action === 'upgrade' ? 'Upgraded' : 'Assigned', invoice: assignedInvNo, status: assignedStatus });
+    showToast(planName + ' ' + (action === 'upgrade' ? 'upgraded' : 'assigned') + ' successfully!', 'success');
+  } else if (action === 'extend') {
+    if (currentPlanName === 'None') { showToast('No active plan to extend', 'error'); return; }
+    const extSel = document.getElementById('plan-extend-days');
+    const extDays = extSel ? parseInt(extSel.value) : 30;
+    const extEnd = new Date(today); extEnd.setDate(extEnd.getDate() + extDays);
+    const currentPlanData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === currentPlanName) || {};
+    
+    const isFree = currentPlanData.price === 0;
+    const invOpt = document.getElementById('plan-generate-invoice') ? document.getElementById('plan-generate-invoice').value : 'generate_unpaid';
+    const shouldGenerateInvoice = (invOpt !== 'skip') && !isFree;
+    const assignedInvNo = shouldGenerateInvoice ? invNo : '';
+    const assignedStatus = shouldGenerateInvoice ? (invOpt === 'generate_paid' ? 'Paid' : 'UnPaid') : 'N/A';
+
+    m.assignedPlans.unshift({ sr: newSr, name: currentPlanName, date: fmtDate(today) + ' to ' + fmtDate(extEnd), remark: 'Extended by ' + extDays + ' days', invoice: assignedInvNo, status: assignedStatus });
+    showToast('Plan extended by ' + extDays + ' days!', 'success');
+  } else if (action === 'suspend') {
+    const reason = document.getElementById('plan-suspend-reason');
+    m.status = 'suspended';
+    m.assignedPlans.unshift({ sr: newSr, name: 'Suspended', date: fmtDate(today), remark: reason ? reason.value || 'No reason' : 'No reason', invoice: '', status: 'N/A' });
+    showToast('Member suspended', 'warning');
+  } else if (action === 'reactivate') {
+    m.status = 'active';
+    const note = document.getElementById('plan-reactivate-note');
+    m.assignedPlans.unshift({ sr: newSr, name: 'Reactivated', date: fmtDate(today), remark: note ? note.value || 'Access restored' : 'Access restored', invoice: '', status: 'N/A' });
+    showToast('Member reactivated!', 'success');
+  }
+  switchTab(memberId, 'plan');
+}
+
+window.setPlanActionMode = function(memberId, action) {
+  const container = document.getElementById('plan-action-container');
+  if (!container) return;
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+  
+  const todayISO = new Date().toISOString().split('T')[0];
+  const po = (typeof plans !== 'undefined' ? plans : []).map(p => {
+    const vl = typeof VALIDITY_LABELS !== 'undefined' ? (VALIDITY_LABELS[p.validity] || p.validity) : p.validity;
+    return '<option value="' + p.name + '">' + p.name + ' \u00A0\u00A0 ' + (p.price === 0 ? 'FREE' : '\u20B9' + Number(p.price).toLocaleString() + ' / ' + vl) + '</option>';
+  }).join('');
+  
+  const lbl = (t, icon) => `<div style="font-size:0.7rem;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">${icon ? `<span class="material-icons-round" style="font-size:14px;">${icon}</span>` : ''} ${t}</div>`;
+  
+  const selWrap = (id, opts, hint) => `
+    <div style="position:relative;">
+      <select id="${id}" style="width:100%;appearance:none;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:0.9rem;color:#1e293b;cursor:pointer;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='#e2e8f0'">
+        ${opts}
+      </select>
+      <span class="material-icons-round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#94a3b8;font-size:20px;">expand_more</span>
+    </div>
+    ${hint ? `<span style="font-size:0.72rem;color:#94a3b8;font-weight:600;margin-top:8px;display:block;padding-left:4px;">${hint}</span>` : ''}
+  `;
+
+  const inputWrap = (id, type, val, placeholder) => `
+    <input type="${type}" id="${id}" value="${val || ''}" placeholder="${placeholder || ''}" 
+      style="width:100%;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:0.9rem;color:#1e293b;outline:none;transition:border-color 0.2s;" 
+      onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='#e2e8f0'">
+  `;
+
+  const invoiceOpts = `
+    <option value="generate_unpaid">Generate Invoice (Unpaid)</option>
+    <option value="generate_paid">Generate Invoice (Paid)</option>
+    <option value="skip">Do Not Generate (Skip)</option>
+  `;
+
+  let desc, fields, btn, note, icon;
+  if (action === 'assign') {
+    desc = 'Assign New Plan'; btn = 'Assign Plan'; note = "Initiates a new billing cycle for the member."; icon = "add_moderator";
+    fields = `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:24px;margin-bottom:24px;">
+        <div>${lbl('Select Plan', 'layers')} ${selWrap('plan-select-field', po)}</div>
+        <div>${lbl('Start Date', 'calendar_today')} ${inputWrap('plan-start-date', 'date', todayISO)}</div>
+        <div>${lbl('Invoicing', 'receipt_long')} ${selWrap('plan-generate-invoice', invoiceOpts, 'Free plans auto-skip invoices.')}</div>
+      </div>
+    `;
+  } else if (action === 'extend') {
+    desc = 'Extend Plan'; btn = 'Extend Now'; note = "Add more time to the current subscription."; icon = "more_time";
+    fields = `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:24px;margin-bottom:24px;">
+        <div>${lbl('Extension Period', 'timer')} ${selWrap('plan-extend-days', '<option value="30">30 Days (1 Month)</option><option value="90">90 Days (Quarter)</option><option value="180">180 Days (Half Year)</option><option value="365">365 Days (1 Year)</option>')}</div>
+        <div>${lbl('Effective From', 'info')} <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:0.9rem;color:#94a3b8;">${todayISO}</div></div>
+        <div>${lbl('Billing', 'payments')} ${selWrap('plan-generate-invoice', invoiceOpts)}</div>
+      </div>
+    `;
+  } else if (action === 'upgrade') {
+    desc = 'Upgrade Member'; btn = 'Confirm Upgrade'; note = "Proration logic will be applied to the new tier."; icon = "upgrade";
+    fields = `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:24px;margin-bottom:24px;">
+        <div>${lbl('New Tier', 'stars')} ${selWrap('plan-select-field', po)}</div>
+        <div>${lbl('Upgrade Date', 'event_available')} ${inputWrap('plan-start-date', 'date', todayISO)}</div>
+        <div>${lbl('Invoice Control', 'settings')} ${selWrap('plan-generate-invoice', invoiceOpts)}</div>
+      </div>
+    `;
+  } else if (action === 'suspend') {
+    desc = 'Suspend Membership'; btn = 'Suspend Access'; note = "Member will be blocked from the application."; icon = "block";
+    fields = `
+      <div style="margin-bottom:24px;">
+        ${lbl('Reason for Suspension', 'gavel')}
+        ${inputWrap('plan-suspend-reason', 'text', '', 'e.g. Non-payment, violation of terms...')}
+      </div>
+    `;
+  } else if (action === 'reactivate') {
+    desc = 'Reactivate Member'; btn = 'Restore Access'; note = "Restores all member privileges immediately."; icon = "verified_user";
+    fields = `
+      <div style="margin-bottom:24px;">
+        ${lbl('Reactivation Notes', 'edit_note')}
+        ${inputWrap('plan-reactivate-note', 'text', '', 'Optional: e.g. Payment verified...')}
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div class="content-card" style="padding: 32px; position: relative; border: 2px solid var(--blue); box-shadow: 0 10px 25px rgba(59,130,246,0.08); background: linear-gradient(to bottom right, #ffffff, #fdfdff);">
+      <button onclick="document.getElementById('plan-action-container').style.display='none'" style="position:absolute; top: 20px; right: 20px; background: #f1f5f9; border: none; cursor: pointer; color: #64748b; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#1e293b'" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b'">
+        <span class="material-icons-round" style="font-size: 18px;">close</span>
+      </button>
+      
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
+        <div style="width: 44px; height: 44px; background: #eff6ff; color: var(--blue); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <span class="material-icons-round" style="font-size: 24px;">${icon}</span>
+        </div>
+        <div>
+          <h2 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #1e293b; letter-spacing: -0.5px;">${desc}</h2>
+          <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Member ID: #${m.id} \u2022 ${m.member}</p>
+        </div>
+      </div>
+
+      <div style="background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+        ${fields}
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; color: #64748b;">
+            <span class="material-icons-round" style="font-size: 16px; color: #94a3b8;">tips_and_updates</span>
+            <span style="font-size: 0.8rem; font-weight: 600;">${note}</span>
+          </div>
+          <button onclick="applyPlanAction(${m.id}, '${action}')" style="background: var(--blue); color: #fff; border: none; border-radius: 10px; padding: 14px 28px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(59,130,246,0.2);" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 12px rgba(59,130,246,0.3)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 10px rgba(59,130,246,0.2)'">
+            ${btn} <span class="material-icons-round" style="font-size: 18px;">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  container.style.display = 'block';
+  container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+
 // ===== STAMP MODAL =====
 function openStampModal(memberId) {
   const m = members.find(x => x.id === memberId);
@@ -1875,7 +2163,7 @@ function openStampModal(memberId) {
   const modalContent = document.getElementById('modal-content');
 
   const badgeConfig = [
-    { key: 'identity', label: 'Identity Verified', icon: 'badge', color: '#3b82f6', bg: '#dbeafe', desc: 'User identity has been verified' },
+    { key: 'identity', label: 'Identity Verified', icon: 'badge', color: '#1e293b', bg: '#f1f5f9', desc: 'User identity has been verified' },
     { key: 'email', label: 'Email Verified', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
     { key: 'docs', label: 'Documents Verified', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
     { key: 'account', label: 'Account Verified', icon: 'account_circle', color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
@@ -1995,7 +2283,7 @@ function openComposeModal(memberId) {
   if (!m) return;
 
   content.className = 'modal-content modal-wide';
-  content.style.maxWidth = '900px';
+  content.style.maxWidth = '750px';
 
   content.innerHTML = `
     <div class="modal-header">
@@ -2007,43 +2295,41 @@ function openComposeModal(memberId) {
       </div>
       <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
-    <div class="modal-body" style="padding: 0; display: flex !important; flex-direction: row !important; min-height: 500px;">
+    <div class="modal-body" style="padding: 0; display: flex !important; flex-direction: row !important; min-height: 400px; max-height: 70vh;">
       <!-- Left Sidebar: Templates -->
-      <div style="width: 280px; border-right: 1px solid var(--border); background: #f8fafc; display: flex; flex-direction: column; flex-shrink: 0;">
-        <div style="padding: 16px 20px; border-bottom: 1px solid var(--border);">
-          <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Templates</div>
+      <div style="width: 220px; border-right: 1px solid var(--border); background: #f8fafc; display: flex; flex-direction: column; flex-shrink: 0;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border); background: #fff;">
+          <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Categories</div>
+          <div style="position: relative;">
+            <select id="compose-cat-select" onchange="renderComposeTemplates(${m.id}, this.value)" style="width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 800; font-size: 0.85rem; appearance: none; background: #fff; cursor: pointer; outline: none;">
+              <option value="all">All Categories</option>
+              <option value="1">Welcome Emails</option>
+              <option value="2">Billing Updates</option>
+              <option value="3">System Announcements</option>
+            </select>
+            <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+          </div>
         </div>
-        <div style="flex: 1; overflow-y: auto; padding: 12px;">
-          <div class="template-item" onclick="loadEmailTemplate('welcome', ${m.id})" style="padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; background: #fff; border: 1px solid var(--border);">
-            <div style="font-weight: 700; color: var(--text); font-size: 0.85rem; margin-bottom: 4px;">Welcome Email</div>
-            <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Official welcome message for new members.</div>
-          </div>
-          <div class="template-item" onclick="loadEmailTemplate('expiry', ${m.id})" style="padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; background: #fff; border: 1px solid var(--border);">
-            <div style="font-weight: 700; color: var(--text); font-size: 0.85rem; margin-bottom: 4px;">Plan Expiry</div>
-            <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Friendly reminder about upcoming plan expiration.</div>
-          </div>
-          <div class="template-item" onclick="loadEmailTemplate('invoice', ${m.id})" style="padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; background: #fff; border: 1px solid var(--border);">
-            <div style="font-weight: 700; color: var(--text); font-size: 0.85rem; margin-bottom: 4px;">Monthly Invoice</div>
-            <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">Notification about newly generated invoice.</div>
-          </div>
+        <div id="compose-template-list" style="flex: 1; overflow-y: auto; padding: 16px;">
+          <!-- Loaded dynamically -->
         </div>
       </div>
 
       <!-- Right Side: Compose Form -->
-      <div style="flex: 1; padding: 32px; display: flex; flex-direction: column; gap: 20px; background: #fff;">
-        <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 16px; background: #fff;">
+        <div style="display:flex; flex-direction:column; gap:6px;">
           <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Recipient</label>
           <div style="padding: 12px 16px; background: #f1f5f9; border-radius: 8px; font-weight: 700; color: var(--text-mid); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
             <span class="material-icons-round" style="font-size: 16px;">mail_outline</span> ${m.email}
           </div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; flex-direction:column; gap:6px;">
           <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Subject</label>
           <input class="modal-input" type="text" id="compose-subject" placeholder="Enter email subject" style="background:#f8fafc;">
         </div>
-        <div style="display:flex; flex-direction:column; gap:8px; flex: 1;">
-          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Message</label>
-          <textarea class="modal-input" id="compose-message" style="flex: 1; background:#f8fafc; resize:none; min-height: 180px;" placeholder="Type your message here..."></textarea>
+        <div style="display:flex; flex-direction:column; gap:6px; flex: 1;">
+          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Editor</label>
+          ${getRichTextEditorHTML("Type your message here...")}
         </div>
       </div>
     </div>
@@ -2055,38 +2341,66 @@ function openComposeModal(memberId) {
     </div>
   `;
   modal.classList.remove('hidden');
+  initRichTextEditor('.email-editor-container');
+  renderComposeTemplates(memberId);
 }
 
-function loadEmailTemplate(temp, memberId) {
+function renderComposeTemplates(memberId, catId = 'all') {
+  const container = document.getElementById('compose-template-list');
+  const tpls = [
+    { id: 1, catId: 1, name: "Welcome Email", desc: "Official welcome message for new members." },
+    { id: 2, catId: 2, name: "Plan Expiry", desc: "Friendly reminder about upcoming plan expiration." },
+    { id: 3, catId: 2, name: "Monthly Invoice", desc: "Notification about newly generated invoice." },
+    { id: 4, catId: 3, name: "System Maintenance", desc: "Scheduled downtime announcement." }
+  ];
+
+  const filtered = catId === 'all' ? tpls : tpls.filter(t => t.catId == catId);
+
+  container.innerHTML = filtered.map(t => `
+    <div class="template-item" onclick="loadEmailTemplate(${t.id}, ${memberId})" style="padding: 14px; border-radius: 10px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; background: #fff; border: 1px solid var(--border);">
+      <div style="font-weight: 800; color: var(--blue); font-size: 0.9rem; margin-bottom: 4px;">${t.name}</div>
+      <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${t.desc}</div>
+    </div>
+  `).join('') || '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:0.8rem;">No templates in this category.</div>';
+}
+
+function loadEmailTemplate(tplId, memberId) {
   const m = members.find(x => x.id === memberId);
   const subj = document.getElementById('compose-subject');
-  const msg = document.getElementById('compose-message');
+  const msg = document.querySelector('.editor-content');
   if (!subj || !msg || !m) return;
 
-  const templates = {
-    welcome: {
+  const templatesData = {
+    1: {
       subject: 'Welcome to the Platform',
-      body: `Dear ${m.member},\n\nWe are excited to welcome you to our platform! Your account for ${m.company} has been successfully activated.\n\nYou can now access all your dashboard features. If you have any questions, feel free to reply to this email.\n\nBest regards,\nAdmin Team`
+      body: `Dear ${m.member},\n\nWe are excited to welcome you to our platform! Your account for ${m.company} has been successfully activated.\n\nBest regards,\nAdmin Team`
     },
-    expiry: {
+    2: {
       subject: 'Action Required: Your plan is about to expire',
-      body: `Hi ${m.member},\n\nThis is a friendly reminder that your current plan for ${m.company} is set to expire in 7 days.\n\nTo ensure uninterrupted service, please renew your plan from the dashboard.\n\nBest regards,\nAdmin Team`
+      body: `Hi ${m.member},\n\nThis is a friendly reminder that your current plan for ${m.company} is set to expire in 7 days.\n\nBest regards,\nAdmin Team`
     },
-    invoice: {
-      subject: 'Your monthly invoice is ready',
-      body: `Hello ${m.member},\n\nYour monthly invoice for ${m.company} has been generated and is now available for review in your account.\n\nThank you for your business!\n\nBest regards,\nAdmin Team`
+    3: {
+      subject: 'Your Monthly Invoice is Ready',
+      body: `Hello ${m.member},\n\nYour monthly invoice for ${m.company} has been generated and is now available in your dashboard.\n\nBest regards,\nBilling Team`
+    },
+    4: {
+      subject: 'System Maintenance Notice',
+      body: `Hello,\n\nPlease be advised that we have scheduled system maintenance tomorrow at 2:00 AM UTC. Expect minor service interruptions.\n\nRegards,\nIT Support`
     }
   };
 
-  subj.value = templates[temp].subject;
-  msg.value = templates[temp].body;
-  showToast('Template loaded', 'success');
+  const t = templatesData[tplId];
+  if (t) {
+    subj.value = t.subject;
+    msg.innerHTML = t.body.replace(/\n/g, '<br>');
+    showToast('Template loaded', 'success');
+  }
 }
 
 function sendProfileEmail(memberId) {
   const subj = document.getElementById('compose-subject').value.trim();
-  const msg = document.getElementById('compose-message').value.trim();
-  if (!subj || !msg) { showToast('Subject and message are required', 'error'); return; }
+  const msg = document.querySelector('.editor-content').innerHTML.trim();
+  if (!subj || msg === "" || msg === "<br>") { showToast('Subject and message are required', 'error'); return; }
 
   const m = members.find(x => x.id === memberId);
   if (!m.emails) m.emails = [];
@@ -2249,4 +2563,84 @@ function showAssignPlanModal(memberId) {
     `;
 
   modal.classList.remove('hidden');
+}
+
+// ===== RICH TEXT EDITOR UTILITIES =====
+function getRichTextEditorHTML(placeholder = "Insert text here ...") {
+    return `
+        <div class="email-editor-container">
+            <div class="editor-toolbar">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="bold" title="Bold"><span class="material-icons-round">format_bold</span></button>
+                    <button class="toolbar-btn" data-command="italic" title="Italic"><span class="material-icons-round">format_italic</span></button>
+                    <button class="toolbar-btn" data-command="underline" title="Underline"><span class="material-icons-round">format_underlined</span></button>
+                    <button class="toolbar-btn" data-command="strikethrough" title="Strike"><span class="material-icons-round">strikethrough_s</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="formatBlock" data-value="blockquote" title="Quote"><span class="material-icons-round">format_quote</span></button>
+                    <button class="toolbar-btn" data-command="formatBlock" data-value="pre" title="Code"><span class="material-icons-round">code</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="formatBlock" data-value="h1" title="H1"><span class="material-icons-round">filter_1</span></button>
+                    <button class="toolbar-btn" data-command="formatBlock" data-value="h2" title="H2"><span class="material-icons-round">filter_2</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><span class="material-icons-round">format_list_bulleted</span></button>
+                    <button class="toolbar-btn" data-command="insertOrderedList" title="Number List"><span class="material-icons-round">format_list_numbered</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="superscript" title="Superscript"><span class="material-icons-round">superscript</span></button>
+                    <button class="toolbar-btn" data-command="subscript" title="Subscript"><span class="material-icons-round">subscript</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><span class="material-icons-round">format_align_left</span></button>
+                    <button class="toolbar-btn" data-command="justifyCenter" title="Align Center"><span class="material-icons-round">format_align_center</span></button>
+                    <button class="toolbar-btn" data-command="justifyRight" title="Align Right"><span class="material-icons-round">format_align_right</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="createLink" title="Link"><span class="material-icons-round">link</span></button>
+                    <button class="toolbar-btn" data-command="insertImage" title="Image"><span class="material-icons-round">image</span></button>
+                    <button class="toolbar-btn" data-command="insertVideo" title="Video"><span class="material-icons-round">videocam</span></button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><span class="material-icons-round">format_clear</span></button>
+                </div>
+            </div>
+            <div class="editor-content" contenteditable="true" data-placeholder="${placeholder}"></div>
+        </div>
+    `;
+}
+
+function initRichTextEditor(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    const toolbar = container.querySelector('.editor-toolbar');
+    const content = container.querySelector('.editor-content');
+
+    toolbar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.toolbar-btn');
+        if (!btn) return;
+
+        const cmd = btn.getAttribute('data-command');
+        const val = btn.getAttribute('data-value') || null;
+
+        if (cmd === 'createLink') {
+            const url = prompt('Enter URL:', 'https://');
+            if (url) document.execCommand(cmd, false, url);
+        } else if (cmd === 'insertImage') {
+            const url = prompt('Enter Image URL:');
+            if (url) document.execCommand(cmd, false, url);
+        } else if (cmd === 'insertVideo') {
+            const url = prompt('Enter Video URL (Embed):');
+            if (url) {
+                const videoHtml = `<iframe width="560" height="315" src="${url}" frameborder="0" allowfullscreen></iframe>`;
+                document.execCommand('insertHTML', false, videoHtml);
+            }
+        } else {
+            document.execCommand(cmd, false, val);
+        }
+        
+        content.focus();
+    });
 }

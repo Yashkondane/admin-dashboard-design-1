@@ -1,58 +1,71 @@
+const categories = [
+  { id: 1, name: 'Welcome Emails' },
+  { id: 2, name: 'Billing Updates' },
+  { id: 3, name: 'System Announcements' }
+];
+
 const templates = [
   {
-    id: 1,
+    id: 1, catId: 1,
     name: "Welcome Email",
     subject: "Welcome to the Community!",
-    body: "Hi [Name],\n\nWelcome aboard! We are thrilled to have you join our community.\n\nHere are a few quick links to get you started:\n- Setup your profile\n- View membership benefits\n\nIf you have any questions, feel free to reply to this email.\n\nBest regards,\nThe Team"
+    body: "Hi [Name],\n\nWelcome aboard! We are thrilled to have you join our community.\n\nBest regards,\nThe Team"
   },
   {
-    id: 2,
+    id: 2, catId: 2,
     name: "Invoice Reminder",
     subject: "Reminder: Your Upcoming Invoice",
-    body: "Hi [Name],\n\nThis is a friendly reminder that your invoice #[Invoice_ID] for the amount of [Amount] is due on [Date].\n\nYou can pay your invoice online through your dashboard.\n\nThank you for your business!\n\nBest regards,\nThe Billing Team"
+    body: "Hi [Name],\n\nThis is a friendly reminder that your invoice #[Invoice_ID] for the amount of [Amount] is due on [Date].\n\nThank you for your business!"
   },
   {
-    id: 3,
+    id: 3, catId: 3,
     name: "System Update",
     subject: "Important System Maintenance Notice",
-    body: "Hello,\n\nWe will be performing scheduled maintenance on our platform on [Date] at [Time]. During this window, you may experience brief interruptions in service.\n\nWe appreciate your patience as we work to improve our systems.\n\nRegards,\nIT Support"
-  },
-  {
-    id: 4,
-    name: "Event Invitation",
-    subject: "You're Invited: Upcoming Webinar",
-    body: "Hi [Name],\n\nWe're hosting a special webinar on [Topic] and we'd love for you to join us!\n\nDate: [Date]\nTime: [Time]\n\nClick the link below to RSVP and secure your spot.\n\nHope to see you there!"
+    body: "Hello,\n\nWe will be performing scheduled maintenance on our platform on [Date] at [Time].\n\nRegards,\nIT Support"
   }
 ];
 
-function renderTemplates() {
+function init() {
+  renderCategoryDropdown();
+  renderTemplates();
+}
+
+function renderCategoryDropdown() {
+  const sel = document.getElementById('category-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="all">All Categories</option>' + categories.map(c => `
+    <option value="${c.id}">${c.name}</option>
+  `).join('');
+}
+
+function loadTemplatesByCategory(catId) {
+  renderTemplates(catId);
+}
+
+function renderTemplates(catId = 'all') {
   const container = document.getElementById('template-list');
-  container.innerHTML = templates.map(t => `
+  const filtered = catId === 'all' ? templates : templates.filter(t => t.catId == catId);
+  
+  container.innerHTML = filtered.map(t => `
     <div class="template-item" onclick="selectTemplate(${t.id})" style="padding: 16px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 12px; cursor: pointer; transition: all 0.2s; background: var(--white);">
       <div style="font-weight: 800; color: var(--blue); font-size: 0.95rem; margin-bottom: 4px;">${t.name}</div>
       <div style="font-size: 0.8rem; color: var(--text-mid); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Subject: ${t.subject}</div>
     </div>
   `).join('');
   
-  // Add some hover styles dynamically for ease
-  const style = document.createElement('style');
-  style.innerHTML = `
-    .template-item:hover {
-      border-color: var(--blue) !important;
-      box-shadow: 0 2px 8px rgba(72, 128, 255, 0.15) !important;
-      transform: translateY(-2px);
-    }
-    .editor-btn {
-      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; border: none; background: transparent; cursor: pointer; color: var(--text-mid); transition: all 0.1s;
-    }
-    .editor-btn:hover {
-      background: #e2e8f0; color: var(--blue);
-    }
-    .editor-btn .material-icons-round {
-      font-size: 18px;
-    }
-  `;
-  document.head.appendChild(style);
+  // Add some hover styles dynamically
+  if (!document.getElementById('tpl-styles')) {
+    const style = document.createElement('style');
+    style.id = 'tpl-styles';
+    style.innerHTML = `
+      .template-item:hover {
+        border-color: var(--blue) !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        transform: translateY(-2px);
+      }
+    `;
+    document.head.appendChild(style);
+  }
 }
 
 function selectTemplate(id) {
@@ -64,6 +77,9 @@ function selectTemplate(id) {
   
   showToast('Template loaded', 'success');
 }
+
+// Call init on load
+document.addEventListener('DOMContentLoaded', init);
 
 function sendEmail() {
   const to = document.getElementById('email-to').value.trim();

@@ -6,7 +6,7 @@ const requests = [
   { id: "#REQ-105", member: "Jacob Jones", type: "Profile Update", details: "Requested company logo change.", date: "Oct 20, 2023", status: "Pending", statusClass: "suspended", avatar: "https://randomuser.me/api/portraits/men/46.jpg" }
 ];
 
-let currentFilter = 'all';
+var currentFilter = 'all';
 
 function renderTable(data = requests) {
   const tbody = document.getElementById('requests-tbody');

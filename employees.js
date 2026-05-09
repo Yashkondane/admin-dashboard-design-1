@@ -10,7 +10,7 @@ const employees = [
   { id: 9, name: "Jenny Wilson", role: "Product Manager", phone: "(205) 555-0100", email: "jenny@example.com", status: "Best Contributor", statusClass: "starter", avatar: "https://randomuser.me/api/portraits/women/91.jpg" },
 ];
 
-let currentFilter = 'all';
+var currentFilter = 'all';
 
 function renderTable(data = employees) {
   const tbody = document.getElementById('employee-tbody');

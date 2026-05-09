@@ -46,7 +46,7 @@
           </button>
           <div class="nav-sub" style="height: auto;">
             <a href="plans.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Membership Plans</a>
-            <a href="labels.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Plan Labels</a>
+            <a href="labels.html" class="nav-sub-item"><span class="nav-sub-dot"></span>App Membership Label</a>
             <a href="invoice.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Invoice</a>
           </div>
         </div>
@@ -59,6 +59,7 @@
           <div class="nav-sub">
             <a href="email.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Send Email</a>
             <a href="notifications.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Notifications</a>
+            <a href="broadcast-history.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Broadcast History</a>
           </div>
         </div>
         <div class="nav-group">
@@ -82,10 +83,6 @@
             <a href="settings-fields.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Field Setting</a>
           </div>
         </div>
-        <a href="employees.html" class="nav-item" id="nav-employees" style="opacity:0.5;">
-          <span class="material-icons-round">badge</span>
-          <span class="nav-label">Employees</span>
-        </a>
       </nav>
     </div>
     <div class="sidebar-bottom">
@@ -113,46 +110,125 @@
       </div>
     </header>
 
-    <div id="invoice-view" style="background: var(--white); border-radius: 16px; padding: 32px 32px 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03); border: 1px solid var(--border);">
-      <div class="page-title-row" style="margin-bottom: 12px;">
-        <h1 class="page-title">Invoices</h1>
+    <!-- PAGE CONTENT -->
+    <div id="invoice-view">
+      <div class="page-title-row" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 class="page-title">Invoices</h1>
+        </div>
         <div class="page-title-actions">
-          <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
+          <button class="btn-outline" style="border-radius: 10px;"><span class="material-icons-round">ios_share</span> Export</button>
         </div>
       </div>
 
-      <div class="tabs-container" style="display: flex; gap: 24px; padding: 0 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border);">
-        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">All <span class="badge">8</span></button>
-        <button class="tab-item" data-filter="Paid" onclick="setFilter('Paid')">Paid <span class="badge">4</span></button>
-        <button class="tab-item" data-filter="Pending" onclick="setFilter('Pending')">Pending <span class="badge">2</span></button>
-        <button class="tab-item" data-filter="Overdue" onclick="setFilter('Overdue')">Overdue <span class="badge">2</span></button>
+      <div class="tabs-container">
+        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">
+          <span>All Invoices</span>
+          <span class="badge" id="badge-all">0</span>
+        </button>
+        <button class="tab-item" data-filter="paid" onclick="setFilter('paid')">
+          <span>Paid</span>
+          <span class="badge badge-active" id="badge-paid">0</span>
+        </button>
+        <button class="tab-item" data-filter="unpaid" onclick="setFilter('unpaid')">
+          <span>Unpaid</span>
+          <span class="badge badge-warning" id="badge-unpaid">0</span>
+        </button>
+        <button class="tab-item" data-filter="cancel" onclick="setFilter('cancel')">
+          <span>Cancel</span>
+          <span class="badge badge-inactive" id="badge-cancel">0</span>
+        </button>
       </div>
 
-      <section class="table-section" style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
-        <div class="table-scroll-wrap">
+      <section class="table-section" style="display: flex; flex-direction: column; flex: 1;">
+        <div class="table-scroll-wrap" style="overflow: visible;">
           <table class="data-table">
             <thead>
               <tr>
-                <th style="width: 18%;">Invoice ID</th>
-                <th style="width: 22%;">Client / Member</th>
-                <th style="width: 18%;">Date Issued</th>
-                <th style="width: 16%;">Amount</th>
-                <th style="width: 14%;">Status</th>
-                <th style="width: 12%; text-align: right;">Action</th>
+                <th style="width: 7%; font-weight: 600; color: #475569;">Sr.No</th>
+                <th style="width: 13%; font-weight: 600; color: #475569;">Invoice #</th>
+                <th style="width: 14%; font-weight: 600; color: #475569;">Plan Name</th>
+                <th style="width: 13%; font-weight: 600; color: #475569;">Validity</th>
+                <th style="width: 18%; font-weight: 600; color: #475569;">Company Name</th>
+                <th style="width: 12%; font-weight: 600; color: #475569;">Amount</th>
+                <th style="width: 11%; text-align:center; font-weight: 600; color: #475569;">Status</th>
+                <th style="width: 12%; text-align:right; font-weight: 600; color: #475569;">Action</th>
               </tr>
             </thead>
             <tbody id="invoice-tbody"></tbody>
           </table>
         </div>
         <div class="table-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 8 invoices</div>
-          <div class="pagination">
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
+          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 0 invoices</div>
+          <div class="pagination" id="pagination-controls" style="display: flex; align-items: center;"></div>
+          <div>
+            <select id="rows-per-page-bottom" onchange="updateRowsPerPage(this.value)"
+              style="border: none; outline: none; background: transparent; font-size: 0.85rem; font-weight: 600; color: var(--text-mid); cursor: pointer;">
+              <option value="10">10 / page</option>
+              <option value="20">20 / page</option>
+              <option value="50">50 / page</option>
+            </select>
           </div>
-          <button class="nav-text-btn" id="next-page">Next <span class="material-icons-round">chevron_right</span></button>
         </div>
       </section>
+    </div>
+
+    <!-- Modal for Status Update -->
+    <div id="modal-container" class="modal-overlay hidden">
+      <div class="modal-content" style="width: 500px; padding: 0;">
+        <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #1e293b;">Update Status</h2>
+          <button class="header-icon-btn" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+        </div>
+        <div style="padding: 24px;">
+          <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+            <span style="font-weight: 700; color: #64748b; font-size: 0.9rem;">Status</span>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="status" value="Unpaid" checked onchange="togglePaidFields(false)">
+              <span style="font-weight: 600; font-size: 0.9rem;">Unpaid</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="status" value="Paid" onchange="togglePaidFields(true)">
+              <span style="font-weight: 600; font-size: 0.9rem;">Paid</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+              <input type="radio" name="status" value="Cancel" onchange="togglePaidFields(false)">
+              <span style="font-weight: 600; font-size: 0.9rem;">Cancel</span>
+            </label>
+          </div>
+
+          <div id="paid-fields" class="hidden" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Payment Date</label>
+              <input type="date" class="pf-input" id="status-date">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Payment Mode</label>
+              <select class="pf-input" id="status-mode">
+                <option value="Cash">Cash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Check">Check</option>
+              </select>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Ref No</label>
+              <input type="text" class="pf-input" id="status-ref" placeholder="Ref No">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Amount</label>
+              <input type="text" class="pf-input" id="status-amount" placeholder="Amount">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2;">
+              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Bank Name</label>
+              <input type="text" class="pf-input" id="status-bank" placeholder="Bank Name">
+            </div>
+          </div>
+        </div>
+        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+          <button class="btn-outline" onclick="closeModal()" style="height: 40px; padding: 0 24px; border-radius: 8px;">Close</button>
+          <button class="btn-primary" onclick="saveStatus()" style="height: 40px; padding: 0 24px; border-radius: 8px;">Save</button>
+        </div>
+      </div>
     </div>
   </main>
 

@@ -25,7 +25,7 @@ const notifications = [
   }
 ];
 
-let currentFilter = 'all';
+var currentFilter = 'all';
 
 const typeConfig = {
   success: { icon: 'check_circle', color: '#10b981', bg: '#ecfdf5', label: 'Success' },

@@ -3,12 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — Field Settings</title>
+  <title>Admin Dashboard — Manage Templates</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .template-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+      height: calc(100vh - 240px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .category-list {
+      background: transparent;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .category-item {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.2s;
+    }
+    .category-item:hover { background: #f8fafc; }
+    .category-item.active {
+      background: #eff6ff;
+      border-left: 4px solid var(--blue);
+    }
+    .category-item.active .cat-name { color: var(--blue); font-weight: 800; }
+    .cat-name { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
+    .cat-count { font-size: 0.75rem; font-weight: 800; color: #94a3b8; background: #f1f5f9; padding: 2px 8px; border-radius: 10px; }
+    .category-item.active .cat-count { background: var(--blue); color: #fff; }
+
+    .templates-main {
+      background: transparent;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .template-card {
+      padding: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .template-card:hover { background: #fafafa; }
+    .template-info { display: flex; flex-direction: column; gap: 4px; }
+    .template-title { font-size: 0.95rem; font-weight: 800; color: #1e293b; }
+    .template-meta { font-size: 0.75rem; font-weight: 600; color: #94a3b8; display: flex; gap: 12px; }
+    .template-actions { display: flex; gap: 8px; }
+    .action-btn { 
+      width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0; 
+      display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; background: #fff;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { background: #f1f5f9; color: var(--blue); border-color: var(--blue); }
+    
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #94a3b8; text-align: center; padding: 40px;
+    }
+  </style>
 </head>
 <body>
   <aside class="sidebar" id="sidebar">
@@ -68,10 +130,9 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub" style="height: auto;">
-            <a href="settings-fields.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Field Setting</a>
-            <a href="settings-templates.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Templates</a>
+            <a href="settings-fields.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Field Setting</a>
+            <a href="settings-templates.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Templates</a>
           </div>
-        </div>
       </nav>
     </div>
     <div class="sidebar-bottom">
@@ -83,7 +144,7 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Search fields…" id="top-search-input"></div>
+        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Search templates…" id="top-search-input"></div>
       </div>
       <div class="top-bar-right">
         <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span class="notif-dot"></span></button>
@@ -96,109 +157,53 @@
       </div>
     </header>
 
-    <div id="fields-view" style="display: flex; flex-direction: column; height: 100%;">
-      <div class="page-title-row" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px;">
-        <h1 class="page-title">Field Setting</h1>
-        <button class="btn-primary" onclick="openAddModal()" style="height: 40px; padding: 0 20px;">
-          <span class="material-icons-round" style="font-size: 20px;">add</span> Add
+    <div id="templates-view">
+      <div class="page-title-row" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 class="page-title">Manage Templates</h1>
+          <p style="color: #64748b; font-size: 0.85rem; font-weight: 600; margin-top: 4px;">Organize your email and notification responses</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-outline" onclick="openCategoryModal()"><span class="material-icons-round" style="font-size: 18px;">folder_open</span> New Category</button>
+          <button class="btn-primary" onclick="openTemplateModal()"><span class="material-icons-round" style="font-size: 18px;">add</span> Create Template</button>
+        </div>
+      </div>
+
+      <div class="tabs-container">
+        <button class="tab-item active" id="tab-email" onclick="switchType('email')">
+          <span class="material-icons-round" style="font-size: 18px;">alternate_email</span> Email Templates
+        </button>
+        <button class="tab-item" id="tab-notification" onclick="switchType('notification')">
+          <span class="material-icons-round" style="font-size: 18px;">notifications_active</span> Notification Templates
         </button>
       </div>
 
-      <div class="tabs-nav-wrapper" style="position: relative; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding: 0 48px; background: #fff;">
-        <style>
-          .tabs-nav-wrapper::before,
-          .tabs-nav-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 1px;
-            width: 40px;
-            z-index: 5;
-            pointer-events: none;
-            transition: opacity 0.3s;
-          }
-          .tabs-nav-wrapper::before {
-            left: 48px;
-            background: linear-gradient(to right, #fff, transparent);
-          }
-          .tabs-nav-wrapper::after {
-            right: 48px;
-            background: linear-gradient(to left, #fff, transparent);
-          }
-          .tabs-container {
-            display: flex;
-            gap: 8px;
-            padding: 0 4px 12px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-          }
-          .tabs-container::-webkit-scrollbar { display: none; }
-          .nav-arrow {
-            position: absolute;
-            top: 6px;
-            z-index: 10;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #64748b;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.2s;
-          }
-          .nav-arrow:hover { border-color: #4880FF; color: #4880FF; transform: scale(1.1); }
-          .nav-arrow.left { left: 8px; }
-          .nav-arrow.right { right: 8px; }
-        </style>
-
-        <button onclick="document.querySelector('.tabs-container').scrollBy({left: -240, behavior: 'smooth'})" class="nav-arrow left">
-          <span class="material-icons-round" style="font-size: 20px;">chevron_left</span>
-        </button>
-        
-        <div class="tabs-container">
-          <button class="tab-item active" onclick="switchTab('category')">Category</button>
-          <button class="tab-item" onclick="switchTab('subcategory')">Subcategory</button>
-          <button class="tab-item" onclick="switchTab('condition')">Condition</button>
-          <button class="tab-item" onclick="switchTab('wtb-price')">WTB Price</button>
-          <button class="tab-item" onclick="switchTab('wts-price')">WTS Price</button>
-          <button class="tab-item" onclick="switchTab('uom')">UOM</button>
-          <button class="tab-item" onclick="switchTab('designation')">Designation</button>
-          <button class="tab-item" onclick="switchTab('inactive-status')">Inactive Status</button>
-          <button class="tab-item" onclick="switchTab('business-type')">Business Type</button>
-          <button class="tab-item" onclick="switchTab('address-title')">Address Title</button>
-          <button class="tab-item" onclick="switchTab('support-category')">Support Category</button>
-          <button class="tab-item" onclick="switchTab('stamp')">Stamp</button>
-          <button class="tab-item" onclick="switchTab('invoice-setting')">Invoice Setting</button>
-          <button class="tab-item" onclick="switchTab('terms-condition')">Terms & Condition</button>
+      <div class="template-grid">
+        <div class="category-list">
+          <div style="padding: 16px 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.75rem; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Categories</span>
+          </div>
+          <div id="categories-container" class="custom-scrollbar" style="overflow-y: auto;">
+            <!-- Categories will be rendered here -->
+          </div>
         </div>
 
-        <button onclick="document.querySelector('.tabs-container').scrollBy({left: 240, behavior: 'smooth'})" class="nav-arrow right">
-          <span class="material-icons-round" style="font-size: 20px;">chevron_right</span>
-        </button>
-      </div>
-
-      <div style="padding: 0 0 16px; margin-top: 12px;">
-        <h2 id="tab-title" style="font-size: 1rem; font-weight: 800; color: #1e293b;">Product Category</h2>
-      </div>
-      <div id="fields-table-container">
-        <!-- Table will be injected by fields.js -->
-      </div>
-      <div class="table-footer" id="fields-footer" style="padding: 16px 32px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
-        <!-- Content rendered by fields.js -->
+        <div class="templates-main">
+          <div id="template-header" style="padding: 16px 20px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+            <span id="selected-cat-label" style="font-size: 0.85rem; font-weight: 800; color: #1e293b;">Select a category</span>
+          </div>
+          <div id="templates-container" class="custom-scrollbar" style="overflow-y: auto; flex: 1;">
+            <!-- Templates will be rendered here -->
+          </div>
+        </div>
       </div>
     </div>
   </main>
 
-  <div id="modal-container" class="modal-overlay hidden"><div class="modal-content" id="modal-content" style="max-width: 500px;"></div></div>
+  <div id="modal-container" class="modal-overlay hidden"><div class="modal-content" id="modal-content" style="max-width: 650px;"></div></div>
   <div id="toast-container" class="toast-container"></div>
-  <script src="fields.js"></script>
+  
   <script src="script.js"></script>
+  <script src="templates.js"></script>
 </body>
 </html>
