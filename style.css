@@ -2693,54 +2693,54 @@ body {
 
 /* Expiry Preview */
 .expiry-preview {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  overflow: hidden;
+  border-radius: 8px;
+  padding: 16px 24px;
 }
 
 .expiry-preview-item {
-  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .expiry-preview-item .ep-label {
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #94a3b8;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .expiry-preview-item .ep-value {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 800;
   color: #1e293b;
 }
 
 .expiry-preview-arrow {
+  color: #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--blue);
-  padding: 0 8px;
 }
 
 .expiry-preview-arrow .material-icons-round {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .expiry-preview-item.new-expiry {
-  background: #eff6ff;
+  background: transparent;
+  align-items: flex-end;
+  text-align: right;
 }
 
 .expiry-preview-item.new-expiry .ep-value {
-  color: var(--blue);
+  color: #2563eb;
 }
 
 /* Suspend Warning */
