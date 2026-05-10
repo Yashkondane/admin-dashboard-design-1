@@ -2722,17 +2722,6 @@ body {
   color: #1e293b;
 }
 
-.expiry-preview-arrow {
-  color: #cbd5e1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.expiry-preview-arrow .material-icons-round {
-  font-size: 20px;
-}
-
 .expiry-preview-item.new-expiry {
   background: transparent;
   align-items: flex-end;

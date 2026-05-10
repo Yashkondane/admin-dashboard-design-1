@@ -187,7 +187,6 @@ window.selectManageAction = function(el, memberId, action) {
       </div>
       <div class="expiry-preview" id="assign-duration-preview" style="display:none;">
         <div class="expiry-preview-item"><div class="ep-label">Duration</div><div class="ep-value" id="ad-duration">-</div></div>
-        <div class="expiry-preview-arrow"><span class="material-icons-round">schedule</span></div>
         <div class="expiry-preview-item new-expiry"><div class="ep-label">Active Period</div><div class="ep-value" id="ad-period">-</div></div>
       </div>
       <div class="plan-modal-divider"></div>
@@ -215,7 +214,6 @@ window.selectManageAction = function(el, memberId, action) {
       <input type="hidden" id="pm-ext-days" value="30">
       <div class="expiry-preview" id="expiry-preview">
         <div class="expiry-preview-item"><div class="ep-label">Current Expiry</div><div class="ep-value" id="ep-current">${activePlanExpiry}</div></div>
-        <div class="expiry-preview-arrow"><span class="material-icons-round">arrow_forward</span></div>
         <div class="expiry-preview-item new-expiry"><div class="ep-label">New Expiry</div><div class="ep-value" id="ep-new">${calcNewExpiry(activePlanExpiry, 30)}</div></div>
       </div>
       <div class="plan-modal-divider"></div>
