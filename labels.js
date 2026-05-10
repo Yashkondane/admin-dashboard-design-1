@@ -110,7 +110,7 @@ function getLabelFormHTML(label = {}) {
         <div style="display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 16px;">
           <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Hex Color Code</label>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <input type="text" class="pf-input" value="${label.hexColor || ''}" oninput="updateLabelColorPreview(this)" style="background: #fff; border: 1px solid var(--blue); border-radius: 6px; padding: 10px 14px; outline: none; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); flex: 1;">
+            <input type="text" class="pf-input" value="${label.hexColor || ''}" oninput="updateLabelColorPreview(this)" style="background: #fff; border: 1px solid #0f172a; border-radius: 6px; padding: 10px 14px; outline: none; box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08); flex: 1;">
             <div id="color-preview-circle" style="width: 32px; height: 32px; border-radius: 50%; background: ${label.hexColor || '#e2e8f0'}; border: 2px solid #fff; box-shadow: 0 0 0 1px #e2e8f0; flex-shrink: 0;"></div>
           </div>
         </div>
@@ -118,10 +118,10 @@ function getLabelFormHTML(label = {}) {
           <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Status</label>
           <div style="display: flex; gap: 24px; align-items: center;">
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; cursor: pointer;">
-              <input type="radio" name="status" value="Active" ${label.status !== 'Inactive' ? 'checked' : ''} style="accent-color: var(--blue); transform: scale(1.2);"> Active
+              <input type="radio" name="status" value="Active" ${label.status !== 'Inactive' ? 'checked' : ''} style="accent-color: #0f172a; transform: scale(1.2);"> Active
             </label>
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; cursor: pointer;">
-              <input type="radio" name="status" value="Inactive" ${label.status === 'Inactive' ? 'checked' : ''} style="accent-color: var(--blue); transform: scale(1.2);"> Inactive
+              <input type="radio" name="status" value="Inactive" ${label.status === 'Inactive' ? 'checked' : ''} style="accent-color: #0f172a; transform: scale(1.2);"> Inactive
             </label>
           </div>
         </div>
@@ -129,12 +129,12 @@ function getLabelFormHTML(label = {}) {
 
       <!-- Features Section -->
       <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 24px; margin-bottom: 32px;">
-        <div style="border: 1px solid var(--blue); border-radius: 6px; padding: 10px; text-align: center; color: var(--blue); font-size: 0.85rem; font-weight: 600;">Features</div>
-        <div style="border: 1px solid var(--blue); border-radius: 6px; padding: 10px; text-align: center; color: var(--blue); font-size: 0.85rem; font-weight: 600;">Included</div>
-        <button class="btn-primary" style="height: 100%; border-radius: 6px; padding: 0; background: var(--blue); width: 100%;">Add New</button>
+        <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 600; background: #f8fafc;">Features</div>
+        <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 600; background: #f8fafc;">Included</div>
+        <button class="btn-primary" style="height: 100%; border-radius: 6px; padding: 0; background: #0f172a; width: 100%;">Add New</button>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 20px;">
+      <div id="labels-features-list" style="display: flex; flex-direction: column; gap: 16px;">
         ${[
           { text: "Daily Broadcast", sel: "Value", val: "5" },
           { text: "Daily Direct email", sel: "Value", val: "2" },
@@ -143,27 +143,53 @@ function getLabelFormHTML(label = {}) {
           { text: "Do not disturb", sel: "Yes", val: "" },
           { text: "Add more address", sel: "Yes", val: "" }
         ].map(f => `
-        <div style="display: grid; grid-template-columns: 1fr 100px 100px 40px; align-items: center; gap: 16px;">
-          <input type="text" class="pf-input" value="${f.text}" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px;">
-          <select class="pf-input" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; appearance: none; -webkit-appearance: none;">
-            <option ${f.sel === 'Value' ? 'selected' : ''}>Value</option>
-            <option ${f.sel === 'Yes' ? 'selected' : ''}>Yes</option>
-          </select>
-          ${f.sel === 'Yes' 
-            ? '<div style="display: flex; justify-content: flex-start; padding-left: 14px;"><span class="material-icons-round" style="color: var(--blue); font-size: 22px; font-weight: bold;">check</span></div>'
-            : '<input type="text" class="pf-input" value="' + f.val + '" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; text-align: center;">'
-          }
-          <button class="header-icon-btn" style="color: #64748b;"><span class="material-icons-round">delete_outline</span></button>
+        <div class="label-feature-row" style="display: grid; grid-template-columns: 1fr 100px 100px 40px; align-items: center; gap: 12px;">
+          <input type="text" class="pf-input" value="${f.text}" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; font-weight: 600; color: #1e293b;">
+          
+          <div style="position: relative;">
+            <select class="pf-input label-type-select" onchange="toggleLabelValueType(this)" style="background: #fff; border: 1px solid #0f172a; border-radius: 8px; padding: 10px 14px; appearance: none; -webkit-appearance: none; font-size: 0.9rem; font-weight: 600; width: 100%; cursor: pointer;">
+              <option value="Value" ${f.sel === 'Value' ? 'selected' : ''}>Value</option>
+              <option value="Yes" ${f.sel === 'Yes' ? 'selected' : ''}>Yes</option>
+            </select>
+          </div>
+
+          <div class="label-value-wrap" style="display: flex; align-items: center; justify-content: center;">
+            ${f.sel === 'Yes' 
+              ? '<span class="material-icons-round" style="color: #64748b; font-size: 24px; font-weight: bold;">check</span>'
+              : '<input type="text" class="pf-input" value="' + f.val + '" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; text-align: center; width: 100%; font-size: 0.9rem; font-weight: 600;">'
+            }
+          </div>
+          
+          <div style="display: flex; justify-content: center;">
+            <button class="header-icon-btn" style="color: #94a3b8; border: 1px solid #e2e8f0; width: 36px; height: 36px; border-radius: 8px;"><span class="material-icons-round" style="font-size: 20px;">delete_outline</span></button>
+          </div>
         </div>
         `).join('')}
       </div>
     </div>
-    <div style="padding: 16px 32px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
-      <button class="btn-outline" onclick="closeModal()" style="height: 40px; padding: 0 24px; border-radius: 8px;">Cancel</button>
-      <button class="btn-primary" onclick="saveLabel()" style="height: 40px; padding: 0 24px; border-radius: 8px;">Save Changes</button>
+    <div style="padding: 16px 32px; background: #fff; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 40px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
+      <button class="btn-primary" onclick="saveLabel()" style="height: 40px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #0f172a; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);">Save Changes</button>
     </div>
   `;
 }
+
+window.toggleLabelValueType = function(select) {
+  const row = select.closest('.label-feature-row');
+  const valueWrap = row.querySelector('.label-value-wrap');
+  const type = select.value;
+
+  if (type === 'Yes') {
+    valueWrap.innerHTML = '<span class="material-icons-round" style="color: #64748b; font-size: 24px; font-weight: bold;">check</span>';
+    // Match the border color to standard if Yes is selected? 
+    // Image 2 shows the dropdown with a light border, but Image 1 shows black border for "Value".
+    // I'll keep the border consistent or adjust based on focus.
+    select.style.borderColor = '#e2e8f0';
+  } else {
+    valueWrap.innerHTML = '<input type="text" class="pf-input" value="No" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; text-align: center; width: 100%; font-size: 0.9rem; font-weight: 600;">';
+    select.style.borderColor = '#0f172a'; // Black border for Value mode as per Image 1
+  }
+};
 
 function openAddLabelModal() {
   const modalContent = document.getElementById('modal-content');

@@ -2,56 +2,78 @@
 // All plan-related modal workflows
 
 // Invoice section builder (reusable)
-function buildInvoiceSection(planName) {
-  const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === planName) || {};
-  const isFree = planData.price === 0 || planName === '' || planName === 'TK FREE' || planName === 'TK-LITE';
+function buildInvoiceSection(m) {
+  // Always show invoice option for plan actions to allow flexibility 
+  // during upgrades or assignments.
 
-  if (isFree) {
-    return `<div class="plan-invoice-free-notice">
-      <span class="material-icons-round">info</span>
-      This plan does not require invoice generation.
-    </div>`;
+  return `
+    <div class="plan-invoice-section">
+      <div class="pm-invoice-check-row" onclick="toggleInvoiceSection()">
+        <div class="pm-invoice-checkbox" id="pm-inv-check">
+          <span class="material-icons-round" style="font-size:16px;">done</span>
+        </div>
+        <div class="pm-invoice-check-text">
+          <h4>Generate invoice?</h4>
+          <p>Create a billing record alongside this action.</p>
+        </div>
+        <input type="checkbox" id="pm-gen-invoice" style="display:none;">
+      </div>
+
+      <div id="pm-invoice-type-area" style="display:none; margin-top: 24px; animation: pm-fade-in 0.3s ease;">
+        <label class="pm-form-label-modern">INVOICE TYPE</label>
+        <div class="pm-invoice-type-list">
+          <div class="pm-invoice-type-item" onclick="selectInvoiceType('proforma')">
+            <div>
+              <div class="pm-it-label">Proforma Invoice</div>
+              <div class="pm-it-desc">Preliminary, not payable</div>
+            </div>
+            <div class="pm-it-radio"><span class="material-icons-round" style="color:#e2e8f0;">radio_button_unchecked</span></div>
+          </div>
+          <div class="pm-invoice-type-item selected" onclick="selectInvoiceType('final')">
+            <div>
+              <div class="pm-it-label">Final Invoice</div>
+              <div class="pm-it-desc">Real, payable invoice</div>
+            </div>
+            <div class="pm-it-radio"><span class="material-icons-round" style="color:#0f172a;">check_circle</span></div>
+          </div>
+        </div>
+        <input type="hidden" id="pm-invoice-type" value="final">
+      </div>
+    </div>
+  `;
+}
+
+window.toggleInvoiceSection = function () {
+  const check = document.getElementById('pm-inv-check');
+  const input = document.getElementById('pm-gen-invoice');
+  const area = document.getElementById('pm-invoice-type-area');
+
+  input.checked = !input.checked;
+  if (input.checked) {
+    check.classList.add('checked');
+    area.style.display = 'block';
+  } else {
+    check.classList.remove('checked');
+    area.style.display = 'none';
   }
+};
 
-  return `<div class="plan-invoice-section">
-    <div class="plan-invoice-toggle-row">
-      <div class="plan-invoice-toggle-label">
-        <span class="material-icons-round">receipt_long</span> Generate Invoice?
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="pm-gen-invoice" checked onchange="toggleInvoiceType()">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-    <div id="pm-invoice-type-wrap">
-      <div class="plan-field-label" style="margin-bottom:8px;">Invoice Type</div>
-      <div style="display:flex;gap:10px;">
-        <div class="invoice-type-option selected" onclick="selectInvoiceType(this,'final')">
-          <span class="option-label">Final Invoice</span>
-          <span class="option-desc">Real payable invoice</span>
-        </div>
-        <div class="invoice-type-option" onclick="selectInvoiceType(this,'proforma')">
-          <span class="option-label">Proforma Invoice</span>
-          <span class="option-desc">Preliminary non-payable invoice</span>
-        </div>
-      </div>
-      <input type="hidden" id="pm-invoice-type" value="final">
-    </div>
-  </div>`;
-}
+window.selectInvoiceType = function (val) {
+  const list = document.querySelectorAll('.pm-invoice-type-item');
+  list.forEach(item => {
+    item.classList.remove('selected');
+    item.querySelector('.pm-it-radio .material-icons-round').textContent = 'radio_button_unchecked';
+    item.querySelector('.pm-it-radio .material-icons-round').style.color = '#e2e8f0';
+  });
 
-function toggleInvoiceType() {
-  const wrap = document.getElementById('pm-invoice-type-wrap');
-  const chk = document.getElementById('pm-gen-invoice');
-  if (wrap) wrap.style.display = chk && chk.checked ? 'block' : 'none';
-}
-
-function selectInvoiceType(el, type) {
-  el.parentElement.querySelectorAll('.invoice-type-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  const hidden = document.getElementById('pm-invoice-type');
-  if (hidden) hidden.value = type;
-}
+  const selected = Array.from(list).find(i => i.getAttribute('onclick').includes(val));
+  if (selected) {
+    selected.classList.add('selected');
+    selected.querySelector('.pm-it-radio .material-icons-round').textContent = 'check_circle';
+    selected.querySelector('.pm-it-radio .material-icons-round').style.color = '#0f172a';
+  }
+  document.getElementById('pm-invoice-type').value = val;
+};
 
 // Plan options builder
 function getPlanOptions() {
@@ -70,7 +92,7 @@ function selWrap(id, opts) {
 }
 
 // ===== TIMELINE VIEW TOGGLE =====
-window.switchTimelineView = function(view, btn) {
+window.switchTimelineView = function (view, btn) {
   const activityView = document.getElementById('tl-activity-view');
   const tableView = document.getElementById('tl-table-view');
   if (!activityView || !tableView) return;
@@ -85,7 +107,7 @@ window.switchTimelineView = function(view, btn) {
 };
 
 // ===== UNIFIED MANAGE PLAN MODAL =====
-window.openManagePlanModal = function(memberId) {
+window.openManagePlanModal = function (memberId) {
   const m = members.find(x => x.id === memberId);
   if (!m) return;
 
@@ -95,208 +117,226 @@ window.openManagePlanModal = function(memberId) {
   modalContent.style.maxWidth = '680px';
 
   const isSuspended = m.status === 'suspended';
-
-  // Action options
   const actions = [
-    { key: 'assign', icon: 'add_task', name: 'Assign Plan', desc: 'Assign a new plan' },
-    { key: 'extend', icon: 'more_time', name: 'Extend Plan', desc: 'Add more time' },
-    { key: 'upgrade', icon: 'upgrade', name: 'Upgrade Plan', desc: 'Change to higher tier' },
-    isSuspended
-      ? { key: 'reactivate', icon: 'verified_user', name: 'Reactivate', desc: 'Restore access' }
-      : { key: 'suspend', icon: 'block', name: 'Suspend', desc: 'Restrict access' }
+    { key: 'assign', name: 'Assign Plan' },
+    { key: 'extend', name: 'Extend Plan' },
+    { key: 'upgrade', name: 'Upgrade Plan' },
+    isSuspended ? { key: 'reactivate', name: 'Reactivate Member' } : { key: 'suspend', name: 'Suspend Member' }
   ];
 
   modalContent.innerHTML = `
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#eff6ff;color:var(--blue);">
-          <span class="material-icons-round">tune</span>
-        </div>
-        <div>
-          <h3 class="plan-modal-title">Manage Plan</h3>
-          <p class="plan-modal-subtitle">${m.member} · ${m.company}</p>
-        </div>
+    <div class="pm-header-modern">
+      <div class="pm-header-left">
+        <h3>Plan Actions</h3>
       </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+      <div class="pm-header-right" style="display:flex; align-items:center; gap:16px;">
+        <div class="pm-action-dropdown-wrap">
+          <div class="pm-field-modern">
+            <select id="pm-action-dropdown" onchange="selectManageAction(${memberId}, this.value)">
+              ${actions.map(a => `<option value="${a.key}">${a.name}</option>`).join('')}
+            </select>
+            <span class="material-icons-round" style="color:#94a3b8; font-size: 20px;">expand_more</span>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'; this.style.color='#64748b'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'; this.style.color='#94a3b8'">
+          <span class="material-icons-round" style="font-size:18px;">close</span>
+        </button>
+      </div>
     </div>
-    <div class="modal-body">
-      <div class="plan-field-group">
-        <div class="plan-field-label">Choose Action</div>
-        <div class="pm-action-selector">
-          ${actions.map(a => `
-            <div class="pm-action-option" data-action="${a.key}" onclick="selectManageAction(this, ${memberId}, '${a.key}')">
-              <div class="pm-action-icon"><span class="material-icons-round">${a.icon}</span></div>
-              <div class="pm-action-text">
-                <span class="pm-action-name">${a.name}</span>
-                <span class="pm-action-desc">${a.desc}</span>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
+    <div class="modal-body" style="padding: 32px;">
       <div id="pm-dynamic-form-area"></div>
     </div>
-    <div class="modal-footer" id="pm-footer" style="display:none;">
-      <div class="modal-footer-hint" id="pm-footer-hint"></div>
-      <div class="modal-footer-actions" id="pm-footer-actions"></div>
+    <div class="pm-footer-modern" id="pm-footer" style="display:none; justify-content: flex-end; gap:12px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 38px; padding: 0 20px; border-radius: 8px; font-weight: 700; border: 1.5px solid #e2e8f0; background: #fff; color: #64748b; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.borderColor='#cbd5e1'; this.style.color='#1e293b'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#64748b'; this.style.background='#fff'">Cancel</button>
+      <div id="pm-footer-actions"></div>
     </div>
   `;
 
   modalContainer.classList.remove('hidden');
+
+  setTimeout(() => {
+    const dropdown = document.getElementById('pm-action-dropdown');
+    if (dropdown) {
+      dropdown.value = 'assign';
+      selectManageAction(memberId, 'assign');
+    }
+  }, 0);
 };
 
 // ===== SELECT ACTION INSIDE UNIFIED MODAL =====
-window.selectManageAction = function(el, memberId, action) {
+window.selectManageAction = function (memberId, action) {
   const m = members.find(x => x.id === memberId);
   if (!m) return;
-
-  // Highlight selected
-  el.closest('.pm-action-selector').querySelectorAll('.pm-action-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-
   const formArea = document.getElementById('pm-dynamic-form-area');
   const footer = document.getElementById('pm-footer');
-  const footerHint = document.getElementById('pm-footer-hint');
   const footerActions = document.getElementById('pm-footer-actions');
+  
   if (!formArea) return;
 
-  const todayISO = new Date().toISOString().split('T')[0];
-  const po = getPlanOptions();
-  const actualPlan = (m.assignedPlans || []).find(p => !['Suspended','Reactivated'].includes(p.name)) || {};
-  const activePlanExpiry = actualPlan.date ? actualPlan.date.split(' to ')[1] : 'N/A';
-
-  let formHtml = '';
-  let hintText = '';
-  let btnHtml = '';
+  let html = '';
+  let footerBtn = '';
 
   if (action === 'assign') {
-    formHtml = `
-      <div class="plan-form-grid">
-        <div class="plan-field-group plan-form-full">
-          <div class="plan-field-label">Plan <span class="required">*</span></div>
-          ${selWrap('pm-plan-select', po)}
+    html = `
+      <div class="pm-form-grid">
+        <div class="pm-form-full">
+          <label class="pm-form-label-modern">TARGET PLAN</label>
+          <div class="pm-field-modern">
+            <select id="pm-plan-select" onchange="autoSetEndDate()">
+              <option value="" disabled selected>Select Plan</option>
+              ${(typeof plans !== 'undefined' ? plans : []).map(p => `<option value="${p.name}">${p.name} &nbsp; $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}</option>`).join('')}
+            </select>
+            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
+          </div>
         </div>
-        <div class="plan-field-group">
-          <div class="plan-field-label">Start Date</div>
-          <input type="date" class="plan-field-input" id="pm-start-date" value="${todayISO}" onchange="updateAssignDuration()">
+        <div>
+          <label class="pm-form-label-modern">START DATE</label>
+          <div class="pm-field-modern">
+            <input type="date" id="pm-start-date" value="${new Date().toISOString().split('T')[0]}" onchange="autoSetEndDate()">
+          </div>
         </div>
-        <div class="plan-field-group">
-          <div class="plan-field-label">End Date</div>
-          <input type="date" class="plan-field-input" id="pm-end-date" onchange="updateAssignDuration()">
+        <div>
+          <label class="pm-form-label-modern">EXPIRY DATE</label>
+          <div class="pm-field-modern">
+            <input type="date" id="pm-end-date" onchange="updateAssignDuration()">
+          </div>
         </div>
       </div>
-      <div class="expiry-preview" id="assign-duration-preview" style="display:none;">
-        <div class="expiry-preview-item"><div class="ep-label">Duration</div><div class="ep-value" id="ad-duration">-</div></div>
-        <div class="expiry-preview-item new-expiry"><div class="ep-label">Active Period</div><div class="ep-value" id="ad-period">-</div></div>
+
+      <div id="assign-duration-preview" class="pm-period-card" style="display:none;">
+        <div class="pm-period-info">
+          <div class="pm-period-label">Subscription Period</div>
+          <div class="pm-period-range" id="ad-period"></div>
+        </div>
+        <div class="pm-period-duration" id="ad-duration"></div>
       </div>
-      <div class="plan-modal-divider"></div>
-      <div id="pm-invoice-section">${buildInvoiceSection('')}</div>`;
-    hintText = '<span class="material-icons-round">tips_and_updates</span> Initiates a new billing cycle.';
-    btnHtml = `<button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="plan-btn-submit" onclick="submitPlanAction(${m.id},'assign')">Assign Plan <span class="material-icons-round">arrow_forward</span></button>`;
+
+      <div class="pm-divider-dashed"></div>
+      ${buildInvoiceSection(m)}
+    `;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'assign')">Apply Assign Plan <span class="material-icons-round">arrow_forward</span></button>`;
 
   } else if (action === 'extend') {
-    const presets = [1,2,3,7,15,30];
-    formHtml = `
-      <div class="plan-field-group">
-        <div class="plan-field-label">Extension Duration</div>
-        <div class="extension-chips" id="ext-chips">
-          ${presets.map(d => `<button class="extension-chip${d===30?' active':''}" data-days="${d}" onclick="selectExtChip(this,${d})">${d} Day${d>1?'s':''}</button>`).join('')}
-          <button class="extension-chip" data-days="custom" onclick="selectExtChip(this,'custom')">Custom</button>
+    const actualPlan = (m.assignedPlans && m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name))) || {};
+    const currentExpiryStr = actualPlan.date ? actualPlan.date.split(' to ')[1] : '';
+
+    html = `
+      <div class="pm-form-grid">
+        <div>
+          <label class="pm-form-label-modern">EXTEND BY</label>
+          <div class="pm-field-modern">
+            <select id="pm-ext-days" onchange="updateExtendPreview('${currentExpiryStr}')">
+              <option value="7">7 days</option>
+              <option value="14">14 days</option>
+              <option value="30" selected>30 days</option>
+              <option value="60">60 days</option>
+              <option value="90">90 days</option>
+              <option value="365">1 year</option>
+            </select>
+            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
+          </div>
         </div>
-        <div id="ext-custom-wrap" style="display:none;" class="extension-custom-group">
-          <div class="plan-field-group"><div class="plan-field-label" style="font-size:0.68rem;">Amount</div>
-            <input type="number" class="plan-field-input" id="pm-ext-custom-val" value="45" min="1" oninput="updateExpiryPreview()"></div>
-          <div class="plan-field-group"><div class="plan-field-label" style="font-size:0.68rem;">Unit</div>
-            ${selWrap('pm-ext-custom-unit', '<option value="days">Days</option><option value="months">Months</option>')}</div>
+        <div>
+          <label class="pm-form-label-modern">NEW EXPIRY</label>
+          <div class="pm-field-modern preview">
+            <span id="pm-ext-preview-date">${currentExpiryStr || 'N/A'}</span>
+          </div>
         </div>
       </div>
-      <input type="hidden" id="pm-ext-days" value="30">
-      <div class="expiry-preview" id="expiry-preview">
-        <div class="expiry-preview-item"><div class="ep-label">Current Expiry</div><div class="ep-value" id="ep-current">${activePlanExpiry}</div></div>
-        <div class="expiry-preview-item new-expiry"><div class="ep-label">New Expiry</div><div class="ep-value" id="ep-new">${calcNewExpiry(activePlanExpiry, 30)}</div></div>
-      </div>
-      <div class="plan-modal-divider"></div>
-      <div id="pm-invoice-section">${buildInvoiceSection(actualPlan.name || '')}</div>`;
-    hintText = '<span class="material-icons-round">tips_and_updates</span> Adds more time to the current subscription.';
-    btnHtml = `<button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="plan-btn-submit" onclick="submitPlanAction(${m.id},'extend')">Apply Extension <span class="material-icons-round">arrow_forward</span></button>`;
+      <div class="pm-divider-dashed"></div>
+      ${buildInvoiceSection(m)}
+    `;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'extend')">Apply Extend Plan <span class="material-icons-round">arrow_forward</span></button>`;
 
   } else if (action === 'upgrade') {
-    formHtml = `
-      <div class="plan-form-grid">
-        <div class="plan-field-group">
-          <div class="plan-field-label">New Plan <span class="required">*</span></div>
-          ${selWrap('pm-plan-select', po)}
+    html = `
+      <div class="pm-form-grid">
+        <div class="pm-form-full">
+          <label class="pm-form-label-modern">TARGET PLAN</label>
+          <div class="pm-field-modern">
+            <select id="pm-plan-select" onchange="autoSetEndDate()">
+              <option value="" disabled selected>Select Plan</option>
+              ${(typeof plans !== 'undefined' ? plans : []).map(p => `<option value="${p.name}">${p.name} &nbsp; $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}</option>`).join('')}
+            </select>
+            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
+          </div>
         </div>
-        <div class="plan-field-group">
-          <div class="plan-field-label">Start Date</div>
-          <input type="date" class="plan-field-input" id="pm-start-date" value="${todayISO}">
+        <div>
+          <label class="pm-form-label-modern">START DATE</label>
+          <div class="pm-field-modern">
+            <input type="date" id="pm-start-date" value="${new Date().toISOString().split('T')[0]}" onchange="autoSetEndDate()">
+          </div>
+        </div>
+        <div>
+          <label class="pm-form-label-modern">PRORATION</label>
+          <div class="pm-field-modern">
+            <select id="pm-proration">
+              <option value="yes" selected>Yes, prorate</option>
+              <option value="no">No, full charge</option>
+            </select>
+            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
+          </div>
         </div>
       </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Proration</div>
-        <div class="proration-options">
-          <div class="proration-option selected" onclick="selectProration(this,'yes')"><div class="proration-radio"></div><span class="proration-option-text">Yes, prorate</span></div>
-          <div class="proration-option" onclick="selectProration(this,'no')"><div class="proration-radio"></div><span class="proration-option-text">No proration</span></div>
+      
+      <div id="upgrade-period-preview" class="pm-period-card" style="display:none;">
+        <div class="pm-period-info">
+          <div class="pm-period-label">New Subscription Period</div>
+          <div class="pm-period-range" id="up-period-range"></div>
         </div>
-        <input type="hidden" id="pm-proration" value="yes">
+        <div class="pm-period-duration" id="up-period-duration"></div>
       </div>
-      <div class="plan-modal-divider"></div>
-      <div id="pm-invoice-section">${buildInvoiceSection('')}</div>`;
-    hintText = '<span class="material-icons-round">tips_and_updates</span> Proration logic will be applied.';
-    btnHtml = `<button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="plan-btn-submit" onclick="submitPlanAction(${m.id},'upgrade')">Upgrade Plan <span class="material-icons-round">arrow_forward</span></button>`;
+
+      <div class="pm-divider-dashed"></div>
+      ${buildInvoiceSection(m)}
+    `;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'upgrade')">Apply Upgrade Plan <span class="material-icons-round">arrow_forward</span></button>`;
 
   } else if (action === 'suspend') {
-    formHtml = `
-      <div class="suspend-warning-banner">
-        <span class="material-icons-round">warning</span>
-        <div class="suspend-warning-text">
-          <h4>This action will restrict member access</h4>
-          <p>All active plan features will be suspended until reactivation.</p>
+    html = `
+      <div class="pm-form-grid">
+        <div class="pm-form-full">
+          <label class="pm-form-label-modern">REASON FOR SUSPENSION</label>
+          <div class="pm-field-modern" style="height: auto; padding: 10px 12px;">
+            <textarea id="pm-suspend-reason" class="plan-field-textarea" style="border:none; outline:none; width:100%; font-size:0.82rem; font-weight:600; min-height:80px;" placeholder="e.g. Terms of service violation, payment failure..."></textarea>
+          </div>
+          <div class="pm-field-help">This reason will be logged for administrative review.</div>
         </div>
       </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Reason <span class="required">*</span></div>
-        <input type="text" class="plan-field-input" id="pm-suspend-reason" placeholder="e.g. Non-payment, violation of terms...">
-      </div>`;
-    hintText = '<span class="material-icons-round">info</span> No invoice for suspensions.';
-    btnHtml = `<button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="plan-btn-submit danger" onclick="confirmSuspend(${m.id})">Suspend <span class="material-icons-round">block</span></button>`;
+    `;
+    footerBtn = `<button class="pm-btn-apply" style="background:#ef4444;" onclick="confirmSuspend(${m.id})">Suspend Access <span class="material-icons-round">block</span></button>`;
 
   } else if (action === 'reactivate') {
-    formHtml = `
-      <div class="reactivate-success-banner">
-        <span class="material-icons-round">check_circle</span>
-        <div>
-          <div style="font-weight:800;color:#166534;font-size:0.88rem;margin-bottom:4px;">Restore full member access</div>
-          <div style="font-size:0.78rem;font-weight:600;color:#16a34a;line-height:1.4;">All member privileges will be immediately restored.</div>
+    html = `
+      <div class="pm-form-grid">
+        <div class="pm-form-full">
+          <label class="pm-form-label-modern">ADMIN NOTE (OPTIONAL)</label>
+          <div class="pm-field-modern" style="height: auto; padding: 10px 12px;">
+            <textarea id="pm-reactivate-note" class="plan-field-textarea" style="border:none; outline:none; width:100%; font-size:0.82rem; font-weight:600; min-height:80px;" placeholder="e.g. Payment cleared, manual override..."></textarea>
+          </div>
+          <div class="pm-field-help">Internal note about why access was restored.</div>
         </div>
       </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Reactivation Note</div>
-        <textarea class="plan-field-textarea" id="pm-reactivate-note" placeholder="e.g. Payment verified, issue resolved..."></textarea>
-      </div>`;
-    hintText = '<span class="material-icons-round">tips_and_updates</span> Restores all privileges immediately.';
-    btnHtml = `<button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="plan-btn-submit success" onclick="submitPlanAction(${m.id},'reactivate')">Reactivate <span class="material-icons-round">verified_user</span></button>`;
+    `;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'reactivate')">Apply Reactivation <span class="material-icons-round">arrow_forward</span></button>`;
   }
 
-  formArea.innerHTML = `<div class="pm-dynamic-form">${formHtml}</div>`;
-  footer.style.display = 'flex';
-  footerHint.innerHTML = hintText;
-  footerActions.innerHTML = btnHtml;
 
-  // Wire up listeners for assign/upgrade
+  formArea.innerHTML = html;
+  footerActions.innerHTML = footerBtn;
+  footer.style.display = 'flex';
+
+  // Initial state setup
   if (action === 'assign' || action === 'upgrade') {
     const sel = document.getElementById('pm-plan-select');
-    if (sel) sel.addEventListener('change', () => {
-      const invWrap = document.getElementById('pm-invoice-section');
-      if (invWrap) invWrap.innerHTML = buildInvoiceSection(sel.value);
-      if (action === 'assign') autoSetEndDate();
-    });
-    if (action === 'assign') setTimeout(autoSetEndDate, 50);
+    if (sel) {
+      sel.addEventListener('change', autoSetEndDate);
+    }
+    autoSetEndDate();
+  } else if (action === 'extend') {
+    const actualPlan = (m.assignedPlans && m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name))) || {};
+    const currentExpiryStr = actualPlan.date ? actualPlan.date.split(' to ')[1] : '';
+    updateExtendPreview(currentExpiryStr);
   }
 };
 
@@ -305,7 +345,7 @@ function buildAssignModal(m, todayISO, po) {
   return `
     <div class="modal-header">
       <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#eff6ff;color:var(--blue);">
+        <div class="plan-modal-icon" style="background:#eff6ff;color:#2563eb;">
           <span class="material-icons-round">add_task</span>
         </div>
         <div>
@@ -361,7 +401,7 @@ function buildAssignModal(m, todayISO, po) {
 
 // ===== EXTEND PLAN MODAL =====
 function buildExtendModal(m, todayISO, activePlanExpiry, actualPlan) {
-  const presets = [1,2,3,7,15,30];
+  const presets = [1, 2, 3, 7, 15, 30];
   return `
     <div class="modal-header">
       <div class="modal-header-left">
@@ -379,7 +419,7 @@ function buildExtendModal(m, todayISO, activePlanExpiry, actualPlan) {
       <div class="plan-field-group">
         <div class="plan-field-label">Extension Duration</div>
         <div class="extension-chips" id="ext-chips">
-          ${presets.map(d => `<button class="extension-chip${d===30?' active':''}" data-days="${d}" onclick="selectExtChip(this,${d})">${d} Day${d>1?'s':''}</button>`).join('')}
+          ${presets.map(d => `<button class="extension-chip${d === 30 ? ' active' : ''}" data-days="${d}" onclick="selectExtChip(this,${d})">${d} Day${d > 1 ? 's' : ''}</button>`).join('')}
           <button class="extension-chip" data-days="custom" onclick="selectExtChip(this,'custom')">Custom</button>
         </div>
         <div id="ext-custom-wrap" style="display:none;" class="extension-custom-group">
@@ -478,7 +518,7 @@ function buildSuspendModal(m) {
   return `
     <div class="modal-header">
       <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#fef2f2;color:#ef4444;">
+        <div class="plan-modal-icon" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">
           <span class="material-icons-round">block</span>
         </div>
         <div>
@@ -521,7 +561,7 @@ function buildReactivateModal(m) {
   return `
     <div class="modal-header">
       <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#f0fdf4;color:#16a34a;">
+        <div class="plan-modal-icon" style="background:#f0fdf4; border:1px solid #dcfce7; color:#16a34a;">
           <span class="material-icons-round">verified_user</span>
         </div>
         <div>
@@ -556,18 +596,31 @@ function buildReactivateModal(m) {
 }
 
 // ===== HELPERS =====
-function calcNewExpiry(currentStr, days) {
-  try {
-    const parts = currentStr.match(/(\d+)-(\w+)-(\d+)/);
-    if (!parts) return 'N/A';
-    const d = new Date(`${parts[2]} ${parts[1]}, ${parts[3]}`);
-    if (isNaN(d)) return 'N/A';
-    d.setDate(d.getDate() + days);
-    return d.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}).replace(/ /g,'-');
-  } catch(e) { return 'N/A'; }
-}
+window.updateExtendPreview = function (currentExpiryStr) {
+  if (!currentExpiryStr) return;
+  const daysToAdd = parseInt(document.getElementById('pm-ext-days')?.value) || 0;
 
-window.selectExtChip = function(el, val) {
+  // Parse '23-Apr-2026' style or standard
+  let current;
+  if (currentExpiryStr.includes('-')) {
+    const parts = currentExpiryStr.split('-');
+    const months = { 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11 };
+    current = new Date(parts[2], months[parts[1]], parts[0]);
+  } else {
+    current = new Date(currentExpiryStr);
+  }
+
+  if (isNaN(current)) return;
+
+  const newDate = new Date(current);
+  newDate.setDate(newDate.getDate() + daysToAdd);
+
+  const fmtDate = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+  const previewEl = document.getElementById('pm-ext-preview-date');
+  if (previewEl) previewEl.textContent = fmtDate(newDate);
+};
+
+window.selectExtChip = function (el, val) {
   el.parentElement.querySelectorAll('.extension-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   const customWrap = document.getElementById('ext-custom-wrap');
@@ -582,7 +635,7 @@ window.selectExtChip = function(el, val) {
   }
 };
 
-window.updateExpiryPreview = function() {
+window.updateExpiryPreview = function () {
   const activeChip = document.querySelector('.extension-chip.active');
   let days = 30;
   if (activeChip && activeChip.dataset.days === 'custom') {
@@ -598,36 +651,36 @@ window.updateExpiryPreview = function() {
   if (newEl) newEl.textContent = calcNewExpiry(current, days);
 };
 
-window.selectProration = function(el, val) {
+window.selectProration = function (el, val) {
   el.parentElement.querySelectorAll('.proration-option').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   const hidden = document.getElementById('pm-proration');
   if (hidden) hidden.value = val;
 };
 
-window.updateAssignDuration = function() {
+window.updateAssignDuration = function () {
   const startVal = document.getElementById('pm-start-date')?.value;
   const endVal = document.getElementById('pm-end-date')?.value;
   const preview = document.getElementById('assign-duration-preview');
-  
+
   if (!startVal || !endVal) {
     if (preview) preview.style.display = 'none';
     return;
   }
-  
+
   const start = new Date(startVal);
   const end = new Date(endVal);
-  
+
   if (isNaN(start) || isNaN(end) || start > end) {
     if (preview) preview.style.display = 'none';
     return;
   }
-  
+
   const diffTime = Math.abs(end - start);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
-  const fmtDate = (d) => d.toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}).replace(/ /g,'-');
-  
+
+  const fmtDate = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+
   if (preview) {
     preview.style.display = 'flex';
     document.getElementById('ad-duration').textContent = diffDays + ' Days';
@@ -635,30 +688,41 @@ window.updateAssignDuration = function() {
   }
 };
 
-window.autoSetEndDate = function() {
+window.autoSetEndDate = function () {
   const sel = document.getElementById('pm-plan-select');
   const startVal = document.getElementById('pm-start-date')?.value;
   if (!sel || !startVal) return;
-  
+
   const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === sel.value) || {};
   let days = 30;
   if (planData.validity) {
-    days = { monthly:30, quarterly:90, halfyearly:180, yearly:365, '15days':15 }[planData.validity] || 30;
+    days = { monthly: 30, quarterly: 90, halfyearly: 180, yearly: 365, '15days': 15 }[planData.validity] || 30;
   }
-  
+
   const start = new Date(startVal);
   start.setDate(start.getDate() + days);
-  
+
   const endEl = document.getElementById('pm-end-date');
   if (endEl) {
     endEl.value = start.toISOString().split('T')[0];
     updateAssignDuration();
   }
+
+  // Also update upgrade preview card if present
+  const upRange = document.getElementById('up-period-range');
+  const upDuration = document.getElementById('up-period-duration');
+  const upCard = document.getElementById('upgrade-period-preview');
+  if (upRange && upDuration) {
+    const fmt = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+    upRange.textContent = fmt(new Date(startVal)) + ' to ' + fmt(start);
+    upDuration.textContent = days + ' Days';
+    if (upCard) upCard.style.display = 'flex';
+  }
 };
 
 
 // ===== CONFIRMATION DIALOG =====
-window.confirmSuspend = function(memberId) {
+window.confirmSuspend = function (memberId) {
   const overlay = document.createElement('div');
   overlay.className = 'confirm-dialog-overlay';
   overlay.id = 'confirm-overlay';
@@ -681,7 +745,7 @@ window.confirmSuspend = function(memberId) {
 };
 
 // ===== SUBMIT HANDLER =====
-window.submitPlanAction = function(memberId, action) {
+window.submitPlanAction = function (memberId, action) {
   const m = members.find(x => x.id === memberId);
   if (!m) return;
   if (!m.assignedPlans) m.assignedPlans = [];
@@ -690,7 +754,7 @@ window.submitPlanAction = function(memberId, action) {
   const today = new Date();
   const newSr = m.assignedPlans.length > 0 ? Math.max(...m.assignedPlans.map(p => p.sr)) + 1 : 1;
   const invNo = 'ISPL/' + (1000 + newSr) + '/' + today.getFullYear() + '-' + String(today.getFullYear() + 1).slice(-2);
-  const timestamp = today.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) + ' ' + today.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+  const timestamp = today.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + today.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
   // Invoice logic
   const genInv = document.getElementById('pm-gen-invoice');
@@ -704,22 +768,25 @@ window.submitPlanAction = function(memberId, action) {
     const planName = sel.value;
     const startVal = document.getElementById('pm-start-date');
     const startDate = startVal ? new Date(startVal.value) : today;
-    
+
     const endVal = document.getElementById('pm-end-date');
     let endDate;
     if (endVal && endVal.value) {
       endDate = new Date(endVal.value);
     } else {
       const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === planName) || {};
-      const days = planData.validity ? ({ monthly:30, quarterly:90, halfyearly:180, yearly:365, '15days':15 }[planData.validity] || 30) : 30;
+      const days = planData.validity ? ({ monthly: 30, quarterly: 90, halfyearly: 180, yearly: 365, '15days': 15 }[planData.validity] || 30) : 30;
       endDate = new Date(startDate); endDate.setDate(endDate.getDate() + days);
     }
-    
+
     const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === planName) || {};
     const isFree = planData.price === 0;
     const assignedInvNo = shouldGenerate && !isFree ? invNo : '';
-    const assignedStatus = isFree ? 'N/A' : (shouldGenerate ? 'UnPaid' : 'N/A');
-    const remarkText = action === 'upgrade' ? `Upgraded from ${(m.assignedPlans.find(p=>!['Suspended','Reactivated'].includes(p.name))||{}).name||'None'} to ${planName}` : 'Plan assigned by Admin';
+    // Final Invoice -> Paid. Proforma/No Invoice -> UnPaid (or N/A if free)
+    const assignedStatus = isFree ? 'N/A' : (shouldGenerate ? (invType === 'final' ? 'Paid' : 'UnPaid') : 'N/A');
+    const prorationVal = document.getElementById('pm-proration')?.value;
+    const prorationText = prorationVal === 'yes' ? ' (Prorated)' : ' (Full Charge)';
+    const remarkText = action === 'upgrade' ? `Upgraded from ${(m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {}).name || 'None'} to ${planName}${prorationText}` : 'Plan assigned by Admin';
 
     m.plan = planName.toLowerCase().replace('tk-', '');
     if (m.status === 'suspended') m.status = 'active';
@@ -729,13 +796,13 @@ window.submitPlanAction = function(memberId, action) {
 
   } else if (action === 'extend') {
     const extDays = parseInt(document.getElementById('pm-ext-days')?.value) || 30;
-    const actualPlan = m.assignedPlans.find(p => !['Suspended','Reactivated'].includes(p.name)) || {};
+    const actualPlan = m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {};
     if (!actualPlan.name) { showToast('No active plan to extend', 'error'); return; }
     const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === actualPlan.name) || {};
     const isFree = planData.price === 0;
     const extEnd = new Date(today); extEnd.setDate(extEnd.getDate() + extDays);
     const assignedInvNo = shouldGenerate && !isFree ? invNo : '';
-    const assignedStatus = isFree ? 'N/A' : (shouldGenerate ? 'UnPaid' : 'N/A');
+    const assignedStatus = isFree ? 'N/A' : (shouldGenerate ? (invType === 'final' ? 'Paid' : 'UnPaid') : 'N/A');
 
     m.assignedPlans.unshift({ sr: newSr, name: actualPlan.name, date: fmtDate(today) + ' to ' + fmtDate(extEnd), remark: 'Plan extended by ' + extDays + ' days', invoice: assignedInvNo, status: assignedStatus, invoiceType: shouldGenerate && !isFree ? (invType === 'proforma' ? 'Proforma' : 'Final') : '', type: 'extend', admin: 'Admin User', timestamp });
     closeModal();

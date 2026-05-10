@@ -54,19 +54,38 @@ function renderCategories() {
 function selectCategory(id) {
     selectedCatId = id;
     const cat = categories.find(c => c.id === id);
-    document.getElementById('selected-cat-label').textContent = cat ? cat.name : 'Select a category';
+    const label = document.getElementById('selected-cat-label');
+    const badge = document.getElementById('tpl-count-badge');
+    const createBtn = document.getElementById('create-tpl-btn');
+
+    if (cat) {
+        label.textContent = cat.name;
+        badge.textContent = `${cat.count} Templates`;
+        badge.style.display = 'inline-block';
+        createBtn.style.display = 'flex';
+    } else {
+        label.textContent = 'Select a category';
+        badge.style.display = 'none';
+        createBtn.style.display = 'none';
+    }
+
     renderCategories();
     renderTemplates();
 }
 
 function renderTemplates() {
     const container = document.getElementById('templates-container');
+    const createBtn = document.getElementById('create-tpl-btn');
+    
     if (!selectedCatId) {
+        if (createBtn) createBtn.style.display = 'none';
         container.innerHTML = `
             <div class="empty-state">
-              <span class="material-icons-round" style="font-size: 48px; opacity: 0.2; margin-bottom: 16px;">folder_open</span>
-              <p style="font-weight: 700; font-size: 1.1rem; color: #1e293b;">No Category Selected</p>
-              <p style="font-size: 0.85rem; margin-top: 4px;">Choose a category from the left to view templates.</p>
+              <div class="empty-icon-wrap">
+                <span class="material-icons-round" style="font-size: 32px;">folder_open</span>
+              </div>
+              <p style="font-weight: 800; font-size: 1.1rem; color: #1e293b;">No Category Selected</p>
+              <p style="font-size: 0.88rem; margin-top: 6px; color: #64748b; font-weight: 600;">Choose a category from the left to manage its templates.</p>
             </div>
         `;
         return;
@@ -77,8 +96,14 @@ function renderTemplates() {
     if (filtered.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-              <p style="font-weight: 700; font-size: 1.1rem; color: #1e293b;">No Templates Found</p>
-              <p style="font-size: 0.85rem; margin-top: 4px;">Start by creating a new template for this category.</p>
+              <div class="empty-icon-wrap" style="background: #fff; border: 1px dashed #e2e8f0;">
+                <span class="material-icons-round" style="font-size: 32px;">post_add</span>
+              </div>
+              <p style="font-weight: 800; font-size: 1.1rem; color: #1e293b;">No Templates Yet</p>
+              <p style="font-size: 0.88rem; margin-top: 6px; color: #64748b; font-weight: 600;">This category is empty. Start by creating your first template.</p>
+              <button class="ws-action-btn ws-btn-primary" onclick="openTemplateModal()" style="margin-top: 24px;">
+                <span class="material-icons-round">add</span> Create Template
+              </button>
             </div>
         `;
         return;
@@ -89,13 +114,15 @@ function renderTemplates() {
             <div class="template-info">
                 <span class="template-title">${t.name}</span>
                 <div class="template-meta">
-                    <span>${t.type === 'email' ? 'Subject: ' + t.subject : 'Type: Notification'}</span>
-                    <span style="color: ${t.status === 'Active' ? '#10b981' : '#f43f5e'}; font-weight: 800;">${t.status}</span>
+                    <span class="status-dot ${t.status === 'Active' ? 'active' : ''}"></span>
+                    <span>${t.type === 'email' ? 'Subject: ' + t.subject : 'System Notification'}</span>
+                    <span style="color: #cbd5e1; font-weight: 300;">|</span>
+                    <span style="color: ${t.status === 'Active' ? '#10b981' : '#f43f5e'}; font-weight: 800; font-size: 0.7rem; text-transform: uppercase;">${t.status}</span>
                 </div>
             </div>
             <div class="template-actions">
-                <button class="action-btn" onclick="openTemplateModal(${t.id})" title="Edit"><span class="material-icons-round" style="font-size: 18px;">edit</span></button>
-                <button class="action-btn" onclick="deleteTemplate(${t.id})" title="Delete"><span class="material-icons-round" style="font-size: 18px;">delete_outline</span></button>
+                <button class="action-btn-sm" onclick="openTemplateModal(${t.id})" title="Edit"><span class="material-icons-round" style="font-size: 18px;">edit</span></button>
+                <button class="action-btn-sm" onclick="deleteTemplate(${t.id})" title="Delete"><span class="material-icons-round" style="font-size: 18px;">delete_outline</span></button>
             </div>
         </div>
     `).join('');
@@ -207,6 +234,27 @@ function saveTemplate(id) {
     closeModal();
     renderTemplates();
     renderCategories();
+}
+
+function deleteTemplate(id) {
+    if (confirm('Are you sure you want to delete this template?')) {
+        const tIndex = templates.findIndex(x => x.id === id);
+        if (tIndex > -1) {
+            const t = templates[tIndex];
+            const cat = categories.find(c => c.id === t.catId);
+            if (cat) cat.count = Math.max(0, cat.count - 1);
+            templates.splice(tIndex, 1);
+            showToast('Template deleted', 'info');
+            renderTemplates();
+            renderCategories();
+            
+            // Update badge if still in same category
+            if (selectedCatId === t.catId) {
+                const badge = document.getElementById('tpl-count-badge');
+                if (badge && cat) badge.textContent = `${cat.count} Templates`;
+            }
+        }
+    }
 }
 
 function closeModal() {
