@@ -736,13 +736,13 @@ function renderProfileTab(m, tab) {
       </div>
     `;
   } else if (tab === 'plan') {
-    // Initialize assignedPlans on the member if not present
+    // Initialize assignedPlans with richer data
     if (!m.assignedPlans) {
       m.assignedPlans = [
-        { sr: 1, name: 'TK-Premium', date: '28-Apr-2026 to 28-Apr-2027', remark: 'Verified and badges assigned.', invoice: 'ISPL/1002/2026-27', status: 'UnPaid' },
-        { sr: 2, name: 'TK-Premium', date: '24-Apr-2026 to 24-Apr-2026', remark: '', invoice: 'ISPL/1001/2026-27', status: 'Paid' },
-        { sr: 3, name: 'TK-Premium', date: '22-Apr-2026 to 22-May-2026', remark: '', invoice: '', status: 'UnPaid' },
-        { sr: 4, name: 'TK-Lite', date: '16-Apr-2026 to 16-May-2026', remark: '', invoice: '', status: 'UnPaid' }
+        { sr: 1, name: 'TK-Premium', date: '28-Apr-2026 to 28-Apr-2027', remark: 'Plan assigned by Admin', invoice: 'ISPL/1002/2026-27', status: 'UnPaid', invoiceType: 'Final', type: 'assign', admin: 'Admin User', timestamp: '28-Apr-2026 10:30 AM' },
+        { sr: 2, name: 'TK-Premium', date: '24-Apr-2026 to 24-Apr-2026', remark: 'Invoice generated', invoice: 'ISPL/1001/2026-27', status: 'Paid', invoiceType: 'Final', type: 'assign', admin: 'Admin User', timestamp: '24-Apr-2026 09:15 AM' },
+        { sr: 3, name: 'TK-Premium', date: '22-Apr-2026 to 22-May-2026', remark: 'Plan extended by 30 days', invoice: '', status: 'N/A', type: 'extend', admin: 'System', timestamp: '22-Apr-2026 02:45 PM' },
+        { sr: 4, name: 'TK-Lite', date: '16-Apr-2026 to 16-May-2026', remark: 'Initial plan assigned', invoice: '', status: 'N/A', type: 'assign', admin: 'Admin User', timestamp: '16-Apr-2026 11:00 AM' }
       ];
     }
     const assignedPlans = m.assignedPlans;
@@ -760,132 +760,196 @@ function renderProfileTab(m, tab) {
 
     const memberIsSuspended = m.status === 'suspended';
 
+    // Helper: get timeline dot color
+    const getDotColor = (p) => {
+      if (p.name === 'Suspended') return 'red';
+      if (p.name === 'Reactivated') return 'green';
+      if (p.type === 'extend') return 'blue';
+      if (p.type === 'upgrade') return 'purple';
+      if (p.status === 'Paid') return 'green';
+      if (p.status === 'UnPaid') return 'yellow';
+      return 'gray';
+    };
+
+    // Helper: get timeline event icon
+    const getEventIcon = (p) => {
+      if (p.name === 'Suspended') return 'block';
+      if (p.name === 'Reactivated') return 'verified_user';
+      if (p.type === 'extend') return 'more_time';
+      if (p.type === 'upgrade') return 'upgrade';
+      if (p.status === 'Paid') return 'paid';
+      return 'assignment';
+    };
+
     return `
-      <!-- Active Plan Overview -->
-      <div style="display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 24px; margin-bottom: 24px;">
+      <!-- Plan Overview Grid -->
+      <div style="display: grid; grid-template-columns: 1.6fr 1.4fr; gap: 20px; margin-bottom: 24px;">
         
-        <!-- Left: Plan Details & Action Buttons -->
-        <div class="content-card" style="padding: 28px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+        <!-- Left: Current Plan Summary & Actions -->
+        <div class="content-card" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px;">
             <div>
-              <div style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Current Plan</div>
-              <div style="font-size: 2rem; font-weight: 900; color: #1e293b; letter-spacing: -1px; line-height: 1;">${actualPlan.name || 'No Active Plan'}</div>
+              <div style="font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Current Plan</div>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #1e293b; letter-spacing: -0.5px; line-height: 1;">${actualPlan.name || 'No Active Plan'}</div>
               ${hasPlan ? `
-                <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px;">
-                  <span class="material-icons-round" style="font-size: 16px; color: ${isExpired ? '#ef4444' : '#64748b'};">event</span>
-                  <div style="font-size: 0.85rem; color: ${isExpired ? '#ef4444' : '#64748b'}; font-weight: 700;">
-                    ${isExpired ? 'Expired on:' : 'Expires on:'} <span style="color: #1e293b; font-weight: 800;">${activePlanExpiry}</span>
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 10px;">
+                  <span class="material-icons-round" style="font-size: 15px; color: ${isExpired ? '#ef4444' : '#94a3b8'};">event</span>
+                  <div style="font-size: 0.82rem; color: ${isExpired ? '#ef4444' : '#64748b'}; font-weight: 600;">
+                    ${isExpired ? 'Expired on:' : 'Expires on:'} <span style="color: #334155; font-weight: 700;">${activePlanExpiry}</span>
                   </div>
                 </div>
               ` : `
-                <div style="font-size: 0.85rem; color: #94a3b8; font-weight: 600; margin-top: 10px;">Assign a plan to enable member features.</div>
+                <div style="font-size: 0.82rem; color: #94a3b8; font-weight: 600; margin-top: 8px;">Assign a plan to enable member features.</div>
               `}
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-               <div style="background: ${m.status === 'active' ? '#E8F5EC' : (m.status === 'suspended' ? '#FEE2E2' : '#F1F5F9')}; color: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : '#475569')}; border: 1px solid ${m.status === 'active' ? '#22C55E' : (m.status === 'suspended' ? '#EF4444' : '#D1D5DB')}; font-size: 0.75rem; font-weight: 800; padding: 6px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
-                 ${m.status === 'active' ? '<span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>' : ''}
+               <div style="background: ${m.status === 'active' ? '#f8fafc' : (m.status === 'suspended' ? '#fef2f2' : '#f8fafc')}; color: ${m.status === 'active' ? '#475569' : (m.status === 'suspended' ? '#ef4444' : '#64748b')}; border: 1px solid ${m.status === 'active' ? '#f1f5f9' : (m.status === 'suspended' ? '#fee2e2' : '#f1f5f9')}; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
+                 ${m.status === 'active' ? '<span style="width: 5px; height: 5px; border-radius: 50%; background: #10b981;"></span>' : ''}
                  ${m.status}
                </div>
             </div>
           </div>
           
-          <div style="display: flex; gap: 12px; flex-wrap: wrap; border-top: 1px solid #f1f5f9; padding-top: 24px;">
-            <button onclick="setPlanActionMode(${m.id}, 'assign')" style="background: #1e293b; color: #fff; border: none; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(30,41,59,0.1); display: flex; align-items: center; gap: 8px;">
-              <span class="material-icons-round" style="font-size: 18px;">add_task</span> Assign New
+          <!-- Single Manage Plan Button -->
+          <div class="plan-action-bar">
+            <button class="plan-action-btn" onclick="openManagePlanModal(${m.id})" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #2563eb; font-weight: 700; box-shadow: 0 1px 2px rgba(0,0,0,0.02); padding: 8px 16px; transition: all 0.2s;">
+              <span class="material-icons-round" style="color: #3b82f6; font-size: 16px;">settings</span> Manage Plan
             </button>
-            ${hasPlan ? `
-              <button onclick="setPlanActionMode(${m.id}, 'extend')" style="background: #fff; color: #475569; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;">Extend</button>
-              <button onclick="setPlanActionMode(${m.id}, 'upgrade')" style="background: #fff; color: #475569; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer; transition: all 0.2s;">Upgrade</button>
-            ` : ''}
-            <div style="flex: 1;"></div>
-            ${m.status === 'active' ? `
-              <button onclick="setPlanActionMode(${m.id}, 'suspend')" style="background: #fff0f2; color: #e11d48; border: 1px solid #fecaca; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">Suspend</button>
-            ` : ''}
-            ${m.status === 'suspended' ? `
-              <button onclick="setPlanActionMode(${m.id}, 'reactivate')" style="background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 20px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">Reactivate</button>
-            ` : ''}
           </div>
         </div>
 
-        <!-- Right: Latest Invoice -->
-        <div class="content-card" style="padding: 28px; background: #fafafa; border: 1px solid #e2e8f0; display: flex; flex-direction: column;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+        <!-- Right: Invoice Summary -->
+        <div class="invoice-summary-card" style="padding: 24px;">
+          <div class="invoice-summary-header">
             <div>
-              <div style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Latest Invoice</div>
-              <div style="font-size: 1.15rem; font-weight: 800; color: #1e293b; letter-spacing: -0.2px;">${latestInvoice.invoice || 'None Generated'}</div>
+              <div style="font-size: 0.68rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Latest Invoice</div>
+              <div class="invoice-summary-number">${latestInvoice.invoice || 'None Generated'}</div>
             </div>
             ${latestInvoice.status ? `
-              <div style="background: ${latestInvoice.status === 'Paid' ? '#dcfce7' : (latestInvoice.status === 'N/A' ? '#f1f5f9' : '#FEF3C7')}; color: ${latestInvoice.status === 'Paid' ? '#16a34a' : (latestInvoice.status === 'N/A' ? '#64748b' : '#92400E')}; font-size: 0.72rem; font-weight: 800; padding: 6px 12px; border-radius: 6px; border: 1px solid ${latestInvoice.status === 'Paid' ? '#bbf7d0' : (latestInvoice.status === 'N/A' ? '#e2e8f0' : '#FDE68A')}; display: flex; align-items: center; gap: 6px;">
-                <span style="width: 5px; height: 5px; border-radius: 50%; background: ${latestInvoice.status === 'Paid' ? '#16a34a' : (latestInvoice.status === 'N/A' ? '#94a3b8' : '#F59E0B')};"></span>
+              <div style="background: ${latestInvoice.status === 'Paid' ? '#f8fafc' : (latestInvoice.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; color: ${latestInvoice.status === 'Paid' ? '#475569' : (latestInvoice.status === 'N/A' ? '#64748b' : '#d97706')}; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; border: 1px solid ${latestInvoice.status === 'Paid' ? '#f1f5f9' : (latestInvoice.status === 'N/A' ? '#f1f5f9' : '#fef3c7')}; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.05em;">
+                <span style="width: 5px; height: 5px; border-radius: 50%; background: ${latestInvoice.status === 'Paid' ? '#10b981' : (latestInvoice.status === 'N/A' ? '#94a3b8' : '#f59e0b')};"></span>
                 ${latestInvoice.status}
+                ${latestInvoice.invoiceType ? '<span style="color:#94a3b8;font-weight:600;">·</span> ' + latestInvoice.invoiceType : ''}
               </div>
             ` : ''}
           </div>
           
-          <div style="margin-top: auto; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-              <div>
-                <div style="font-size: 0.68rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">History Count</div>
-                <div style="font-weight: 800; color: #1e293b; font-size: 1rem;">${assignedPlans.length} <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Events</span></div>
-              </div>
-              <div style="text-align: right;">
-                <div style="font-size: 0.68rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Quick Action</div>
-                ${latestInvoice.status === 'UnPaid' ? `
-                  <button onclick="markLatestPaid(${m.id})" style="background: #1e293b; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-weight: 800; font-size: 0.75rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">Mark Paid</button>
-                ` : `
-                  <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">No pending task</span>
-                `}
-              </div>
+          <div class="invoice-summary-details">
+            <div class="invoice-summary-detail-item">
+              <div class="invoice-summary-detail-label">History Count</div>
+              <div class="invoice-summary-detail-value">${assignedPlans.length} <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Events</span></div>
+            </div>
+            <div class="invoice-summary-detail-item" style="text-align: right;">
+              <div class="invoice-summary-detail-label">Quick Action</div>
+              ${latestInvoice.status === 'UnPaid' ? `
+                <div style="display: flex; gap: 8px; justify-content: flex-end; align-items:center;">
+                  <button onclick="markLatestPaid(${m.id})" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px 12px; font-weight: 700; font-size: 0.75rem; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.02); transition: all 0.2s;">Mark Paid</button>
+                  <button onclick="showToast('Reminder sent!', 'success')" style="background: transparent; color: #64748b; border: none; border-radius: 6px; padding: 6px 0; font-weight: 600; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#64748b'">Remind</button>
+                </div>
+              ` : `
+                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">No pending task</span>
+              `}
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Action Form Container -->
-      <div id="plan-action-container" style="display: none; margin-bottom: 24px;"></div>
 
-      <!-- Plan Timeline Table -->
-      <div class="content-card" style="padding: 0; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-        <div style="padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <div style="width: 36px; height: 36px; border: 1.5px solid #f1f5f9; background: #f8fafc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #1e293b;">
-              <span class="material-icons-round" style="font-size: 20px;">history</span>
+      <!-- Timeline / Invoices — Dual Mode -->
+      <div class="plan-timeline-card">
+        <div class="plan-timeline-header">
+          <div class="plan-timeline-header-left">
+            <div class="plan-timeline-icon-wrap">
+              <span class="material-icons-round">history</span>
             </div>
             <div>
-              <h3 style="margin: 0; font-size: 1.1rem; font-weight: 900; color: #1e293b; letter-spacing: -0.3px;">Plan Timeline</h3>
-              <p style="margin: 2px 0 0 0; font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Comprehensive audit log of billing events</p>
+              <h3 class="plan-timeline-title">Plan History</h3>
+              <p class="plan-timeline-count">${assignedPlans.length} events · Comprehensive audit log</p>
             </div>
           </div>
+          <div class="timeline-view-toggle">
+            <button class="tl-toggle-btn active" data-view="activity" onclick="switchTimelineView('activity', this)">
+              <span class="material-icons-round">timeline</span> Activity
+            </button>
+            <button class="tl-toggle-btn" data-view="table" onclick="switchTimelineView('table', this)">
+              <span class="material-icons-round">table_chart</span> Invoices
+            </button>
+          </div>
         </div>
-        <div class="table-scroll-wrap">
-          <table class="data-table" style="width: 100%; border-collapse: collapse;">
-            <thead>
-              <tr style="background: #fdfdfd;">
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 60px;">Sr</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Plan Detail</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Timeline</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Event Remark</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice</th>
-                <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px;">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${assignedPlans.map(p => `
-                <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #94a3b8;">${p.sr}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.remark || '—'}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
-                    <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
-                      ${p.status}
-                    </span>
-                  </td>
+
+        <!-- Activity Feed View -->
+        <div id="tl-activity-view">
+          ${assignedPlans.map(p => {
+            let actIcon = 'history';
+            let actColor = '#64748b';
+            let actBg = '#f1f5f9';
+            if (p.type === 'assign') { actIcon = 'add_task'; actColor = '#3b82f6'; actBg = '#eff6ff'; }
+            else if (p.type === 'extend') { actIcon = 'more_time'; actColor = '#2563eb'; actBg = '#eff6ff'; }
+            else if (p.type === 'upgrade') { actIcon = 'upgrade'; actColor = '#7c3aed'; actBg = '#f3e8ff'; }
+            else if (p.type === 'suspend' || p.name === 'Suspended') { actIcon = 'block'; actColor = '#ef4444'; actBg = '#fef2f2'; }
+            else if (p.type === 'reactivate' || p.name === 'Reactivated') { actIcon = 'verified_user'; actColor = '#16a34a'; actBg = '#f0fdf4'; }
+
+            const statusBg = p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb');
+            const statusColor = p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b');
+            const statusBorder = p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7');
+            return `
+            <div class="plan-timeline-event">
+              <div style="width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:${actBg}; color:${actColor}; flex-shrink:0;">
+                <span class="material-icons-round" style="font-size:16px;">${actIcon}</span>
+              </div>
+              <div class="timeline-event-content">
+                <div class="timeline-event-main">
+                  <span class="timeline-event-name">${p.name}</span>
+                  ${p.type === 'extend' ? '<span class="timeline-event-badge" style="background:#eff6ff;color:#2563eb;">Extension</span>' : ''}
+                  ${p.type === 'upgrade' ? '<span class="timeline-event-badge" style="background:#f3e8ff;color:#7c3aed;">Upgrade</span>' : ''}
+                  ${p.name === 'Suspended' ? '<span class="timeline-event-badge" style="background:#fef2f2;color:#dc2626;">Suspension</span>' : ''}
+                  ${p.name === 'Reactivated' ? '<span class="timeline-event-badge" style="background:#f0fdf4;color:#16a34a;">Restored</span>' : ''}
+                </div>
+                <div class="timeline-event-detail">${p.remark || p.date}</div>
+                <div class="timeline-event-meta">
+                  <span><span class="material-icons-round">schedule</span> ${p.timestamp || p.date.split(' to ')[0]}</span>
+                  <span><span class="material-icons-round">person</span> ${p.admin || 'Admin'}</span>
+                </div>
+              </div>
+              <div class="timeline-event-right">
+                <span class="timeline-event-status" style="color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusBorder};">${p.status}</span>
+                ${p.invoice ? '<span class="timeline-event-invoice">' + p.invoice + '</span>' : ''}
+              </div>
+            </div>
+          `}).join('')}
+        </div>
+
+        <!-- Invoice Table View (hidden by default) -->
+        <div id="tl-table-view" style="display:none;">
+          <div class="table-scroll-wrap">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #fdfdfd;">
+                  <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 60px;">Sr</th>
+                  <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Plan Detail</th>
+                  <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Timeline</th>
+                  <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Remark</th>
+                  <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice</th>
+                  <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px;">Status</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                ${assignedPlans.map(p => `
+                  <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #94a3b8;">${p.sr}</td>
+                    <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
+                    <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
+                    <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.remark || '—'}</td>
+                    <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
+                    <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
+                      <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
+                        ${p.status}
+                      </span>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `;
