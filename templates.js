@@ -142,13 +142,6 @@ function openCategoryModal() {
                 <label style="display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Category Name</label>
                 <input type="text" id="new-cat-name" placeholder="e.g. Welcome Series" style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 600; outline: none;">
             </div>
-            <div style="margin-bottom: 24px;">
-                <label style="display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Type</label>
-                <select id="new-cat-type" style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 600; outline: none;">
-                    <option value="email">Email</option>
-                    <option value="notification">Notification</option>
-                </select>
-            </div>
             <div style="display: flex; justify-content: flex-end; gap: 12px;">
                 <button class="btn-outline" onclick="closeModal()">Cancel</button>
                 <button class="btn-primary" onclick="saveCategory()">Save Category</button>
@@ -160,7 +153,7 @@ function openCategoryModal() {
 
 function saveCategory() {
     const name = document.getElementById('new-cat-name').value;
-    const type = document.getElementById('new-cat-type').value;
+    const type = currentType; // Inherit from current active tab
     if (!name) return showToast('Please enter a name', 'error');
     
     const id = categories.length + 1;

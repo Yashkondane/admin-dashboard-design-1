@@ -134,17 +134,21 @@ function showToast(message, type = 'success') {
   setTimeout(() => { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 300); }, 3000);
 }
 
-// ===== TIMELINE FILTERING =====
+// ===== TIMELINE FILTERING & SORTING =====
+let phSortCol = 'sr';
+let phSortDir = 'desc';
+
 window.filterTimeline = function (memberId, filterType) {
   const m = members.find(x => x.id === memberId);
   if (!m) return;
 
   const activityView = document.getElementById('tl-activity-view');
-  if (!activityView) return;
+  const tableBody = document.getElementById('tl-table-body');
+  if (!activityView && !tableBody) return;
 
   // Filter the plans
-  const filtered = filterType === 'all' 
-    ? m.assignedPlans 
+  let filtered = filterType === 'all' 
+    ? [...m.assignedPlans] 
     : m.assignedPlans.filter(p => {
         if (filterType === 'assign') return p.type === 'assign';
         if (filterType === 'extend') return p.type === 'extend';
@@ -154,10 +158,62 @@ window.filterTimeline = function (memberId, filterType) {
         return true;
       });
 
-  // Re-render only the activity events
-  activityView.innerHTML = filtered.length > 0 
-    ? filtered.map(p => renderTimelineEvent(p)).join('')
-    : `<div style="padding: 48px; text-align: center; color: var(--text-soft); font-weight: 700;">No ${filterType === 'all' ? '' : filterType} events found.</div>`;
+  // Apply sorting for table view
+  filtered.sort((a, b) => {
+    let valA = a[phSortCol] || '';
+    let valB = b[phSortCol] || '';
+    if (phSortCol === 'date') {
+       valA = new Date(valA.split(' to ')[0] || 0);
+       valB = new Date(valB.split(' to ')[0] || 0);
+    }
+    if (valA < valB) return phSortDir === 'asc' ? -1 : 1;
+    if (valA > valB) return phSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Re-render activity feed
+  if (activityView) {
+    activityView.innerHTML = filtered.length > 0 
+      ? filtered.map(p => renderTimelineEvent(p)).join('')
+      : `<div style="padding: 48px; text-align: center; color: var(--text-soft); font-weight: 700;">No ${filterType === 'all' ? '' : filterType} events found.</div>`;
+  }
+
+  // Re-render table body
+  if (tableBody) {
+    tableBody.innerHTML = filtered.length > 0
+      ? filtered.map(p => `
+          <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
+            <td style="font-weight: 700; color: #94a3b8;">#${p.sr}</td>
+            <td style="font-weight: 800; color: #1e293b;">
+              <div>${p.name}</div>
+              <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600;">${p.type.charAt(0).toUpperCase() + p.type.slice(1)}</div>
+            </td>
+            <td style="font-weight: 600; color: #64748b;">
+              <div style="font-weight: 700; color: #475569;">${p.date}</div>
+              <div style="font-size: 0.7rem; color: #94a3b8;">${p.timestamp || ''}</div>
+            </td>
+            <td style="font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
+            <td style="text-align: center;">
+              <span class="timeline-event-status" style="color: ${p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
+                ${p.status}
+              </span>
+            </td>
+          </tr>
+        `).join('')
+      : `<tr><td colspan="5" style="padding: 48px; text-align: center; color: var(--text-soft); font-weight: 700;">No ${filterType === 'all' ? '' : filterType} records found.</td></tr>`;
+  }
+};
+
+window.sortPlanHistory = function(memberId, col) {
+  if (phSortCol === col) {
+    phSortDir = phSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    phSortCol = col;
+    phSortDir = 'asc';
+  }
+  
+  const filterType = document.getElementById('tl-activity-filter')?.value || 'all';
+  filterTimeline(memberId, filterType);
 };
 
 window.renderTimelineEvent = function (p) {
@@ -879,8 +935,8 @@ function renderProfileTab(m, tab) {
               </div>
             </div>
             <div class="plan-timeline-header-right" style="display:flex; align-items:center; gap:12px;">
-              <div class="pm-field-modern compact" style="width: 140px; margin: 0; height: 34px; border-radius: 6px;">
-                <select id="tl-activity-filter" onchange="filterTimeline(${m.id}, this.value)" style="font-size: 0.78rem;">
+              <div class="pm-field-modern compact" style="width: 140px; margin: 0; height: 34px; border-radius: 6px; background: #fff;">
+                <select id="tl-activity-filter" onchange="filterTimeline(${m.id}, this.value)" style="font-size: 0.78rem; font-weight: 700; color: #475569;">
                   <option value="all">All Events</option>
                   <option value="assign">Assignments</option>
                   <option value="extend">Extensions</option>
@@ -891,32 +947,30 @@ function renderProfileTab(m, tab) {
                 <span class="material-icons-round" style="color:#94a3b8; font-size: 16px;">filter_list</span>
               </div>
               <div class="timeline-view-toggle">
-                <button class="tl-toggle-btn active" data-view="activity" onclick="switchTimelineView('activity', this)">
+                <button class="tl-toggle-btn active" data-view="activity" onclick="switchTimelineView('activity', this, ${m.id})">
                   <span class="material-icons-round">timeline</span> Activity
                 </button>
-                <button class="tl-toggle-btn" data-view="table" onclick="switchTimelineView('table', this)">
+                <button class="tl-toggle-btn" data-view="table" onclick="switchTimelineView('table', this, ${m.id})">
                   <span class="material-icons-round">table_chart</span> Invoices
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- Activity Feed View -->
-          <div id="tl-activity-view">
+          <div id="tl-activity-view" class="plan-timeline-body" style="padding: 0 24px 24px;">
             ${assignedPlans.map(p => renderTimelineEvent(p)).join('')}
           </div>
 
-          <!-- Invoice Table View (hidden by default) -->
-          <div id="tl-table-view" style="display:none;">
-            <div class="table-scroll-wrap" style="margin: 0;">
-              <table class="data-table" style="width: 100%; border-collapse: collapse;">
+          <div id="tl-table-view" class="plan-timeline-table-view" style="display:none; padding: 0 24px 24px;">
+            <div class="table-responsive" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+              <table class="plan-history-table">
                 <thead>
-                  <tr style="background: #f8fafc;">
+                  <tr>
                     <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 60px;">Sr</th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Plan Detail</th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Timeline</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Plan Detail <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th onclick="sortPlanHistory(${m.id}, 'date')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Timeline <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
                     <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice</th>
-                    <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px;">Status</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1463,13 +1517,14 @@ function openEditModal(type, memberId, index) {
             </div>
             <div style="display:flex; flex-direction:column; gap:4px;">
               <label class="modal-label">Designation</label>
-              <select class="modal-input" id="edit-c-role">
-                <option value="CEO" ${c.role === 'CEO' ? 'selected' : ''}>CEO</option>
-                <option value="Proprietor" ${c.role === 'Proprietor' ? 'selected' : ''}>Proprietor</option>
-                <option value="Director" ${c.role === 'Director' ? 'selected' : ''}>Director</option>
-                <option value="Manager" ${c.role === 'Manager' ? 'selected' : ''}>Manager</option>
-                <option value="Partner" ${c.role === 'Partner' ? 'selected' : ''}>Partner</option>
-              </select>
+              ${renderCustomSelect('edit-c-role', [
+                { value: 'CEO', label: 'CEO' },
+                { value: 'Proprietor', label: 'Proprietor' },
+                { value: 'Director', label: 'Director' },
+                { value: 'Manager', label: 'Manager' },
+                { value: 'Partner', label: 'Partner' }
+              ], c.role, (val) => { document.getElementById('edit-c-role-hidden').value = val; })}
+              <input type="hidden" id="edit-c-role-hidden" value="${c.role}">
             </div>
           </div>
           <div style="display:flex; flex-direction:column; gap:24px;">
@@ -1524,11 +1579,11 @@ function openEditModal(type, memberId, index) {
             
             <div style="display:flex; flex-direction:column; gap:4px;">
               <label class="modal-label">Select Plan</label>
-              <select class="modal-input">
-                <option value="starter" ${m.plan === 'starter' ? 'selected' : ''}>Starter Plan</option>
-                <option value="business" ${m.plan === 'business' ? 'selected' : ''}>Business Plan</option>
-                <option value="enterprise" ${m.plan === 'enterprise' ? 'selected' : ''}>Enterprise Plan</option>
-              </select>
+              ${renderCustomSelect('edit-plan-select', [
+                { value: 'starter', label: 'Starter Plan' },
+                { value: 'business', label: 'Business Plan' },
+                { value: 'enterprise', label: 'Enterprise Plan' }
+              ], m.plan, (val) => { m.plan = val; })}
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
@@ -1538,12 +1593,12 @@ function openEditModal(type, memberId, index) {
               </div>
               <div style="display:flex; flex-direction:column; gap:4px;">
                 <label class="modal-label">Validity</label>
-                <select class="modal-input">
-                  <option value="monthly" ${planValidity === 'monthly' ? 'selected' : ''}>Monthly</option>
-                  <option value="quarterly" ${planValidity === 'quarterly' ? 'selected' : ''}>Quarterly</option>
-                  <option value="halfyearly" ${planValidity === 'halfyearly' ? 'selected' : ''}>Half Yearly</option>
-                  <option value="yearly" ${planValidity === 'yearly' ? 'selected' : ''}>Yearly</option>
-                </select>
+                ${renderCustomSelect('edit-plan-validity', [
+                  { value: 'monthly', label: 'Monthly' },
+                  { value: 'quarterly', label: 'Quarterly' },
+                  { value: 'halfyearly', label: 'Half Yearly' },
+                  { value: 'yearly', label: 'Yearly' }
+                ], planValidity, (val) => { /* Update logic if needed */ })}
               </div>
             </div>
 
@@ -2695,3 +2750,80 @@ function initRichTextEditor(containerSelector) {
         content.focus();
     });
 }
+
+// ===== CUSTOM SELECT SYSTEM =====
+window.csCallbacks = {};
+
+window.renderCustomSelect = function(id, options, selectedValue, onchange, config = {}) {
+  const selectedOption = options.find(o => o.value == selectedValue) || options[0];
+  const isCompact = config.compact ? 'compact' : '';
+  
+  // Register callback
+  window.csCallbacks[id] = onchange;
+  
+  return `
+    <div class="custom-select-wrap ${isCompact}" id="cs-wrap-${id}">
+      <input type="hidden" id="${id}" value="${selectedValue}">
+      <div class="cs-trigger" onclick="toggleCustomSelect('${id}')">
+        <span class="cs-selected-label">${selectedOption.label}</span>
+        <span class="material-icons-round cs-chevron">expand_more</span>
+      </div>
+      <div class="cs-options">
+        ${options.map(opt => `
+          <div class="cs-option ${opt.value == selectedValue ? 'active' : ''}" 
+               data-value="${opt.value}"
+               onclick="selectCustomOption('${id}', '${opt.value}', '${opt.label.replace(/'/g, "\\'")}')">
+            <span>${opt.label}</span>
+            <span class="material-icons-round cs-check">done</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+};
+
+window.toggleCustomSelect = function(id) {
+  const wrap = document.getElementById(`cs-wrap-${id}`);
+  if (!wrap) return;
+  
+  // Close others
+  document.querySelectorAll('.custom-select-wrap').forEach(w => {
+    if (w.id !== `cs-wrap-${id}`) w.classList.remove('open');
+  });
+  
+  wrap.classList.toggle('open');
+};
+
+window.selectCustomOption = function(id, value, label) {
+  const wrap = document.getElementById(`cs-wrap-${id}`);
+  if (!wrap) return;
+  
+  // Update hidden input value
+  const hiddenInput = document.getElementById(id);
+  if (hiddenInput) hiddenInput.value = value;
+  
+  // Update trigger label
+  wrap.querySelector('.cs-selected-label').textContent = label;
+  
+  // Update active state in options
+  wrap.querySelectorAll('.cs-option').forEach(opt => {
+    const optValue = opt.getAttribute('data-value');
+    opt.classList.toggle('active', optValue == value);
+  });
+  
+  // Close menu
+  wrap.classList.remove('open');
+  
+  // Trigger callback
+  const callback = window.csCallbacks[id];
+  if (typeof callback === 'function') {
+    callback(value);
+  }
+};
+
+// Close custom selects on click outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.custom-select-wrap')) {
+    document.querySelectorAll('.custom-select-wrap').forEach(w => w.classList.remove('open'));
+  }
+});

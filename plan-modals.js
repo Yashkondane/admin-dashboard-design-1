@@ -84,15 +84,20 @@ function getPlanOptions() {
 }
 
 // Select wrapper
-function selWrap(id, opts) {
-  return `<div class="plan-field-select">
-    <select id="${id}">${opts}</select>
-    <span class="material-icons-round select-arrow">expand_more</span>
-  </div>`;
+function selWrap(id, opts, onchange) {
+  // Parsing simple option strings for legacy support
+  const options = [];
+  const temp = document.createElement('div');
+  temp.innerHTML = `<select>${opts}</select>`;
+  temp.querySelectorAll('option').forEach(o => {
+    options.push({ value: o.value, label: o.textContent });
+  });
+  
+  return renderCustomSelect(id, options, options[0]?.value, onchange);
 }
 
 // ===== TIMELINE VIEW TOGGLE =====
-window.switchTimelineView = function (view, btn) {
+window.switchTimelineView = function (view, btn, memberId) {
   const activityView = document.getElementById('tl-activity-view');
   const tableView = document.getElementById('tl-table-view');
   if (!activityView || !tableView) return;
@@ -104,6 +109,12 @@ window.switchTimelineView = function (view, btn) {
   // Toggle button states
   btn.parentElement.querySelectorAll('.tl-toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+
+  // If switching to table, ensure filter is applied (logic is in filterTimeline)
+  if (typeof filterTimeline === 'function') {
+    const filterType = document.getElementById('tl-activity-filter')?.value || 'all';
+    filterTimeline(memberId, filterType);
+  }
 };
 
 // ===== UNIFIED MANAGE PLAN MODAL =====
@@ -125,19 +136,14 @@ window.openManagePlanModal = function (memberId) {
   ];
 
   modalContent.innerHTML = `
-    <div class="pm-header-modern">
-      <div class="pm-header-left">
-        <h3>Plan Actions</h3>
-      </div>
-      <div class="pm-header-right" style="display:flex; align-items:center; gap:16px;">
-        <div class="pm-action-dropdown-wrap">
-          <div class="pm-field-modern">
-            <select id="pm-action-dropdown" onchange="selectManageAction(${memberId}, this.value)">
-              ${actions.map(a => `<option value="${a.key}">${a.name}</option>`).join('')}
-            </select>
-            <span class="material-icons-round" style="color:#94a3b8; font-size: 20px;">expand_more</span>
-          </div>
+    <div class="pm-header-modern" style="padding: 20px 32px 16px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+      <div class="pm-header-left" style="display: flex; flex-direction: column; gap: 10px;">
+        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 900; color: var(--text);">Plan Actions</h3>
+        <div class="pm-action-dropdown-wrap" style="width: 200px;">
+          ${renderCustomSelect('pm-action-dropdown', actions.map(a => ({ value: a.key, label: a.name })), 'assign', (val) => selectManageAction(memberId, val), { compact: true })}
         </div>
+      </div>
+      <div class="pm-header-right">
         <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'; this.style.color='#64748b'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'; this.style.color='#94a3b8'">
           <span class="material-icons-round" style="font-size:18px;">close</span>
         </button>
@@ -155,12 +161,9 @@ window.openManagePlanModal = function (memberId) {
   modalContainer.classList.remove('hidden');
 
   setTimeout(() => {
-    const dropdown = document.getElementById('pm-action-dropdown');
-    if (dropdown) {
-      dropdown.value = 'assign';
-      selectManageAction(memberId, 'assign');
-    }
-  }, 0);
+    // Manually trigger the default action since the custom select is now used
+    selectManageAction(memberId, 'assign');
+  }, 10);
 };
 
 // ===== SELECT ACTION INSIDE UNIFIED MODAL =====
@@ -181,13 +184,14 @@ window.selectManageAction = function (memberId, action) {
       <div class="pm-form-grid">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">TARGET PLAN</label>
-          <div class="pm-field-modern">
-            <select id="pm-plan-select" onchange="autoSetEndDate()">
-              <option value="" disabled selected>Select Plan</option>
-              ${(typeof plans !== 'undefined' ? plans : []).map(p => `<option value="${p.name}">${p.name} &nbsp; $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}</option>`).join('')}
-            </select>
-            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
-          </div>
+          ${renderCustomSelect('pm-plan-select', 
+            (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
+              value: p.name, 
+              label: `${p.name} • $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
+            })), 
+            '', 
+            (val) => { autoSetEndDate(); }
+          )}
         </div>
         <div>
           <label class="pm-form-label-modern">START DATE</label>
@@ -224,17 +228,14 @@ window.selectManageAction = function (memberId, action) {
       <div class="pm-form-grid">
         <div>
           <label class="pm-form-label-modern">EXTEND BY</label>
-          <div class="pm-field-modern">
-            <select id="pm-ext-days" onchange="updateExtendPreview('${currentExpiryStr}')">
-              <option value="7">7 days</option>
-              <option value="14">14 days</option>
-              <option value="30" selected>30 days</option>
-              <option value="60">60 days</option>
-              <option value="90">90 days</option>
-              <option value="365">1 year</option>
-            </select>
-            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
-          </div>
+          ${renderCustomSelect('pm-ext-days', [
+            { value: '7', label: '7 days' },
+            { value: '14', label: '14 days' },
+            { value: '30', label: '30 days' },
+            { value: '60', label: '60 days' },
+            { value: '90', label: '90 days' },
+            { value: '365', label: '1 year' }
+          ], '30', (val) => updateExtendPreview(currentExpiryStr))}
         </div>
         <div>
           <label class="pm-form-label-modern">NEW EXPIRY</label>
@@ -253,13 +254,14 @@ window.selectManageAction = function (memberId, action) {
       <div class="pm-form-grid">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">TARGET PLAN</label>
-          <div class="pm-field-modern">
-            <select id="pm-plan-select" onchange="autoSetEndDate()">
-              <option value="" disabled selected>Select Plan</option>
-              ${(typeof plans !== 'undefined' ? plans : []).map(p => `<option value="${p.name}">${p.name} &nbsp; $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}</option>`).join('')}
-            </select>
-            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
-          </div>
+          ${renderCustomSelect('pm-plan-select', 
+            (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
+              value: p.name, 
+              label: `${p.name} • $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
+            })), 
+            '', 
+            (val) => { autoSetEndDate(); }
+          )}
         </div>
         <div>
           <label class="pm-form-label-modern">START DATE</label>
@@ -269,13 +271,10 @@ window.selectManageAction = function (memberId, action) {
         </div>
         <div>
           <label class="pm-form-label-modern">PRORATION</label>
-          <div class="pm-field-modern">
-            <select id="pm-proration">
-              <option value="yes" selected>Yes, prorate</option>
-              <option value="no">No, full charge</option>
-            </select>
-            <span class="material-icons-round" style="color:#94a3b8; font-size: 18px;">expand_more</span>
-          </div>
+          ${renderCustomSelect('pm-proration', [
+            { value: 'yes', label: 'Yes, prorate' },
+            { value: 'no', label: 'No, full charge' }
+          ], 'yes', null)}
         </div>
       </div>
       
@@ -328,10 +327,6 @@ window.selectManageAction = function (memberId, action) {
 
   // Initial state setup
   if (action === 'assign' || action === 'upgrade') {
-    const sel = document.getElementById('pm-plan-select');
-    if (sel) {
-      sel.addEventListener('change', autoSetEndDate);
-    }
     autoSetEndDate();
   } else if (action === 'extend') {
     const actualPlan = (m.assignedPlans && m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name))) || {};
@@ -359,7 +354,7 @@ function buildAssignModal(m, todayISO, po) {
       <div class="plan-form-grid">
         <div class="plan-field-group plan-form-full">
           <div class="plan-field-label">Plan <span class="required">*</span></div>
-          ${selWrap('pm-plan-select', po)}
+          ${selWrap('pm-plan-select', po, (val) => autoSetEndDate())}
         </div>
         <div class="plan-field-group">
           <div class="plan-field-label">Start Date</div>
@@ -429,7 +424,7 @@ function buildExtendModal(m, todayISO, activePlanExpiry, actualPlan) {
           </div>
           <div class="plan-field-group">
             <div class="plan-field-label" style="font-size:0.68rem;">Unit</div>
-            ${selWrap('pm-ext-custom-unit', '<option value="days">Days</option><option value="months">Months</option>')}
+            ${selWrap('pm-ext-custom-unit', '<option value="days">Days</option><option value="months">Months</option>', (val) => updateCustomExtendPreview())}
           </div>
         </div>
       </div>
@@ -478,7 +473,7 @@ function buildUpgradeModal(m, todayISO, po, actualPlan) {
       <div class="plan-form-grid">
         <div class="plan-field-group">
           <div class="plan-field-label">New Plan <span class="required">*</span></div>
-          ${selWrap('pm-plan-select', po)}
+          ${selWrap('pm-plan-select', po, (val) => autoSetEndDate())}
         </div>
         <div class="plan-field-group">
           <div class="plan-field-label">Start Date</div>
