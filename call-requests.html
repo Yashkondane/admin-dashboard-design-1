@@ -67,7 +67,7 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub" style="height: auto;">
-            <a href="profile-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Profile Request</a>
+            <a href="contact-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Contact Request</a>
             <a href="call-requests.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
@@ -118,11 +118,11 @@
       </div>
 
       <div class="tabs-container">
-        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">
+        <button class="tab-item" data-filter="all" onclick="setFilter('all')">
           <span>All Requests</span>
           <span class="badge badge-all">5</span>
         </button>
-        <button class="tab-item" data-filter="Open" onclick="setFilter('Open')">
+        <button class="tab-item active" data-filter="Open" onclick="setFilter('Open')">
           <span>Open</span>
           <span class="badge badge-active" style="background: #E8F5EC; color: #15803D; border: 1px solid #22C55E;">3</span>
         </button>
@@ -141,6 +141,7 @@
           <table class="data-table">
             <thead>
               <tr>
+                <th style="width: 60px; text-align: center; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">SR. NO</th>
                 <th onclick="toggleSort('date')" style="cursor:pointer; width: 12%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">DATE&TIME <span id="sort-icon-date" class="material-icons-round sort-icon active">arrow_downward</span></th>
                 <th onclick="toggleSort('company')" style="cursor:pointer; width: 22%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">NAME & COMPANY <span id="sort-icon-company" class="material-icons-round sort-icon">unfold_more</span></th>
                 <th onclick="toggleSort('location')" style="cursor:pointer; width: 15%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">LOCATION <span id="sort-icon-location" class="material-icons-round sort-icon">unfold_more</span></th>

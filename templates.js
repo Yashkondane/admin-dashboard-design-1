@@ -76,16 +76,18 @@ function selectCategory(id) {
 function renderTemplates() {
     const container = document.getElementById('templates-container');
     const createBtn = document.getElementById('create-tpl-btn');
+    const badge = document.getElementById('tpl-count-badge');
     
     if (!selectedCatId) {
         if (createBtn) createBtn.style.display = 'none';
+        if (badge) badge.style.display = 'none';
         container.innerHTML = `
             <div class="empty-state">
               <div class="empty-icon-wrap">
                 <span class="material-icons-round" style="font-size: 32px;">folder_open</span>
               </div>
-              <p style="font-weight: 800; font-size: 1.1rem; color: #1e293b;">No Category Selected</p>
-              <p style="font-size: 0.88rem; margin-top: 6px; color: #64748b; font-weight: 600;">Choose a category from the left to manage its templates.</p>
+              <p style="font-weight: 800; font-size: 1.15rem; color: #1e293b; margin: 0;">No Category Selected</p>
+              <p style="font-size: 0.9rem; margin-top: 8px; color: #64748b; font-weight: 600; line-height: 1.5;">Choose a category from the left sidebar to<br>view and manage its message templates.</p>
             </div>
         `;
         return;
@@ -97,35 +99,48 @@ function renderTemplates() {
         container.innerHTML = `
             <div class="empty-state">
               <div class="empty-icon-wrap" style="background: #fff; border: 1px dashed #e2e8f0;">
-                <span class="material-icons-round" style="font-size: 32px;">post_add</span>
+                <span class="material-icons-round" style="font-size: 32px; color: #cbd5e1;">post_add</span>
               </div>
-              <p style="font-weight: 800; font-size: 1.1rem; color: #1e293b;">No Templates Yet</p>
-              <p style="font-size: 0.88rem; margin-top: 6px; color: #64748b; font-weight: 600;">This category is empty. Start by creating your first template.</p>
-              <button class="ws-action-btn ws-btn-primary" onclick="openTemplateModal()" style="margin-top: 24px;">
-                <span class="material-icons-round">add</span> Create Template
+              <p style="font-weight: 800; font-size: 1.15rem; color: #1e293b; margin: 0;">No Templates Found</p>
+              <p style="font-size: 0.9rem; margin-top: 8px; color: #64748b; font-weight: 600;">Get started by creating your first template for this category.</p>
+              <button class="btn-primary" onclick="openTemplateModal()" style="margin-top: 24px; padding: 10px 24px; border-radius: 10px;">
+                <span class="material-icons-round">add</span> Add New Template
               </button>
             </div>
         `;
         return;
     }
 
-    container.innerHTML = filtered.map(t => `
-        <div class="template-card">
-            <div class="template-info">
-                <span class="template-title">${t.name}</span>
-                <div class="template-meta">
-                    <span class="status-dot ${t.status === 'Active' ? 'active' : ''}"></span>
-                    <span>${t.type === 'email' ? 'Subject: ' + t.subject : 'System Notification'}</span>
-                    <span style="color: #cbd5e1; font-weight: 300;">|</span>
-                    <span style="color: ${t.status === 'Active' ? '#10b981' : '#f43f5e'}; font-weight: 800; font-size: 0.7rem; text-transform: uppercase;">${t.status}</span>
+    container.innerHTML = `
+        <div class="templates-container">
+            ${filtered.map(t => `
+                <div class="template-card" onclick="openTemplateModal(${t.id})">
+                    <div class="template-card-header">
+                        <span class="template-badge badge-${t.type}">${t.type}</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="header-icon-btn" style="width: 32px; height: 32px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;" onclick="event.stopPropagation(); openTemplateModal(${t.id})">
+                                <span class="material-icons-round" style="font-size: 18px; color: var(--blue);">edit</span>
+                            </button>
+                            <button class="header-icon-btn" style="width: 32px; height: 32px; background: #fff; border: 1px solid #fecaca; border-radius: 6px;" onclick="event.stopPropagation(); deleteTemplate(${t.id})">
+                                <span class="material-icons-round" style="font-size: 18px; color: #dc2626;">delete_outline</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="template-name">${t.name}</div>
+                    <div class="template-subject">${t.subject || 'No subject set'}</div>
+                    <div class="template-card-footer">
+                        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; color: #94a3b8;">
+                            <span class="material-icons-round" style="font-size: 14px;">schedule</span>
+                            Last updated: 2 days ago
+                        </div>
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #f8fafc; display: grid; place-items: center; color: #2563eb;">
+                            <span class="material-icons-round" style="font-size: 18px;">chevron_right</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="template-actions">
-                <button class="action-btn-sm" onclick="openTemplateModal(${t.id})" title="Edit"><span class="material-icons-round" style="font-size: 18px;">edit</span></button>
-                <button class="action-btn-sm" onclick="deleteTemplate(${t.id})" title="Delete"><span class="material-icons-round" style="font-size: 18px;">delete_outline</span></button>
-            </div>
+            `).join('')}
         </div>
-    `).join('');
+    `;
 }
 
 function openCategoryModal() {

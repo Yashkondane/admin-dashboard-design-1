@@ -1,11 +1,27 @@
-// ===== PLAN MODAL SYSTEM =====
 // All plan-related modal workflows
+const formatPremiumDate = (dateStr) => {
+  if (!dateStr) return '';
+  // Handle DD-MM-YYYY or DD-Month-YYYY
+  const parts = dateStr.split(/[-/]/);
+  if (parts.length < 3) return dateStr;
+  
+  const day = parts[0];
+  const month = parts[1];
+  const year = parts[2];
+  
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  // If month is already a name, keep it, else convert index
+  let mName = month;
+  if (!isNaN(month)) {
+    mName = monthNames[parseInt(month) - 1] || month;
+  }
+  
+  return `${day} ${mName} ${year}`;
+};
 
 // Invoice section builder (reusable)
 function buildInvoiceSection(m) {
-  // Always show invoice option for plan actions to allow flexibility 
-  // during upgrades or assignments.
-
   return `
     <div class="plan-invoice-section">
       <div class="pm-invoice-check-row" onclick="toggleInvoiceSection()">
@@ -19,22 +35,22 @@ function buildInvoiceSection(m) {
         <input type="checkbox" id="pm-gen-invoice" style="display:none;">
       </div>
 
-      <div id="pm-invoice-type-area" style="display:none; margin-top: 24px; animation: pm-fade-in 0.3s ease;">
+      <div id="pm-invoice-type-area" style="display:none; margin-top: 16px; animation: pm-fade-in 0.3s ease;">
         <label class="pm-form-label-modern">INVOICE TYPE</label>
-        <div class="pm-invoice-type-list">
-          <div class="pm-invoice-type-item" onclick="selectInvoiceType('proforma')">
+        <div class="pm-invoice-type-list" style="gap: 8px;">
+          <div class="pm-invoice-type-item" onclick="selectInvoiceType('proforma')" style="padding: 12px 16px; border-radius: 10px;">
             <div>
               <div class="pm-it-label">Proforma Invoice</div>
               <div class="pm-it-desc">Preliminary, not payable</div>
             </div>
-            <div class="pm-it-radio"><span class="material-icons-round" style="color:#e2e8f0;">radio_button_unchecked</span></div>
+            <div class="pm-it-radio"><span class="material-icons-round" style="color:#e2e8f0; font-size: 20px;">radio_button_unchecked</span></div>
           </div>
-          <div class="pm-invoice-type-item selected" onclick="selectInvoiceType('final')">
+          <div class="pm-invoice-type-item selected" onclick="selectInvoiceType('final')" style="padding: 12px 16px; border-radius: 10px;">
             <div>
               <div class="pm-it-label">Final Invoice</div>
               <div class="pm-it-desc">Real, payable invoice</div>
             </div>
-            <div class="pm-it-radio"><span class="material-icons-round" style="color:#0f172a;">check_circle</span></div>
+            <div class="pm-it-radio"><span class="material-icons-round" style="color:var(--blue); font-size: 20px;">check_circle</span></div>
           </div>
         </div>
         <input type="hidden" id="pm-invoice-type" value="final">
@@ -70,7 +86,7 @@ window.selectInvoiceType = function (val) {
   if (selected) {
     selected.classList.add('selected');
     selected.querySelector('.pm-it-radio .material-icons-round').textContent = 'check_circle';
-    selected.querySelector('.pm-it-radio .material-icons-round').style.color = '#0f172a';
+    selected.querySelector('.pm-it-radio .material-icons-round').style.color = 'var(--blue)';
   }
   document.getElementById('pm-invoice-type').value = val;
 };
@@ -100,17 +116,24 @@ function selWrap(id, opts, onchange) {
 window.switchTimelineView = function (view, btn, memberId) {
   const activityView = document.getElementById('tl-activity-view');
   const tableView = document.getElementById('tl-table-view');
+  const filterContainer = document.getElementById('tl-filter-container');
+  
   if (!activityView || !tableView) return;
 
   // Toggle views
   activityView.style.display = view === 'activity' ? 'block' : 'none';
   tableView.style.display = view === 'table' ? 'block' : 'none';
 
+  // Toggle filter visibility - Remove from Table view as requested
+  if (filterContainer) {
+    filterContainer.style.display = view === 'activity' ? 'flex' : 'none';
+  }
+
   // Toggle button states
   btn.parentElement.querySelectorAll('.tl-toggle-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
-  // If switching to table, ensure filter is applied (logic is in filterTimeline)
+  // If switching to table, ensure filter is reset or applied (logic is in filterTimeline)
   if (typeof filterTimeline === 'function') {
     const filterType = document.getElementById('tl-activity-filter')?.value || 'all';
     filterTimeline(memberId, filterType);
@@ -125,7 +148,6 @@ window.openManagePlanModal = function (memberId) {
   const modalContainer = document.getElementById('modal-container');
   const modalContent = document.getElementById('modal-content');
   modalContent.className = 'modal-content plan-modal';
-  modalContent.style.maxWidth = '680px';
 
   const isSuspended = m.status === 'suspended';
   const actions = [
@@ -136,24 +158,24 @@ window.openManagePlanModal = function (memberId) {
   ];
 
   modalContent.innerHTML = `
-    <div class="pm-header-modern" style="padding: 20px 32px 16px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
-      <div class="pm-header-left" style="display: flex; flex-direction: column; gap: 10px;">
-        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 900; color: var(--text);">Plan Actions</h3>
-        <div class="pm-action-dropdown-wrap" style="width: 200px;">
+    <div class="pm-header-modern" style="padding: 24px 32px 20px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+      <div class="pm-header-left" style="display: flex; flex-direction: column; gap: 6px;">
+        <h3 class="plan-modal-title">Plan Actions</h3>
+        <div class="pm-action-dropdown-wrap" style="width: 180px; margin-top: 4px;">
           ${renderCustomSelect('pm-action-dropdown', actions.map(a => ({ value: a.key, label: a.name })), 'assign', (val) => selectManageAction(memberId, val), { compact: true })}
         </div>
       </div>
       <div class="pm-header-right">
-        <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:34px; height:34px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'; this.style.color='#64748b'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'; this.style.color='#94a3b8'">
+        <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;">
           <span class="material-icons-round" style="font-size:18px;">close</span>
         </button>
       </div>
     </div>
-    <div class="modal-body" style="padding: 32px;">
-      <div id="pm-dynamic-form-area"></div>
+    <div class="modal-body" id="pm-modal-body">
+      <div id="pm-dynamic-form-area" style="display: flex; flex-direction: column;"></div>
     </div>
-    <div class="pm-footer-modern" id="pm-footer" style="display:none; justify-content: flex-end; gap:12px;">
-      <button class="btn-outline" onclick="closeModal()" style="height: 38px; padding: 0 20px; border-radius: 8px; font-weight: 700; border: 1.5px solid #e2e8f0; background: #fff; color: #64748b; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.borderColor='#cbd5e1'; this.style.color='#1e293b'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.color='#64748b'; this.style.background='#fff'">Cancel</button>
+    <div class="pm-footer-modern" id="pm-footer" style="display:none; justify-content: flex-end; gap:12px; padding: 16px 32px; background: #fafbfc;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 38px; padding: 0 20px; border-radius: 8px; font-weight: 600; border: 1px solid #e2e8f0; background: #fff; color: #64748b; cursor: pointer; font-size: 15px; transition: all 0.2s;">Cancel</button>
       <div id="pm-footer-actions"></div>
     </div>
   `;
@@ -173,21 +195,25 @@ window.selectManageAction = function (memberId, action) {
   const formArea = document.getElementById('pm-dynamic-form-area');
   const footer = document.getElementById('pm-footer');
   const footerActions = document.getElementById('pm-footer-actions');
+  const modalContent = document.getElementById('modal-content');
+  const modalBody = document.getElementById('pm-modal-body');
   
-  if (!formArea) return;
+  if (!formArea || !modalContent || !modalBody) return;
+
+
 
   let html = '';
   let footerBtn = '';
 
   if (action === 'assign') {
     html = `
-      <div class="pm-form-grid">
+      <div class="pm-form-grid" style="gap: 16px;">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">TARGET PLAN</label>
           ${renderCustomSelect('pm-plan-select', 
             (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
               value: p.name, 
-              label: `${p.name} • $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
+              label: `${p.name} • ₹${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
             })), 
             '', 
             (val) => { autoSetEndDate(); }
@@ -207,25 +233,25 @@ window.selectManageAction = function (memberId, action) {
         </div>
       </div>
 
-      <div id="assign-duration-preview" class="pm-period-card" style="display:none;">
+      <div id="assign-duration-preview" class="pm-period-card" style="display:none; margin-top: 8px;">
         <div class="pm-period-info">
           <div class="pm-period-label">Subscription Period</div>
-          <div class="pm-period-range" id="ad-period"></div>
+          <div class="pm-period-range" id="ad-period" style="font-weight: 600; font-size: 0.88rem;"></div>
         </div>
-        <div class="pm-period-duration" id="ad-duration"></div>
+        <div class="pm-period-duration" id="ad-duration" style="font-weight: 600;"></div>
       </div>
 
-      <div class="pm-divider-dashed"></div>
+      <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'assign')">Apply Assign Plan <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'assign')">Assign Plan <span class="material-icons-round">arrow_forward</span></button>`;
 
   } else if (action === 'extend') {
     const actualPlan = (m.assignedPlans && m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name))) || {};
     const currentExpiryStr = actualPlan.date ? actualPlan.date.split(' to ')[1] : '';
 
     html = `
-      <div class="pm-form-grid">
+      <div class="pm-form-grid" style="gap: 16px;">
         <div>
           <label class="pm-form-label-modern">EXTEND BY</label>
           ${renderCustomSelect('pm-ext-days', [
@@ -239,25 +265,25 @@ window.selectManageAction = function (memberId, action) {
         </div>
         <div>
           <label class="pm-form-label-modern">NEW EXPIRY</label>
-          <div class="pm-field-modern preview">
-            <span id="pm-ext-preview-date">${currentExpiryStr || 'N/A'}</span>
+          <div class="pm-field-modern">
+            <span id="pm-ext-preview-date" style="font-weight: 700;">${currentExpiryStr || 'N/A'}</span>
           </div>
         </div>
       </div>
-      <div class="pm-divider-dashed"></div>
+      <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'extend')">Apply Extend Plan <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'extend')">Extend Plan <span class="material-icons-round">arrow_forward</span></button>`;
 
   } else if (action === 'upgrade') {
     html = `
-      <div class="pm-form-grid">
+      <div class="pm-form-grid" style="gap: 16px;">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">TARGET PLAN</label>
           ${renderCustomSelect('pm-plan-select', 
             (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
               value: p.name, 
-              label: `${p.name} • $${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
+              label: `${p.name} • ₹${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
             })), 
             '', 
             (val) => { autoSetEndDate(); }
@@ -277,28 +303,26 @@ window.selectManageAction = function (memberId, action) {
           ], 'yes', null)}
         </div>
       </div>
-      
-      <div id="upgrade-period-preview" class="pm-period-card" style="display:none;">
+
+      <div id="upgrade-period-preview" class="pm-period-card" style="display:none; margin-top: 8px;">
         <div class="pm-period-info">
           <div class="pm-period-label">New Subscription Period</div>
-          <div class="pm-period-range" id="up-period-range"></div>
+          <div class="pm-period-range" id="up-period-range" style="font-weight: 600; font-size: 0.88rem;"></div>
         </div>
-        <div class="pm-period-duration" id="up-period-duration"></div>
+        <div class="pm-period-duration" id="up-period-duration" style="font-weight: 600;"></div>
       </div>
 
-      <div class="pm-divider-dashed"></div>
+      <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'upgrade')">Apply Upgrade Plan <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'upgrade')">Apply Upgrade <span class="material-icons-round">arrow_forward</span></button>`;
 
   } else if (action === 'suspend') {
     html = `
       <div class="pm-form-grid">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">REASON FOR SUSPENSION</label>
-          <div class="pm-field-modern" style="height: auto; padding: 10px 12px;">
-            <textarea id="pm-suspend-reason" class="plan-field-textarea" style="border:none; outline:none; width:100%; font-size:0.82rem; font-weight:600; min-height:80px;" placeholder="e.g. Terms of service violation, payment failure..."></textarea>
-          </div>
+          <textarea id="pm-suspend-reason" class="plan-field-textarea" placeholder="e.g. Terms of service violation, payment failure..."></textarea>
           <div class="pm-field-help">This reason will be logged for administrative review.</div>
         </div>
       </div>
@@ -310,9 +334,7 @@ window.selectManageAction = function (memberId, action) {
       <div class="pm-form-grid">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">ADMIN NOTE (OPTIONAL)</label>
-          <div class="pm-field-modern" style="height: auto; padding: 10px 12px;">
-            <textarea id="pm-reactivate-note" class="plan-field-textarea" style="border:none; outline:none; width:100%; font-size:0.82rem; font-weight:600; min-height:80px;" placeholder="e.g. Payment cleared, manual override..."></textarea>
-          </div>
+          <textarea id="pm-reactivate-note" class="plan-field-textarea" placeholder="e.g. Payment cleared, manual override..."></textarea>
           <div class="pm-field-help">Internal note about why access was restored.</div>
         </div>
       </div>
@@ -745,7 +767,7 @@ window.submitPlanAction = function (memberId, action) {
   if (!m) return;
   if (!m.assignedPlans) m.assignedPlans = [];
 
-  const fmtDate = (d) => d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+  const fmtDate = (d) => formatPremiumDate(d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'));
   const today = new Date();
   const newSr = m.assignedPlans.length > 0 ? Math.max(...m.assignedPlans.map(p => p.sr)) + 1 : 1;
   const invNo = 'ISPL/' + (1000 + newSr) + '/' + today.getFullYear() + '-' + String(today.getFullYear() + 1).slice(-2);

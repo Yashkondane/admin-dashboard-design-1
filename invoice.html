@@ -69,7 +69,7 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
-            <a href="profile-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Profile Request</a>
+            <a href="contact-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Contact Request</a>
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
@@ -112,7 +112,7 @@
 
     <!-- PAGE CONTENT -->
     <div id="invoice-view">
-      <div class="page-title-row" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="page-title-row" style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
         <div>
           <h1 class="page-title">Invoices</h1>
         </div>
@@ -121,12 +121,12 @@
         </div>
       </div>
 
-      <div class="tabs-container">
-        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">
+      <div class="tabs-container" style="margin-bottom: 16px;">
+        <button class="tab-item" data-filter="all" onclick="setFilter('all')">
           <span>All Invoices</span>
           <span class="badge" id="badge-all">0</span>
         </button>
-        <button class="tab-item" data-filter="paid" onclick="setFilter('paid')">
+        <button class="tab-item active" data-filter="paid" onclick="setFilter('paid')">
           <span>Paid</span>
           <span class="badge badge-active" id="badge-paid">0</span>
         </button>
@@ -145,14 +145,14 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th style="width: 7%; font-weight: 600; color: #475569;">Sr.No</th>
-                <th style="width: 13%; font-weight: 600; color: #475569;">Invoice #</th>
-                <th style="width: 14%; font-weight: 600; color: #475569;">Plan Name</th>
-                <th style="width: 13%; font-weight: 600; color: #475569;">Validity</th>
-                <th style="width: 18%; font-weight: 600; color: #475569;">Company Name</th>
-                <th style="width: 12%; font-weight: 600; color: #475569;">Amount</th>
-                <th style="width: 11%; text-align:center; font-weight: 600; color: #475569;">Status</th>
-                <th style="width: 12%; text-align:right; font-weight: 600; color: #475569;">Action</th>
+                <th style="width: 5%; font-weight: 600; color: #475569; text-align: center; padding-left: 32px;">SR No</th>
+                <th style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Company & Location</th>
+                <th style="width: 12%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Date</th>
+                <th style="width: 15%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Invoice #</th>
+                <th style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Plan & Validity</th>
+                <th style="width: 10%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Amount</th>
+                <th style="width: 10%; font-weight: 600; color: #475569; text-align: center; padding: 12px 16px;">Status</th>
+                <th style="width: 8%; text-align:right; font-weight: 600; color: #475569; padding: 12px 16px; padding-right: 32px;">Action</th>
               </tr>
             </thead>
             <tbody id="invoice-tbody"></tbody>
@@ -175,60 +175,7 @@
 
     <!-- Modal for Status Update -->
     <div id="modal-container" class="modal-overlay hidden">
-      <div class="modal-content" style="width: 500px; padding: 0;">
-        <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
-          <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #1e293b;">Update Status</h2>
-          <button class="header-icon-btn" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-        </div>
-        <div style="padding: 24px;">
-          <div style="display: flex; gap: 24px; margin-bottom: 24px;">
-            <span style="font-weight: 700; color: #64748b; font-size: 0.9rem;">Status</span>
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-              <input type="radio" name="status" value="Unpaid" checked onchange="togglePaidFields(false)">
-              <span style="font-weight: 600; font-size: 0.9rem;">Unpaid</span>
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-              <input type="radio" name="status" value="Paid" onchange="togglePaidFields(true)">
-              <span style="font-weight: 600; font-size: 0.9rem;">Paid</span>
-            </label>
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-              <input type="radio" name="status" value="Cancel" onchange="togglePaidFields(false)">
-              <span style="font-weight: 600; font-size: 0.9rem;">Cancel</span>
-            </label>
-          </div>
-
-          <div id="paid-fields" class="hidden" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Payment Date</label>
-              <input type="date" class="pf-input" id="status-date">
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Payment Mode</label>
-              <select class="pf-input" id="status-mode">
-                <option value="Cash">Cash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
-                <option value="Check">Check</option>
-              </select>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Ref No</label>
-              <input type="text" class="pf-input" id="status-ref" placeholder="Ref No">
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Amount</label>
-              <input type="text" class="pf-input" id="status-amount" placeholder="Amount">
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2;">
-              <label style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase;">Bank Name</label>
-              <input type="text" class="pf-input" id="status-bank" placeholder="Bank Name">
-            </div>
-          </div>
-        </div>
-        <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
-          <button class="btn-outline" onclick="closeModal()" style="height: 40px; padding: 0 24px; border-radius: 8px;">Close</button>
-          <button class="btn-primary" onclick="saveStatus()" style="height: 40px; padding: 0 24px; border-radius: 8px;">Save</button>
-        </div>
-      </div>
+      <div id="modal-content" class="modal-content" style="width: 540px; padding: 0; overflow: hidden; border-radius: 16px;"></div>
     </div>
   </main>
 

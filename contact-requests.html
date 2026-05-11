@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — Profile Requests</title>
+  <title>Admin Dashboard — Contact Requests</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -59,7 +59,7 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub" style="height: auto;">
-            <a href="profile-requests.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Profile Request</a>
+            <a href="contact-requests.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Contact Request</a>
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
@@ -70,6 +70,7 @@
           </button>
           <div class="nav-sub">
             <a href="settings-fields.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Field Setting</a>
+            <a href="settings-templates.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Templates</a>
           </div>
         </div>
       </nav>
@@ -83,7 +84,7 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Search profile requests…" id="top-search-input"></div>
+        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text" placeholder="Search contact requests…" id="top-search-input"></div>
       </div>
       <div class="top-bar-right">
         <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span class="notif-dot"></span></button>
@@ -97,18 +98,30 @@
     </header>
 
     <div id="requests-view">
-      <div class="page-title-row" style="margin-bottom: 12px;">
-        <h1 class="page-title">Profile Requests</h1>
-        <div class="page-title-actions">
-          <button class="btn-outline"><span class="material-icons-round">ios_share</span> Export</button>
+      <div class="page-title-row" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <h1 class="page-title">Contact Request</h1>
         </div>
+        <button class="btn-outline"><span class="material-icons-round">filter_list</span> Filter <span class="material-icons-round">expand_more</span></button>
       </div>
 
-      <div class="tabs-container" style="display: flex; gap: 24px; padding: 0 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border);">
-        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">All <span class="badge">8</span></button>
-        <button class="tab-item" data-filter="Pending" onclick="setFilter('Pending')">Pending <span class="badge">3</span></button>
-        <button class="tab-item" data-filter="Approved" onclick="setFilter('Approved')">Approved <span class="badge">4</span></button>
-        <button class="tab-item" data-filter="Rejected" onclick="setFilter('Rejected')">Rejected <span class="badge">1</span></button>
+      <div class="tabs-container">
+        <button class="tab-item" data-filter="all" onclick="setFilter('all')">
+          <span>All Requests</span>
+          <span class="badge" id="badge-all">4</span>
+        </button>
+        <button class="tab-item" data-filter="Pending" onclick="setFilter('Pending')">
+          <span>Pending</span>
+          <span class="badge badge-warning" id="badge-pending">3</span>
+        </button>
+        <button class="tab-item active" data-filter="Approved" onclick="setFilter('Approved')">
+          <span>Approved</span>
+          <span class="badge badge-active" id="badge-approved">1</span>
+        </button>
+        <button class="tab-item" data-filter="Rejected" onclick="setFilter('Rejected')">
+          <span>Rejected</span>
+          <span class="badge badge-inactive" id="badge-rejected">0</span>
+        </button>
       </div>
 
       <section class="table-section" style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
@@ -116,24 +129,28 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th style="width: 12%;">Req ID</th>
-                <th style="width: 24%;">Member Name</th>
-                <th style="width: 24%;">Request Type</th>
-                <th style="width: 20%;">Date Submitted</th>
-                <th style="width: 12%;">Status</th>
-                <th style="width: 8%; text-align: right;">Action</th>
+                <th style="width: 60px; text-align: center; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">SR. NO</th>
+                <th onclick="toggleSort('date')" style="cursor:pointer; width: 15%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">DATE&TIME <span id="sort-icon-date" class="material-icons-round sort-icon active">arrow_downward</span></th>
+                <th style="width: 22%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">NAME & COMPANY</th>
+                <th style="width: 13%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">MOBILE</th>
+                <th style="width: 22%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">NEW CONTACT NAME</th>
+                <th style="width: 13%; text-align: left; padding: 16px 24px; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">NEW CONTACT</th>
+                <th style="width: 12%; text-align: center; font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">STATUS</th>
               </tr>
             </thead>
-            <tbody id="requests-tbody"></tbody>
+            <tbody id="contact-tbody"></tbody>
           </table>
         </div>
         <div class="table-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 8 requests</div>
-          <div class="pagination">
-            <button class="page-btn active">1</button>
-            <button class="page-btn">2</button>
+          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 4 requests</div>
+          <div class="pagination" id="pagination-controls" style="display: flex; align-items: center; gap: 8px;"></div>
+          <div class="page-size">
+            <select onchange="updateRowsPerPage(this.value)" style="border: none; background: none; font-size: 0.85rem; color: #64748b; font-weight: 600; cursor: pointer;">
+              <option value="10">10 / page</option>
+              <option value="20">20 / page</option>
+              <option value="50">50 / page</option>
+            </select>
           </div>
-          <button class="nav-text-btn" id="next-page">Next <span class="material-icons-round">chevron_right</span></button>
         </div>
       </section>
     </div>

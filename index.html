@@ -80,7 +80,7 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
-            <a href="profile-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Profile Request</a>
+            <a href="contact-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Contact Request</a>
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
@@ -137,7 +137,7 @@
 
     <div id="directory-view">
       <div class="page-title-row"
-        style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start;">
+        style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
           <h1 class="page-title">Members</h1>
         </div>
@@ -146,29 +146,25 @@
       </div>
 
       <div class="tabs-container">
-        <button class="tab-item active" data-filter="all" onclick="setFilter('all')">
+        <button class="tab-item" data-filter="all" onclick="setFilter('all')">
           <span>All Members</span>
-          <span class="badge badge-all">15</span>
+          <span class="badge" id="badge-all">0</span>
         </button>
-        <button class="tab-item" data-filter="active" onclick="setFilter('active')">
+        <button class="tab-item active" data-filter="active" onclick="setFilter('active')">
           <span>Active</span>
-          <span class="badge badge-active">9</span>
-        </button>
-        <button class="tab-item" data-filter="expire" onclick="setFilter('expire')">
-          <span>Inactive</span>
-          <span class="badge badge-inactive">2</span>
+          <span class="badge badge-active" id="badge-active">0</span>
         </button>
         <button class="tab-item" data-filter="pending" onclick="setFilter('pending')">
           <span>Pending</span>
-          <span class="badge badge-pending">1</span>
-        </button>
-        <button class="tab-item" data-filter="incomplete" onclick="setFilter('incomplete')">
-          <span>Incomplete</span>
-          <span class="badge badge-incomplete">1</span>
+          <span class="badge badge-warning" id="badge-pending">0</span>
         </button>
         <button class="tab-item" data-filter="suspended" onclick="setFilter('suspended')">
           <span>Suspended</span>
-          <span class="badge badge-suspended">2</span>
+          <span class="badge badge-inactive" id="badge-suspended">0</span>
+        </button>
+        <button class="tab-item" data-filter="incomplete" onclick="setFilter('incomplete')">
+          <span>Incomplete</span>
+          <span class="badge badge-incomplete" id="badge-incomplete">0</span>
         </button>
       </div>
 
@@ -178,6 +174,7 @@
           <table class="data-table">
             <thead>
               <tr>
+                <th style="width: 5%; text-align: center;">Sr No</th>
                 <th onclick="toggleSort('member')" style="cursor:pointer; width: 15%;">Member & Company <span
                     class="material-icons-round sort-icon" id="sort-icon-member">unfold_more</span></th>
                 <th onclick="toggleSort('location')" style="cursor:pointer; width: 12%;">Location <span

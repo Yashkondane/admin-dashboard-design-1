@@ -34,7 +34,7 @@ const FLAG_DEFS = [
   { key: 'phone',    label: 'Phone no (Show / Hide)' },
 ];
 
-var currentFilter = 'all';
+var currentFilter = 'active';
 
 // ===== RENDER =====
 function renderPlansTable(customList = null) {
@@ -58,8 +58,8 @@ function renderPlansTable(customList = null) {
 
     return `
       <tr style="cursor:default;">
-        <td>
-          <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 600;">${String(i + 1).padStart(2, '0')}</span>
+        <td style="text-align: center;">
+          <span style="color: #475569; font-weight: 700; font-size: 0.82rem;">${String(i + 1).padStart(2, '0')}</span>
         </td>
         <td>
           <span style="font-weight: 600; color: var(--text); font-size: 0.88rem; text-transform: capitalize;">${p.name.toLowerCase()}</span>

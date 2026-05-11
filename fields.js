@@ -139,16 +139,16 @@ function renderFieldsTable() {
                 `;
             } else if (currentTab === 'terms-condition') {
                 rowHtml = `
-                    <td style="color: #94a3b8;">${item.id}</td>
-                    <td style="color: #64748b;">${item.date}</td>
-                    <td style="color: #64748b;">${item.category}</td>
-                    <td style="color: #1e293b; max-width: 400px;">${item.content}</td>
+                    <td style="font-weight: 700; color: #64748b;">${item.id}</td>
+                    <td style="font-weight: 600; color: #475569;">${item.date}</td>
+                    <td style="font-weight: 700; color: #1e293b;">${item.category}</td>
+                    <td style="color: #334155; max-width: 400px; font-size: 0.82rem; line-height: 1.5;">${item.content}</td>
                 `;
             } else {
                 rowHtml = `
-                    <td style="color: #94a3b8;">${String(start + index + 1).padStart(2, '0')}</td>
-                    <td style="color: #1e293b;">${item.name}</td>
-                    ${currentTab === 'subcategory' ? `<td style="color: #64748b;">${item.category}</td>` : ''}
+                    <td style="font-weight: 700; color: #64748b;">${String(start + index + 1).padStart(2, '0')}</td>
+                    <td style="font-weight: 800; color: #1e293b;">${item.name}</td>
+                    ${currentTab === 'subcategory' ? `<td style="font-weight: 600; color: #475569;">${item.category}</td>` : ''}
                     ${currentTab === 'stamp' ? `<td><img src="${item.image}" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e2e8f0;"></td>` : ''}
                 `;
             }

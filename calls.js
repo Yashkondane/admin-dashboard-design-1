@@ -1,13 +1,13 @@
 const calls = [
-  { id: 1, date: "08-May-2026", company: "Paxaal International", location: "Ahmedabad, Gujarat, India", name: "Sanjay Jain", mobile: "8980652020", requestNo: "8980652020", topic: "Request a callback", details: "Wants to discuss premium membership features.", status: "Callback" },
-  { id: 6, date: "09-May-2026", company: "Spark Solutions", location: "Mumbai, Maharashtra, India", name: "Ira Patel", mobile: "9876543210", requestNo: "9876543210", topic: "Callback Request", details: "Urgent callback required regarding the new dashboard setup.", status: "Callback" },
-  { id: 2, date: "07-May-2026", company: "Speedtech Systems", location: "Ahmedabad, Gujarat, India", name: "Vishal Chaubey", mobile: "8585857787", requestNo: "8980652020", topic: "Request a callback", details: "Technical issue with login.", status: "Callback" },
-  { id: 3, date: "06-May-2026", company: "GEC International Study Centre", location: "Ahmedabad, Gujarat, India", name: "Vinod Gambtoo", mobile: "9825023698", requestNo: "9825023698", topic: "Membership", details: "Inquiry about bulk membership for students.", status: "Close" },
-  { id: 4, date: "01-May-2026", company: "Speedtech Systems", location: "Ahmedabad, Gujarat, India", name: "Jayesh Jain", mobile: "9825886033", requestNo: "9825886033", topic: "Billing", details: "Question about latest invoice.", status: "Open" },
-  { id: 5, date: "30-Apr-2026", company: "CODSOD", location: "Gorakhpur, Uttar Pradesh, India", name: "Vishal Chaturvedi", mobile: "9519922769", requestNo: "9519922769", topic: "Membership", details: "How to renew membership?", status: "Close" }
+  { id: 1, date: "08-May-2026", time: "10:15 AM", company: "Paxaal International", location: "Ahmedabad, Gujarat, India", name: "Sanjay Jain", mobile: "8980652020", requestNo: "8980652020", topic: "Request a callback", details: "Wants to discuss premium membership features.", status: "Callback" },
+  { id: 6, date: "09-May-2026", time: "11:30 AM", company: "Spark Solutions", location: "Mumbai, Maharashtra, India", name: "Ira Patel", mobile: "9876543210", requestNo: "9876543210", topic: "Callback Request", details: "Urgent callback required regarding the new dashboard setup.", status: "Callback" },
+  { id: 2, date: "07-May-2026", time: "02:45 PM", company: "Speedtech Systems", location: "Ahmedabad, Gujarat, India", name: "Vishal Chaubey", mobile: "8585857787", requestNo: "8980652020", topic: "Request a callback", details: "Technical issue with login.", status: "Callback" },
+  { id: 3, date: "06-May-2026", time: "09:00 AM", company: "GEC International Study Centre", location: "Ahmedabad, Gujarat, India", name: "Vinod Gambtoo", mobile: "9825023698", requestNo: "9825023698", topic: "Membership", details: "Inquiry about bulk membership for students.", status: "Close" },
+  { id: 4, date: "01-May-2026", time: "04:20 PM", company: "Speedtech Systems", location: "Ahmedabad, Gujarat, India", name: "Jayesh Jain", mobile: "9825886033", requestNo: "9825886033", topic: "Billing", details: "Question about latest invoice.", status: "Open" },
+  { id: 5, date: "30-Apr-2026", time: "12:15 PM", company: "CODSOD", location: "Gorakhpur, Uttar Pradesh, India", name: "Vishal Chaturvedi", mobile: "9519922769", requestNo: "9519922769", topic: "Membership", details: "How to renew membership?", status: "Close" }
 ];
 
-var currentFilter = 'all';
+var currentFilter = 'Open';
 let sortCol = 'date';
 let sortDir = 'desc';
 let currentPage = 1;
@@ -31,7 +31,7 @@ function renderTable() {
     return;
   }
 
-  tbody.innerHTML = data.map(call => {
+  tbody.innerHTML = data.map((call, index) => {
     // Member-style colorful badges
     let statusBg = '#E8F5EC';
     let statusColor = '#15803D';
@@ -43,9 +43,16 @@ function renderTable() {
       statusBg = '#FFF7ED'; statusColor = '#A34E0C'; statusBorder = '#FB923C';
     }
 
+    const srNo = start + index + 1;
     return `
-    <tr onclick="openManageModal(${call.id})" style="border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: all 0.1s;">
-      <td style="color: #475569; font-weight: 700; font-size: 0.82rem; padding: 16px 24px;">${call.date}</td>
+    <tr onclick="openManageModal(${call.id})" style="height: 72px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+      <td style="text-align: center;"><span style="color: #475569; font-weight: 700; font-size: 0.82rem;">${String(srNo).padStart(2, '0')}</span></td>
+      <td style="padding: 16px 24px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-weight: 700; color: #475569; font-size: 0.82rem; line-height: 1;">${call.date}</span>
+          <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; letter-spacing: 0.02em;">${call.time}</span>
+        </div>
+      </td>
       <td style="padding: 16px 24px;">
         <div class="cell-member">
           <img src="https://i.pravatar.cc/150?u=${call.id}" class="member-avatar" alt="${call.name}">
@@ -59,11 +66,10 @@ function renderTable() {
       <td style="color: #1e293b; font-weight: 700; font-size: 0.82rem; padding: 16px 24px;">${call.mobile}</td>
       <td style="color: #64748b; font-weight: 700; font-size: 0.82rem; padding: 16px 24px;">${call.requestNo}</td>
       <td style="color: #1e293b; font-weight: 700; font-size: 0.82rem; padding: 16px 24px;">${call.topic}</td>
-      <td style="text-align: left; padding: 16px 24px;">
-        <div class="status-badge" style="min-width: 100px; padding: 6px 14px; font-size: 0.75rem; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em;">
-          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>
+      <td style="text-align: center;">
+        <span class="status-pill" style="padding: 6px 14px; min-width: 100px; justify-content: center; font-size: 0.72rem; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.02em; background: ${statusBg}; color: ${statusColor}; border: none;">
           ${call.status}
-        </div>
+        </span>
       </td>
     </tr>
     `;

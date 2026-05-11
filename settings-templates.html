@@ -15,233 +15,204 @@
       display: grid;
       grid-template-columns: 280px 1fr;
       gap: 0;
-      height: calc(100vh - 240px);
+      height: calc(100vh - 200px);
       background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 
     /* Category Sidebar Refinement */
     .category-list {
-      background: #fdfdff;
-      border-right: 1px solid var(--border);
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
     .category-header {
-      padding: 18px 20px;
+      padding: 20px 24px;
       background: #fff;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 64px;
+      height: 72px;
     }
     .category-scroll {
       flex: 1;
       overflow-y: auto;
-      padding: 12px 0;
+      padding: 16px 12px;
     }
     .category-item {
-      padding: 12px 20px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      margin: 2px 8px;
-      border-radius: 8px;
-      position: relative;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      border-radius: 10px;
+      border: 1px solid transparent;
     }
     .category-item:hover { 
-      background: #f1f5f9; 
+      background: #fff;
+      border-color: #e2e8f0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     }
     .category-item.active {
-      background: #eff6ff;
+      background: #fff;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
     }
     .category-item.active .cat-name { 
-      color: var(--blue); 
+      color: #2563eb; 
       font-weight: 800; 
-    }
-    .category-item.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 12px;
-      bottom: 12px;
-      width: 3px;
-      background: var(--blue);
-      border-radius: 0 4px 4px 0;
     }
 
     .cat-name { 
-      font-size: 0.88rem; 
+      font-size: 0.9rem; 
       font-weight: 700; 
       color: #475569; 
-      transition: color 0.2s;
     }
     .cat-count { 
-      font-size: 0.7rem; 
+      font-size: 0.75rem; 
       font-weight: 800; 
       color: #94a3b8; 
-      background: #fff; 
+      background: #f1f5f9; 
       padding: 2px 8px; 
       border-radius: 6px; 
-      border: 1px solid #e2e8f0;
-      min-width: 28px;
+      min-width: 24px;
       text-align: center;
     }
     .category-item.active .cat-count { 
-      background: var(--blue); 
+      background: #2563eb; 
       color: #fff; 
-      border-color: var(--blue);
     }
 
-    /* Template Main Workspace */
-    .templates-main {
+    /* Content Area */
+    .template-content {
       background: #fff;
-      display: flex; 
-      flex-direction: column; 
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
     }
-    .workspace-header {
-      padding: 0 24px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
+    .content-header {
+      padding: 20px 32px;
+      border-bottom: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 64px;
-      flex-shrink: 0;
+      height: 72px;
     }
-    .template-scroll {
+    .content-scroll {
       flex: 1;
       overflow-y: auto;
+      padding: 32px;
     }
 
+    /* Template Cards */
+    .templates-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
     .template-card {
-      padding: 16px 24px;
-      border-bottom: 1px solid #f8fafc;
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between;
-      transition: all 0.2s;
-    }
-    .template-card:hover { 
-      background: #f8fafc; 
-    }
-    .template-info { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 4px; 
-    }
-    .template-title { 
-      font-size: 0.92rem; 
-      font-weight: 800; 
-      color: #1e293b; 
-    }
-    .template-meta { 
-      font-size: 0.75rem; 
-      font-weight: 600; 
-      color: #94a3b8; 
-      display: flex; 
-      gap: 12px; 
-      align-items: center;
-    }
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #cbd5e1;
-    }
-    .status-dot.active { background: #10b981; }
-    
-    .template-actions { 
-      display: flex; 
-      gap: 10px; 
-    }
-    .action-btn-sm { 
-      width: 34px; 
-      height: 34px; 
-      border-radius: 8px; 
-      border: 1px solid #e2e8f0; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      cursor: pointer; 
-      color: #64748b; 
       background: #fff;
-      transition: all 0.2s;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
-    .action-btn-sm:hover { 
-      background: #f1f5f9; 
-      color: var(--blue); 
-      border-color: #cbd5e1; 
+    .template-card:hover {
+      border-color: #2563eb;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    }
+    .template-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .template-badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .badge-email { background: #eff6ff; color: #2563eb; }
+    .badge-notif { background: #fdf2f8; color: #db2777; }
+
+    .template-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .template-subject {
+      font-size: 0.88rem;
+      color: #64748b;
+      font-weight: 600;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .template-card-footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* Action Buttons in Workspace */
-    .ws-action-btn {
-      padding: 8px 14px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .ws-btn-primary {
-      background: var(--blue);
-      color: #fff;
-      border: none;
-    }
-    .ws-btn-primary:hover {
-      background: var(--blue-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-    }
-    .ws-btn-outline {
-      background: #fff;
-      color: #64748b;
-      border: 1.5px solid #e2e8f0;
-    }
-    .ws-btn-outline:hover {
-      background: #f8fafc;
-      border-color: #cbd5e1;
-      color: #1e293b;
-    }
-    
-    /* Refined Empty State */
+    /* Helper Styles */
     .empty-state {
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      height: 100%; 
-      color: #94a3b8; 
-      text-align: center; 
-      padding: 60px;
-      animation: pm-fade-in 0.4s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
     }
     .empty-icon-wrap {
-      width: 80px;
-      height: 80px;
+      width: 72px;
+      height: 72px;
       background: #f8fafc;
-      border-radius: 24px;
+      border-radius: 20px;
       display: grid;
       place-items: center;
       margin-bottom: 24px;
       color: #cbd5e1;
     }
-
-    @keyframes pm-fade-in {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .search-pill {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 240px;
     }
+    .search-pill input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      width: 100%;
+    }
+    .search-pill .material-icons-round { color: #94a3b8; font-size: 20px; }
   </style>
 </head>
 <body>
@@ -292,7 +263,7 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
-            <a href="profile-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Profile Request</a>
+            <a href="contact-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Contact Request</a>
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
@@ -329,49 +300,56 @@
       </div>
     </header>
 
-    <div id="templates-view" style="max-width: 1400px; margin: 0 auto; width: 100%;">
-      <div class="page-title-row" style="margin-bottom: 24px;">
-        <h1 class="page-title">Manage Templates</h1>
+    <div id="templates-view">
+      <div class="page-title-row" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 class="page-title">Template Management</h1>
+          <p style="font-size: 0.9rem; color: #64748b; font-weight: 600; margin-top: 4px;">Standardize your communications across email and push notifications.</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+        </div>
       </div>
 
-      <div class="tabs-container" style="margin-bottom: 20px;">
+      <div class="tabs-container" style="margin-bottom: 24px;">
         <button class="tab-item active" id="tab-email" onclick="switchType('email')">
-          Email Templates
+          <span class="material-icons-round" style="font-size: 18px;">mail_outline</span>
+          <span>Email Templates</span>
         </button>
         <button class="tab-item" id="tab-notification" onclick="switchType('notification')">
-          Notification Templates
+          <span class="material-icons-round" style="font-size: 18px;">notifications_none</span>
+          <span>Push Notifications</span>
         </button>
       </div>
 
       <div class="template-grid">
-        <!-- Categories Panel -->
-        <div class="category-list">
+        <!-- Sidebar: Categories -->
+        <aside class="category-list">
           <div class="category-header">
-            <span style="font-size: 0.72rem; font-weight: 900; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Categories</span>
-            <button class="ws-action-btn ws-btn-outline" onclick="openCategoryModal()" title="New Category">
-              <span class="material-icons-round" style="font-size: 16px;">add</span>
+            <h3 style="margin:0; font-size:1rem; font-weight:800; color:#1e293b;">Categories</h3>
+            <button class="header-icon-btn" onclick="openCategoryModal()" title="Add Category">
+              <span class="material-icons-round" style="font-size: 20px;">add_circle_outline</span>
             </button>
           </div>
-          <div id="categories-container" class="category-scroll custom-scrollbar">
-            <!-- Categories will be rendered here -->
+          <div class="category-scroll" id="categories-container">
+            <!-- Categories injected by templates.js -->
           </div>
-        </div>
+        </aside>
 
-        <!-- Template Workspace -->
-        <div class="templates-main">
-          <div class="workspace-header">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <span id="selected-cat-label" style="font-size: 0.95rem; font-weight: 800; color: #1e293b;">Select a category</span>
-              <span id="tpl-count-badge" style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; display:none;"></span>
+        <!-- Main: Template View -->
+        <main class="template-content">
+          <div class="content-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <h2 id="selected-cat-label" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Select a Category</h2>
+              <span id="tpl-count-badge" class="badge" style="display: none; background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; font-weight: 700; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px;">0 Templates</span>
             </div>
-            <button id="create-tpl-btn" class="ws-action-btn ws-btn-primary" onclick="openTemplateModal()" style="display:none;">
-              <span class="material-icons-round" style="font-size: 18px;">add</span> Create Template
+            <button class="btn-primary" id="create-tpl-btn" onclick="openTemplateModal()" style="display: none; padding: 10px 20px; border-radius: 10px; font-weight: 800;">
+              <span class="material-icons-round">add</span> New Template
             </button>
           </div>
-          <div id="templates-container" class="template-scroll custom-scrollbar">
-            <!-- Templates will be rendered here -->
+          <div class="content-scroll" id="templates-container">
+            <!-- Templates injected by templates.js -->
           </div>
-        </div>
+        </main>
       </div>
     </div>
   </main>

@@ -58,7 +58,7 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub">
-            <a href="profile-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Profile Request</a>
+            <a href="contact-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Contact Request</a>
             <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call Request</a>
           </div>
         </div>
@@ -97,72 +97,12 @@
     </header>
 
     <div id="fields-view" style="display: flex; flex-direction: column; height: 100%;">
-      <div class="page-title-row" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px;">
+      <div class="page-title-row" style="margin-bottom: 12px; padding: 0 32px;">
         <h1 class="page-title">Field Setting</h1>
-        <button class="btn-primary" onclick="openAddModal()" style="height: 40px; padding: 0 20px;">
-          <span class="material-icons-round" style="font-size: 20px;">add</span> Add
-        </button>
       </div>
 
-      <div class="tabs-nav-wrapper" style="position: relative; margin-bottom: 24px; border-bottom: 1px solid #f1f5f9; padding: 0 48px; background: #fff;">
-        <style>
-          .tabs-nav-wrapper::before,
-          .tabs-nav-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 1px;
-            width: 40px;
-            z-index: 5;
-            pointer-events: none;
-            transition: opacity 0.3s;
-          }
-          .tabs-nav-wrapper::before {
-            left: 48px;
-            background: linear-gradient(to right, #fff, transparent);
-          }
-          .tabs-nav-wrapper::after {
-            right: 48px;
-            background: linear-gradient(to left, #fff, transparent);
-          }
-          .tabs-container {
-            display: flex;
-            gap: 8px;
-            padding: 0 4px 12px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-          }
-          .tabs-container::-webkit-scrollbar { display: none; }
-          .nav-arrow {
-            position: absolute;
-            top: 6px;
-            z-index: 10;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #64748b;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.2s;
-          }
-          .nav-arrow:hover { border-color: #4880FF; color: #4880FF; transform: scale(1.1); }
-          .nav-arrow.left { left: 8px; }
-          .nav-arrow.right { right: 8px; }
-        </style>
-
-        <button onclick="document.querySelector('.tabs-container').scrollBy({left: -240, behavior: 'smooth'})" class="nav-arrow left">
-          <span class="material-icons-round" style="font-size: 20px;">chevron_left</span>
-        </button>
-        
-        <div class="tabs-container">
+      <div style="padding: 0 32px; margin-bottom: 20px;">
+        <div class="tabs-container" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
           <button class="tab-item active" onclick="switchTab('category')">Category</button>
           <button class="tab-item" onclick="switchTab('subcategory')">Subcategory</button>
           <button class="tab-item" onclick="switchTab('condition')">Condition</button>
@@ -178,14 +118,13 @@
           <button class="tab-item" onclick="switchTab('invoice-setting')">Invoice Setting</button>
           <button class="tab-item" onclick="switchTab('terms-condition')">Terms & Condition</button>
         </div>
-
-        <button onclick="document.querySelector('.tabs-container').scrollBy({left: 240, behavior: 'smooth'})" class="nav-arrow right">
-          <span class="material-icons-round" style="font-size: 20px;">chevron_right</span>
-        </button>
       </div>
 
-      <div style="padding: 0 0 16px; margin-top: 12px;">
-        <h2 id="tab-title" style="font-size: 1rem; font-weight: 800; color: #1e293b;">Product Category</h2>
+      <div style="padding: 0 32px 12px; display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="tab-title" style="font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Product Category</h2>
+        <button class="btn-primary" onclick="openAddModal()" style="height: 38px; padding: 0 20px; border-radius: 8px; font-weight: 800; font-size: 0.88rem;">
+          <span class="material-icons-round" style="font-size: 18px;">add</span> Add New
+        </button>
       </div>
       <div id="fields-table-container">
         <!-- Table will be injected by fields.js -->

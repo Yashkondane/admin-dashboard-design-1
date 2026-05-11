@@ -111,7 +111,7 @@ const members = [
   }
 ];
 
-var currentFilter = 'all';
+var currentFilter = 'active';
 let searchQuery = '';
 let sortCol = 'date';
 let sortDir = 'desc';
@@ -183,7 +183,7 @@ window.filterTimeline = function (memberId, filterType) {
     tableBody.innerHTML = filtered.length > 0
       ? filtered.map(p => `
           <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
-            <td style="font-weight: 700; color: #94a3b8;">#${p.sr}</td>
+            <td style="font-weight: 700; color: #64748b;">#${p.sr}</td>
             <td style="font-weight: 800; color: #1e293b;">
               <div>${p.name}</div>
               <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600;">${p.type.charAt(0).toUpperCase() + p.type.slice(1)}</div>
@@ -339,7 +339,24 @@ function getFiltered() {
   return filtered;
 }
 
+function updateCounts() {
+  const counts = {
+    all: members.length,
+    active: members.filter(m => m.status === 'active').length,
+    pending: members.filter(m => m.status === 'pending').length,
+    suspended: members.filter(m => m.status === 'suspended').length,
+    incomplete: members.filter(m => m.status === 'incomplete').length
+  };
+
+  if (document.getElementById('badge-all')) document.getElementById('badge-all').textContent = counts.all;
+  if (document.getElementById('badge-active')) document.getElementById('badge-active').textContent = counts.active;
+  if (document.getElementById('badge-pending')) document.getElementById('badge-pending').textContent = counts.pending;
+  if (document.getElementById('badge-suspended')) document.getElementById('badge-suspended').textContent = counts.suspended;
+  if (document.getElementById('badge-incomplete')) document.getElementById('badge-incomplete').textContent = counts.incomplete;
+}
+
 function renderTable() {
+  updateCounts();
   const filtered = getFiltered();
   const total = filtered.length;
   const start = (currentPage - 1) * rowsPerPage;
@@ -349,14 +366,16 @@ function renderTable() {
   const tbodyEl = document.getElementById('members-tbody');
   if (!tbodyEl) return;
 
-  if (filtered.length === 0) {
-    tbodyEl.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:60px;color:var(--text-soft);">No members found.</td></tr>';
+  if (total === 0) {
+    tbodyEl.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 60px; color: var(--text-soft); font-weight: 700;">No members found matching your search.</td></tr>';
+    document.getElementById('showing-text').textContent = 'Showing 0 members';
+    renderPagination(0);
     return;
   }
 
   tbodyEl.innerHTML = pageItems.map((m, i) => {
-    const hasEmailCheck = m.status === 'active' || m.status === 'suspended' || m.id % 2 !== 0;
-    const hasMobileCheck = m.status === 'active' || m.id % 3 !== 0;
+    const hasEmailCheck = m.status === 'active' || (m.stamps && m.stamps.some(s => s.badges.includes('email')));
+    const hasMobileCheck = m.status === 'active' || (m.stamps && m.stamps.some(s => s.badges.includes('identity')));
 
     let statusBg = '#E5E7EB'; let statusColor = '#4B5563'; let statusBorder = '#D1D5DB'; let statusText = m.status;
     if (m.status === 'active') { statusBg = '#E8F5EC'; statusColor = '#15803D'; statusBorder = '#22C55E'; statusText = 'Active'; }
@@ -376,8 +395,10 @@ function renderTable() {
     const pColor = planColors[m.plan] || '#94a3b8';
     const pName = m.plan === 'nil' ? 'Free' : capitalize(m.plan);
 
+    const srNo = start + i + 1;
     return `
     <tr style="cursor: pointer; transition: all 0.1s;">
+      <td style="text-align: center;" onclick="openProfile(${m.id})"><span style="color: #475569; font-weight: 700; font-size: 0.82rem;">${String(srNo).padStart(2, '0')}</span></td>
       <td onclick="openProfile(${m.id})">
         <div class="cell-member">
           <img src="${m.photo || 'https://i.pravatar.cc/150?u=' + m.id}" class="member-avatar" alt="${m.member}">
@@ -560,6 +581,9 @@ function switchTab(id, tab) {
 }
 
 function renderProfileTab(m, tab) {
+  const hasEmailCheck = m.status === 'active' || (m.stamps && m.stamps.some(s => s.badges.includes('email')));
+  const hasMobileCheck = m.status === 'active' || (m.stamps && m.stamps.some(s => s.badges.includes('identity')));
+
   if (tab === 'company') {
     return `
       <div class="content-card">
@@ -589,7 +613,7 @@ function renderProfileTab(m, tab) {
           </div>
           <div style="padding: 16px 24px; border-bottom: 1px solid #cbd5e1;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Email</div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.email}</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: ${hasEmailCheck ? '#1e293b' : '#f97316'};">${m.email}</div>
           </div>
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">GST</div>
@@ -597,7 +621,7 @@ function renderProfileTab(m, tab) {
           </div>
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phone</div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.mobile}</div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: ${hasMobileCheck ? '#1e293b' : '#f97316'};">${m.mobile}</div>
           </div>
           <div style="padding: 16px 24px;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phone 2</div>
@@ -663,11 +687,11 @@ function renderProfileTab(m, tab) {
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:14px; background:#f8fafc; border-radius:6px; border:1px solid #f1f5f9;">
                   <div>
                     <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); margin-bottom:4px;">Mobile</div>
-                    <div style="font-size:0.88rem; font-weight:700; color:var(--text);">${c.phone}</div>
+                    <div style="font-size:0.88rem; font-weight:700; color: ${hasMobileCheck ? 'var(--text)' : '#f97316'};">${c.phone}</div>
                   </div>
                   <div>
                     <div style="font-size:0.65rem; font-weight:800; color:var(--text-soft); margin-bottom:4px;">Email</div>
-                    <div style="font-size:0.88rem; font-weight:700; color:var(--text); word-break:break-all;">${c.email}</div>
+                    <div style="font-size:0.88rem; font-weight:700; color: ${hasEmailCheck ? 'var(--text)' : '#f97316'}; word-break:break-all;">${c.email}</div>
                   </div>
                 </div>
 
@@ -749,10 +773,10 @@ function renderProfileTab(m, tab) {
                       <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${c.role || '-'}</span>
                     </td>
                     <td style="padding: 16px 24px;">
-                      <span style="color: ${isInactive ? '#f97316' : 'var(--text-mid)'}; font-weight: 600; font-size: 0.88rem;">${c.email}</span>
+                      <span style="color: ${hasEmailCheck ? 'var(--text-mid)' : '#f97316'}; font-weight: 600; font-size: 0.88rem;">${c.email}</span>
                     </td>
                     <td style="padding: 16px 24px;">
-                      <span style="color: ${isInactive ? '#f97316' : 'var(--text-mid)'}; font-weight: 600; font-size: 0.88rem;">${c.phone}</span>
+                      <span style="color: ${hasMobileCheck ? 'var(--text-mid)' : '#f97316'}; font-weight: 600; font-size: 0.88rem;">${c.phone}</span>
                     </td>
                     <td style="padding: 16px 24px;">
                       <div class="status-badge" style="min-width: 85px; padding: 5px 12px; font-size: 0.8rem; background: ${status === 'Active' ? '#E8F5EC' : '#F3F4F6'}; color: ${status === 'Active' ? '#15803D' : '#4B5563'}; border: 1px solid ${status === 'Active' ? '#22C55E' : '#D1D5DB'}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700;">
@@ -935,7 +959,7 @@ function renderProfileTab(m, tab) {
               </div>
             </div>
             <div class="plan-timeline-header-right" style="display:flex; align-items:center; gap:12px;">
-              <div class="pm-field-modern compact" style="width: 140px; margin: 0; height: 34px; border-radius: 6px; background: #fff;">
+              <div id="tl-filter-container" class="pm-field-modern compact" style="width: 140px; margin: 0; height: 34px; border-radius: 6px; background: #fff;">
                 <select id="tl-activity-filter" onchange="filterTimeline(${m.id}, this.value)" style="font-size: 0.78rem; font-weight: 700; color: #475569;">
                   <option value="all">All Events</option>
                   <option value="assign">Assignments</option>
@@ -976,7 +1000,7 @@ function renderProfileTab(m, tab) {
                 <tbody>
                   ${assignedPlans.map(p => `
                     <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
-                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #94a3b8;">${p.sr}</td>
+                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: #64748b;">${p.sr}</td>
                       <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
                       <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
                       <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
@@ -1244,7 +1268,7 @@ function renderProfileTab(m, tab) {
             <tbody>
               ${loginHistory.length ? loginHistory.map((l, i) => `
                 <tr>
-                  <td><span style="color:var(--text-soft); font-weight:800;">${i + 1}</span></td>
+                  <td><span style="color:#64748b; font-weight:700; font-size: 0.82rem;">${i + 1}</span></td>
                   <td>
                     <div style="font-weight:800; color:var(--text);">${l.datetime.split(' ')[0]}</div>
                     <div style="font-size:0.75rem; color:var(--text-soft);">${l.datetime.split(' ')[1]} ${l.datetime.split(' ')[2] || ''}</div>
@@ -2584,6 +2608,9 @@ function handleNavigation() {
   const params = new URLSearchParams(window.location.search);
   const profileId = params.get('p');
   const tab = params.get('t') || 'company';
+
+  // Only handle navigation if we are on a page with profile-view (e.g. index.html)
+  if (!document.getElementById('profile-view')) return;
 
   if (profileId !== null) {
     openProfile(parseInt(profileId), tab, false);

@@ -1,128 +1,233 @@
-const requests = [
-  { id: "#REQ-101", member: "Jane Cooper", type: "Profile Update", details: "Requested to change Job Title to 'Senior UX Designer'.", date: "Today, 09:15 AM", status: "Pending", statusClass: "suspended", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { id: "#REQ-102", member: "Cameron Williamson", type: "KYC Verification", details: "Uploaded new business registration document for verification.", date: "Yesterday", status: "Pending", statusClass: "suspended", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { id: "#REQ-103", member: "Brooklyn Simmons", type: "Profile Update", details: "Changed contact email and phone number.", date: "Oct 24, 2023", status: "Approved", statusClass: "active", avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
-  { id: "#REQ-104", member: "Leslie Alexander", type: "New Registration", details: "Awaiting final approval for newly created Business account.", date: "Oct 23, 2023", status: "Rejected", statusClass: "inactive", avatar: "https://randomuser.me/api/portraits/women/43.jpg" },
-  { id: "#REQ-105", member: "Jacob Jones", type: "Profile Update", details: "Requested company logo change.", date: "Oct 20, 2023", status: "Pending", statusClass: "suspended", avatar: "https://randomuser.me/api/portraits/men/46.jpg" }
+const contactRequests = [
+  { id: 4, date: "06-May-2026", time: "09:45 AM", company: "GEC International Study Centre", mainContact: "Vinod Gambtoo", mobile: "9825023698", newContactName: "Manoj Paryani", newContact: "9898366292", status: "Pending", statusClass: "pending", firstName: "Manoj", lastName: "Paryani", designation: "Manager", email: "manoj@gec.com" },
+  { id: 3, date: "01-May-2026", time: "11:20 AM", company: "CODSOD", mainContact: "Vishal Chaturvedi", mobile: "9519922769", newContactName: "Test User", newContact: "997776434343", status: "Pending", statusClass: "pending", firstName: "Test", lastName: "User", designation: "Admin", email: "test@codsod.com" },
+  { id: 2, date: "24-Apr-2026", time: "04:15 PM", company: "Speedtech Systems", mainContact: "Jayesh Jain", mobile: "9825886033", newContactName: "Vishal Chaubey", newContact: "8585857787", status: "Approved", statusClass: "live", firstName: "Vishal", lastName: "Chaubey", designation: "Staff", email: "vishal@speedtech.com" },
+  { id: 1, date: "24-Apr-2026", time: "10:05 AM", company: "ggv", mainContact: "ggv hhh", mobile: "8518935212", newContactName: "Test Test", newContact: "8885558885", status: "Pending", statusClass: "pending", firstName: "Test", lastName: "Test", designation: "Manager", email: "test2@ggv.com" }
 ];
 
-var currentFilter = 'all';
+var currentFilter = 'Approved';
+var rowsPerPage = 10;
+var currentPage = 1;
+let sortCol = 'date';
+let sortDir = 'desc';
 
-function renderTable(data = requests) {
-  const tbody = document.getElementById('requests-tbody');
-  
-  if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-soft); font-weight: 600;">No requests found.</td></tr>';
+function renderTable() {
+  const filtered = getFiltered();
+  const total = filtered.length;
+  const tbody = document.getElementById('contact-tbody');
+  if (!tbody) return;
+
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = Math.min(start + rowsPerPage, total);
+  const pageItems = filtered.slice(start, end);
+
+  updateSortIcons();
+
+  if (pageItems.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 64px; color: #94a3b8; font-weight: 600;">No contact requests found.</td></tr>';
+    updatePagination(0);
     return;
   }
-  
-  tbody.innerHTML = data.map(req => `
-    <tr>
-      <td style="padding-left: 24px; font-weight: 700; color: var(--text-mid); font-size: 0.9rem;">
-        ${req.id}
-      </td>
-      <td>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="${req.avatar}" alt="${req.member}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
-          <span style="font-weight: 700; color: var(--text);">${req.member}</span>
+
+  tbody.innerHTML = pageItems.map((req, index) => {
+    const srNo = start + index + 1;
+    return `
+    <tr onclick="openUpdateModal(${req.id})" style="height: 72px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+      <td style="text-align: center;"><span style="color: #475569; font-weight: 700; font-size: 0.82rem;">${String(srNo).padStart(2, '0')}</span></td>
+      <td style="padding: 16px 24px; text-align: left;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-weight: 700; color: #475569; font-size: 0.82rem; line-height: 1;">${req.date}</span>
+          <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 600; letter-spacing: 0.02em;">${req.time}</span>
         </div>
       </td>
-      <td style="font-weight: 600; color: var(--blue); font-size: 0.95rem;">${req.type}</td>
-      <td style="color: var(--text-mid); font-weight: 600;">${req.date}</td>
-      <td>
-        <span class="employee-badge ${req.statusClass}">${req.status}</span>
+      <td style="padding: 16px 24px; text-align: left;">
+        <div class="cell-member">
+          <img src="https://i.pravatar.cc/150?u=${req.id + 20}" class="member-avatar" alt="${req.company}">
+          <div style="display: flex; flex-direction: column;">
+            <span class="cell-member-name">${req.mainContact}</span>
+            <span class="cell-member-sub">${req.company}</span>
+          </div>
+        </div>
       </td>
-      <td style="text-align: right; padding-right: 24px;">
-        <button class="btn-primary" style="padding: 6px 16px; font-size: 0.8rem; font-weight: 700;" onclick="openReviewModal('${req.id}')">
-          Review
-        </button>
+      <td style="padding: 16px 24px; text-align: left;">
+        <span style="font-weight: 700; color: #475569; font-size: 0.82rem;">${req.mobile}</span>
+      </td>
+      <td style="padding: 16px 24px; text-align: left;">
+        <div style="display: flex; flex-direction: column;">
+          <span class="cell-member-name">${req.newContactName}</span>
+          <span class="cell-member-sub">NEW CONTACT REQUEST</span>
+        </div>
+      </td>
+      <td style="padding: 16px 24px; text-align: left;">
+        <span style="font-weight: 700; color: #1e293b; font-size: 0.82rem;">${req.newContact}</span>
+      </td>
+      <td style="text-align: center;">
+        <span class="status-pill ${req.statusClass}" style="padding: 6px 14px; min-width: 90px; justify-content: center; font-size: 0.72rem; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.02em; background: ${req.status === 'Approved' ? '#E8F5EC' : '#FFF7ED'}; color: ${req.status === 'Approved' ? '#15803D' : '#A34E0C'}; border: none;">
+          ${req.status}
+        </span>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
+
+  updatePagination(total);
 }
 
-function setFilter(filterType) {
-  currentFilter = filterType;
-  
-  document.querySelectorAll('.tab-item').forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.dataset.filter === filterType) btn.classList.add('active');
-  });
-  
-  applyFilters();
-}
-
-function applyFilters() {
+function getFiltered() {
   const searchTerm = (document.getElementById('top-search-input')?.value || '').toLowerCase();
-  
-  let filtered = requests.filter(req => {
-    const matchesSearch = req.id.toLowerCase().includes(searchTerm) || req.member.toLowerCase().includes(searchTerm) || req.type.toLowerCase().includes(searchTerm);
+  let filtered = contactRequests.filter(req => {
+    const matchesSearch = req.company.toLowerCase().includes(searchTerm) || req.newContactName.toLowerCase().includes(searchTerm) || req.mainContact.toLowerCase().includes(searchTerm);
     const matchesFilter = currentFilter === 'all' || req.status === currentFilter;
     return matchesSearch && matchesFilter;
   });
-  
-  renderTable(filtered);
+
+  filtered.sort((a, b) => {
+    let valA = a[sortCol];
+    let valB = b[sortCol];
+    
+    if (sortCol === 'date') {
+      // Simple date comparison for demo
+      const dateA = new Date(valA);
+      const dateB = new Date(valB);
+      return sortDir === 'asc' ? dateA - dateB : dateB - dateA;
+    }
+    
+    if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+    if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  return filtered;
 }
 
-function openReviewModal(id) {
-  const req = requests.find(x => x.id === id);
+function toggleSort(col) {
+  if (sortCol === col) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortCol = col;
+    sortDir = 'desc';
+  }
+  renderTable();
+}
+
+function updateSortIcons() {
+  document.querySelectorAll('.sort-icon').forEach(icon => {
+    icon.classList.remove('active');
+    icon.textContent = 'unfold_more';
+  });
+
+  const activeIcon = document.getElementById(`sort-icon-${sortCol}`);
+  if (activeIcon) {
+    activeIcon.classList.add('active');
+    activeIcon.textContent = sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward';
+  }
+}
+
+function applyFilters() {
+  currentPage = 1;
+  renderTable();
+}
+
+let tempSelectedStatus = '';
+
+function openUpdateModal(id) {
+  const req = contactRequests.find(x => x.id === id);
   if (!req) return;
+
+  tempSelectedStatus = req.status;
+  const modalContent = document.getElementById('modal-content');
+  const modalOverlay = document.getElementById('modal-container');
   
-  const modal = document.getElementById('modal-container');
-  const content = document.getElementById('modal-content');
-  
-  content.innerHTML = `
-    <div class="modal-header">
-      <h3>Review Request ${req.id}</h3>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body">
-      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
-        <img src="${req.avatar}" alt="${req.member}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover;">
+  modalContent.style.maxWidth = "600px";
+  modalContent.innerHTML = `
+    <div style="padding: 32px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="font-size: 1.5rem; font-weight: 800; color: #1e293b;">Contact Request Details</h2>
+        <span class="material-icons-round" style="cursor: pointer; color: #94a3b8;" onclick="closeModal()">close</span>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
         <div>
-          <div style="font-size: 1.1rem; font-weight: 800; color: var(--text);">${req.member}</div>
-          <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-mid);">${req.type} &bull; ${req.date}</div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Company Name</div>
+          <div style="font-weight: 700; color: #1e293b;">${req.company}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Request Date</div>
+          <div style="font-weight: 600; color: #475569;">${req.date} • ${req.time}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Contact Person</div>
+          <div style="font-weight: 700; color: #1e293b;">${req.newContactName}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Mobile Number</div>
+          <div style="font-weight: 600; color: #475569;">${req.newContact}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Email Address</div>
+          <div style="font-weight: 600; color: #475569;">${req.email}</div>
+        </div>
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Designation</div>
+          <div style="font-weight: 600; color: #475569;">${req.designation}</div>
+        </div>
+        
+        <div style="grid-column: span 2;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 12px;">Update Status</div>
+          <div style="display: flex; gap: 24px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #334155; font-weight: 600; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Pending" ${req.status === 'Pending' ? 'checked' : ''} onchange="tempSelectedStatus='Pending'" style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
+              Pending
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #334155; font-weight: 600; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Approved" ${req.status === 'Approved' ? 'checked' : ''} onchange="tempSelectedStatus='Approved'" style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
+              Approved
+            </label>
+          </div>
         </div>
       </div>
       
-      <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-        <div style="font-size: 0.8rem; font-weight: 800; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Request Details</div>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text); line-height: 1.5; font-weight: 500;">
-          ${req.details}
-        </p>
+      <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
+        <button onclick="closeModal()" class="btn-outline" style="height: 42px; padding: 0 24px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; color: #64748b; font-weight: 700; cursor: pointer;">Cancel</button>
+        <button onclick="updateRequestStatus(${req.id}, tempSelectedStatus)" class="btn-primary" style="height: 42px; padding: 0 28px; background: #2563eb; border: none; border-radius: 10px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">Save Changes</button>
       </div>
-      
-      ${req.status !== 'Pending' ? `
-        <div style="text-align: center; padding: 16px; font-weight: 700; color: ${req.status === 'Approved' ? '#10b981' : '#ef4444'};">
-          This request has already been ${req.status.toLowerCase()}.
-        </div>
-      ` : ''}
-    </div>
-    <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
-      <button class="btn-outline" onclick="closeModal()">Cancel</button>
-      
-      ${req.status === 'Pending' ? `
-        <div style="display: flex; gap: 12px;">
-          <button class="btn-outline" style="color: #ef4444; border-color: #fca5a5;" onclick="updateRequestStatus('${req.id}', 'Rejected')">Reject</button>
-          <button class="btn-primary" style="background: #10b981; border-color: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);" onclick="updateRequestStatus('${req.id}', 'Approved')">Approve</button>
-        </div>
-      ` : ''}
     </div>
   `;
   
-  modal.classList.remove('hidden');
+  modalOverlay.classList.remove('hidden');
 }
 
-function updateRequestStatus(id, newStatus) {
-  const req = requests.find(x => x.id === id);
+function updateRequestStatus(id, status) {
+  const req = contactRequests.find(x => x.id === id);
   if (req) {
-    req.status = newStatus;
-    req.statusClass = newStatus === 'Approved' ? 'active' : 'inactive';
+    req.status = status;
+    req.statusClass = status === 'Approved' ? 'live' : 'pending';
+    showToast(`Contact request marked as ${status}`, 'success');
+    closeModal();
+    applyFilters();
   }
-  
-  closeModal();
-  applyFilters();
-  showToast(`Request ${id} marked as ${newStatus}`, newStatus === 'Approved' ? 'success' : 'error');
+}
+
+function deleteRequest(id) {
+  if (confirm('Are you sure you want to delete this request?')) {
+    const idx = contactRequests.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      contactRequests.splice(idx, 1);
+      closeModal();
+      applyFilters();
+      showToast('Request deleted successfully', 'error');
+    }
+  }
+}
+
+function verifyRequest(id) {
+  const req = contactRequests.find(x => x.id === id);
+  if (req) {
+    req.status = 'Approved';
+    req.statusClass = 'live';
+    applyFilters();
+    showToast('Contact approved successfully', 'success');
+  }
 }
 
 function closeModal() {
@@ -134,23 +239,11 @@ function showToast(message, type = 'success') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = 'toast';
-  
-  let icon = 'check_circle';
-  let color = '#10b981';
-  if (type === 'error') {
-    icon = 'error';
-    color = '#ef4444';
-  } else if (type === 'warning') {
-    icon = 'warning';
-    color = '#f59e0b';
-  }
+  let icon = type === 'success' ? 'check_circle' : (type === 'error' ? 'cancel' : 'info');
+  let color = type === 'success' ? '#10b981' : (type === 'error' ? '#ef4444' : '#3b82f6');
 
-  toast.innerHTML = `
-    <span class="material-icons-round" style="color: ${color}; font-size: 20px;">${icon}</span>
-    <span style="font-size: 0.9rem; font-weight: 600; color: var(--text);">${message}</span>
-  `;
+  toast.innerHTML = `<span class="material-icons-round" style="color: ${color};">${icon}</span> <span>${message}</span>`;
   container.appendChild(toast);
-
   setTimeout(() => toast.classList.add('show'), 10);
   setTimeout(() => {
     toast.classList.remove('show');
@@ -181,7 +274,6 @@ function toggleNavGroup(btn) {
 
 document.addEventListener('DOMContentLoaded', () => {
   renderTable();
-  
   const searchInput = document.getElementById('top-search-input');
   if (searchInput) {
     searchInput.addEventListener('input', applyFilters);

@@ -5,13 +5,13 @@ const invoices = [
     date: "28-Apr-2026",
     company: "Speedtech Systems",
     location: "Ahmedabad, Gujarat, India",
-    amount: "₹ 18500",
+    amount: "₹ 18,500",
     status: "Unpaid",
     planName: "TK-Premium",
-    validity: "04-28-2026 - 04-28-2027",
+    validity: "28-Apr-2026 to 28-Apr-2027",
     bankInfo: {
-      date: "01-01-001",
-      amount: "18500",
+      date: "01-Jan-2001",
+      amount: "18,500",
       bankName: "",
       mode: "Cash",
       refNo: ""
@@ -22,13 +22,13 @@ const invoices = [
     date: "24-Apr-2026",
     company: "Speedtech Systems",
     location: "Ahmedabad, Gujarat, India",
-    amount: "₹ 5000",
+    amount: "₹ 5,000",
     status: "Paid",
     planName: "TK-Lite",
-    validity: "04-24-2026 - 05-24-2026",
+    validity: "24-Apr-2026 to 24-May-2026",
     bankInfo: {
-      date: "24-04-2026",
-      amount: "5000",
+      date: "24-Apr-2026",
+      amount: "5,000",
       bankName: "HDFC Bank",
       mode: "Bank Transfer",
       refNo: "TXN9928341"
@@ -36,7 +36,7 @@ const invoices = [
   }
 ];
 
-var currentFilter = 'all';
+var currentFilter = 'paid';
 let expandedRows = new Set();
 let activeInvoiceId = null;
 let currentPage = 1;
@@ -81,36 +81,41 @@ function renderTable() {
     if (inv.status === 'Paid') statusClass = 'badge-active';
     if (inv.status === 'Cancel') statusClass = 'badge-inactive';
 
+    const srNo = start + i + 1;
     return `
-      <tr class="invoice-row ${isExpanded ? 'expanded' : ''}" style="cursor: pointer;" onclick="toggleInvoiceRow('${inv.id}')">
-        <td>
-          <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 600;">${String(i + 1).padStart(2, '0')}</span>
+      <tr class="invoice-row ${isExpanded ? 'expanded' : ''}" style="cursor: pointer; height: 68px;" onclick="toggleInvoiceRow('${inv.id}')">
+        <td style="text-align: center; padding-left: 32px;"><span style="color: #475569; font-weight: 700; font-size: 0.82rem;">${String(srNo).padStart(2, '0')}</span></td>
+        <td style="padding: 12px 16px;">
+          <div style="display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-weight: 700; color: #1e293b; font-size: 0.88rem; line-height: 1.2;">${inv.company}</span>
+            <span style="font-size: 0.72rem; color: #64748b; font-weight: 600; opacity: 0.8;">${inv.location}</span>
+          </div>
         </td>
-        <td>
-          <span style="font-weight: 600; color: #1e293b; font-size: 0.88rem;">${inv.id}</span>
+        <td style="padding: 12px 16px;">
+          <span style="font-weight: 600; color: #475569; font-size: 0.82rem;">${inv.date}</span>
         </td>
-        <td>
-          <span style="font-weight: 600; color: #1e293b; font-size: 0.88rem;">${inv.planName || 'N/A'}</span>
+        <td style="padding: 12px 16px;">
+          <span style="font-weight: 700; color: #1e293b; font-size: 0.82rem; letter-spacing: 0.01em;">${inv.id}</span>
         </td>
-        <td>
-          <span style="color: #475569; font-weight: 500; font-size: 0.82rem;">${inv.validity || 'N/A'}</span>
+        <td style="padding: 12px 16px;">
+          <div style="display: flex; flex-direction: column; gap: 3px;">
+            <span style="font-weight: 700; color: #1e293b; font-size: 0.85rem; line-height: 1.2;">${inv.planName || 'N/A'}</span>
+            <span style="font-size: 0.7rem; color: #64748b; font-weight: 600; opacity: 0.8;">${inv.validity || 'N/A'}</span>
+          </div>
         </td>
-        <td>
-          <span style="font-weight: 600; color: #1e293b; font-size: 0.88rem;">${inv.company}</span>
-        </td>
-        <td>
-          <span style="font-weight: 600; color: #1e293b; font-size: 0.95rem;">${inv.amount.replace('₹ ', '')}</span>
+        <td style="padding: 12px 16px;">
+          <span style="font-weight: 600; color: #1e293b; font-size: 0.88rem; letter-spacing: -0.01em;">${inv.amount}</span>
         </td>
         <td style="text-align: center;">
           <span class="status-badge ${statusClass}">${inv.status}</span>
         </td>
-        <td style="text-align: right; position: relative;">
+        <td style="text-align: right; position: relative; padding: 12px 16px; padding-right: 32px; overflow: visible;">
           <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
             <span class="material-icons-round" style="color: #94a3b8; font-size: 20px; transition: transform 0.3s; transform: rotate(${isExpanded ? '180deg' : '0deg'})">expand_more</span>
             <button class="header-icon-btn" onclick="toggleActionMenu(event, '${inv.id}')">
               <span class="material-icons-round">more_vert</span>
             </button>
-            <div class="dropdown-menu" id="menu-${inv.id}" style="position: absolute; top: calc(100% - 10px); right: 24px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 160px; z-index: 100; display: none; flex-direction: column; overflow: hidden;">
+            <div class="dropdown-menu" id="menu-${inv.id}" style="position: absolute; top: 40px; right: 32px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); width: 180px; z-index: 1000; display: none; flex-direction: column; overflow: hidden; animation: slideIn 0.2s ease-out;">
               <button onclick="openStatusModal(event, '${inv.id}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
                 <span class="material-icons-round" style="font-size: 16px; color: #64748b;">edit</span> Update Status
               </button>
@@ -128,30 +133,30 @@ function renderTable() {
         </td>
       </tr>
       <tr class="expanded-content ${isExpanded ? '' : 'hidden'}">
-        <td colspan="7" style="padding: 0;">
+        <td colspan="8" style="padding: 0;">
           <div class="dropdown-pop" style="padding: 24px 32px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
             <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
               <div>
-                <h4 style="font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                  <span class="material-icons-round" style="font-size: 18px; color: #475569;">account_balance</span>
-                  Bank Info
+                <h4 style="font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                  <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">account_balance</span>
+                  Bank Information
                 </h4>
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-                  <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">DATE</span>
-                    <span style="font-size: 0.85rem; color: #1e293b; font-weight: 600;">${inv.bankInfo?.date || '-'}</span>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">SETTLEMENT DATE</span>
+                    <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">${inv.bankInfo?.date || '-'}</span>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">AMOUNT</span>
-                    <span style="font-size: 0.85rem; color: #1e293b; font-weight: 600;">${inv.bankInfo?.amount || '-'}</span>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">AMOUNT PAID</span>
+                    <span style="font-size: 0.82rem; color: #334155; font-weight: 700;">₹ ${inv.bankInfo?.amount || '-'}</span>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">BANK NAME</span>
-                    <span style="font-size: 0.85rem; color: #1e293b; font-weight: 600;">${inv.bankInfo?.bank || '-'}</span>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">RECIPIENT BANK</span>
+                    <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">${inv.bankInfo?.bankName || '-'}</span>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 0.72rem; color: #64748b; font-weight: 600;">MODE</span>
-                    <span style="font-size: 0.85rem; color: #1e293b; font-weight: 600;">${inv.bankInfo?.mode || '-'}</span>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">PAYMENT MODE</span>
+                    <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">${inv.bankInfo?.mode || '-'}</span>
                   </div>
                 </div>
               </div>
@@ -200,16 +205,17 @@ function toggleInvoiceRow(id) {
 
 function toggleActionMenu(event, id) {
   event.stopPropagation();
-  const allMenus = document.querySelectorAll('.dropdown-menu');
   const targetMenu = document.getElementById(`menu-${id}`);
-  const isShowing = targetMenu.classList.contains('show');
+  const isShowing = targetMenu.style.display === 'flex';
 
-  allMenus.forEach(m => m.style.display = 'none');
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    m.style.display = 'none';
+    m.classList.remove('show');
+  });
+
   if (!isShowing) {
     targetMenu.style.display = 'flex';
     targetMenu.classList.add('show');
-  } else {
-    targetMenu.classList.remove('show');
   }
 }
 
@@ -227,24 +233,91 @@ function openStatusModal(event, id) {
   const inv = invoices.find(i => i.id === id);
   if (!inv) return;
 
-  // Reset modal
-  const radios = document.getElementsByName('status');
-  radios.forEach(r => {
-    if (r.value === inv.status) r.checked = true;
-  });
+  const modalContainer = document.getElementById('modal-container');
+  const modalContent = document.getElementById('modal-content');
+  
+  const formatDateForInput = (dStr) => {
+    if (!dStr || dStr === '01-Jan-2001') return '';
+    const parts = dStr.split('-');
+    if (parts.length < 3) return '';
+    const months = { 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12' };
+    return `${parts[2]}-${months[parts[1]]}-${parts[0]}`;
+  };
 
-  if (inv.status === 'Paid') {
-    togglePaidFields(true);
-    document.getElementById('status-date').value = inv.bankInfo.date !== '01-01-001' ? inv.bankInfo.date : '';
-    document.getElementById('status-mode').value = inv.bankInfo.mode;
-    document.getElementById('status-ref').value = inv.bankInfo.refNo;
-    document.getElementById('status-amount').value = inv.bankInfo.amount;
-    document.getElementById('status-bank').value = inv.bankInfo.bankName;
-  } else {
-    togglePaidFields(false);
-  }
+  modalContent.innerHTML = `
+    <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+      <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Update Payment Status</h2>
+      <button class="header-icon-btn" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    
+    <div style="padding: 32px; background: #fff;">
+      <div style="display: flex; flex-direction: column; gap: 28px;">
+        <!-- Status Row -->
+        <div style="display: flex; align-items: center; gap: 24px;">
+          <label style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; width: 80px;">Status</label>
+          <div style="display: flex; gap: 20px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Unpaid" ${inv.status === 'Unpaid' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Unpaid
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Paid" ${inv.status === 'Paid' ? 'checked' : ''} onchange="togglePaidFields(true)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Paid
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Cancel" ${inv.status === 'Cancel' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Cancel
+            </label>
+          </div>
+        </div>
 
-  document.getElementById('modal-container').classList.remove('hidden');
+        <div id="paid-fields" class="${inv.status === 'Paid' ? '' : 'hidden'}">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Date</label>
+              <div class="pm-field-modern">
+                <input type="date" id="status-date" value="${formatDateForInput(inv.bankInfo?.date)}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Mode</label>
+              <div class="pm-field-modern" style="position: relative;">
+                <select id="status-mode" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b; appearance: none; cursor: pointer; padding-right: 24px;">
+                  <option value="Bank Transfer" ${inv.bankInfo?.mode === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+                  <option value="Cash" ${inv.bankInfo?.mode === 'Cash' ? 'selected' : ''}>Cash</option>
+                  <option value="Check" ${inv.bankInfo?.mode === 'Check' ? 'selected' : ''}>Check</option>
+                  <option value="UPI" ${inv.bankInfo?.mode === 'UPI' ? 'selected' : ''}>UPI / QR</option>
+                </select>
+                <span class="material-icons-round" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 20px;">expand_more</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Reference Number</label>
+              <div class="pm-field-modern">
+                <input type="text" id="status-ref" placeholder="TXN..." value="${inv.bankInfo?.refNo || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Settlement Amount</label>
+              <div class="pm-field-modern">
+                <input type="text" id="status-amount" placeholder="0.00" value="${inv.bankInfo?.amount || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; grid-column: span 2;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Bank</label>
+              <div class="pm-field-modern">
+                <input type="text" id="status-bank" placeholder="e.g. HDFC Bank" value="${inv.bankInfo?.bankName || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 16px 32px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem;">Discard</button>
+      <button class="btn-primary" onclick="saveStatus()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">Update Status</button>
+    </div>
+  `;
+
+  modalContainer.classList.remove('hidden');
 }
 
 function closeModal() {
@@ -263,23 +336,34 @@ function togglePaidFields(show) {
 function saveStatus() {
   const inv = invoices.find(i => i.id === activeInvoiceId);
   if (!inv) return;
-
   const selectedStatus = document.querySelector('input[name="status"]:checked').value;
   inv.status = selectedStatus;
-
   if (selectedStatus === 'Paid') {
+    const rawDate = document.getElementById('status-date').value;
     inv.bankInfo = {
-      date: document.getElementById('status-date').value,
+      date: formatDateToSaaS(rawDate),
       mode: document.getElementById('status-mode').value,
       refNo: document.getElementById('status-ref').value,
       amount: document.getElementById('status-amount').value,
       bankName: document.getElementById('status-bank').value
     };
+  } else {
+    // Reset bank info if cancelled/unpaid
+    inv.bankInfo = { date: '01-Jan-2001', amount: '', bankName: '', mode: '', refNo: '' };
   }
-
   closeModal();
   renderTable();
   showToast('Invoice status updated', 'success');
+}
+
+function formatDateToSaaS(dateStr) {
+  if (!dateStr || dateStr === '01-01-001') return '01-Jan-2001';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const day = d.getDate().toString().padStart(2, '0');
+  const month = d.toLocaleString('en-GB', { month: 'short' });
+  const year = d.getFullYear();
+  return `${day}-${month}-${year}`;
 }
 
 function showToast(msg, type = 'success') {
@@ -329,6 +413,7 @@ function toggleNavGroup(btn) {
 }
 
 document.addEventListener('DOMContentLoaded', renderTable);
+
 function renderPagination(totalPages) {
   const container = document.getElementById('pagination-controls');
   if (!container) return;
