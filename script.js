@@ -1003,6 +1003,7 @@ function renderProfileTab(m, tab) {
                 <thead style="background: #f8fafc;">
                   <tr>
                     <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 70px;">Sr No</th>
+                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 120px;">Date</th>
                     <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Plan & Validity <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
                     <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice #</th>
                     <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Amount</th>
@@ -1026,6 +1027,7 @@ function renderProfileTab(m, tab) {
                       <!-- Main Invoice Row -->
                       <tr class="invoice-accordion-row" id="inv-row-${safeInvId}" onclick="window.toggleInvoiceAccordion('${safeInvId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#fcfcfc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
                         <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 800; color: #475569;">${p.sr < 10 ? '0' + p.sr : p.sr}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 800; color: #1e293b;">${startDate}</td>
                         <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
                            <div style="font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</div>
                            <div style="font-size: 0.72rem; font-weight: 600; color: #94a3b8; margin-top: 2px;">${p.date}</div>
@@ -1065,7 +1067,7 @@ function renderProfileTab(m, tab) {
                       
                       <!-- Expansion (Dropdown) Row -->
                       <tr id="inv-expand-${safeInvId}" style="display:none;">
-                        <td colspan="6" style="padding: 0 24px 16px 24px; border-bottom: 1px solid var(--border);">
+                        <td colspan="7" style="padding: 0 24px 16px 24px; border-bottom: 1px solid var(--border);">
                           <div style="padding: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; animation: slideDown 0.2s ease;">
                             
                             <!-- Header -->
@@ -2050,6 +2052,7 @@ function openAddModal(type, memberId) {
   modal.classList.remove('hidden');
 }
 
+
 window.openComposeModal = function(id) {
   const m = members.find(x => x.id === id);
   const modal = document.getElementById('modal-container');
@@ -2060,6 +2063,31 @@ window.openComposeModal = function(id) {
     <div class="modal-header"><h3>Compose Email</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
     <div class="modal-body" style="padding:32px;">
       <div class="modal-form-row"><label class="modal-label">To</label><input class="modal-input" type="text" value="${m.email}" readonly></div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+        <div class="modal-form-row" style="margin-bottom:0;">
+          <label class="modal-label">Select Category</label>
+          <div style="position: relative;">
+            <select class="modal-input" id="email-category-select" onchange="window.updateEmailTemplates(this.value)" style="appearance: none; cursor: pointer;">
+              <option value="">Choose Category</option>
+              <option value="1">Welcome Emails</option>
+              <option value="2">Billing Updates</option>
+              <option value="3">System Announcements</option>
+            </select>
+            <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+          </div>
+        </div>
+        <div class="modal-form-row" style="margin-bottom:0;">
+          <label class="modal-label">Select Template</label>
+          <div style="position: relative;">
+            <select class="modal-input" id="email-template-select" onchange="window.applyEmailTemplate(this.value)" style="appearance: none; cursor: pointer;">
+              <option value="">Choose Template</option>
+            </select>
+            <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+          </div>
+        </div>
+      </div>
+
       <div class="modal-form-row"><label class="modal-label">Subject</label><input class="modal-input" type="text" id="email-subject"></div>
       <div class="modal-form-row"><label class="modal-label">Message</label><textarea class="modal-input" style="height:150px;" id="email-body"></textarea></div>
     </div>
@@ -2069,6 +2097,37 @@ window.openComposeModal = function(id) {
     </div>
   `;
   modal.classList.remove('hidden');
+};
+
+window.updateEmailTemplates = function(catId) {
+  const tplSelect = document.getElementById('email-template-select');
+  if (!tplSelect) return;
+  
+  const templates = [
+    { id: 1, catId: 1, name: "Welcome Email", subject: "Welcome to the Community!", body: "Hi [Name],\n\nWelcome aboard! We are thrilled to have you join our community.\n\nBest regards,\nThe Team" },
+    { id: 2, catId: 2, name: "Invoice Reminder", subject: "Reminder: Your Upcoming Invoice", body: "Hi [Name],\n\nThis is a friendly reminder that your invoice #[Invoice_ID] for the amount of [Amount] is due on [Date].\n\nThank you for your business!" },
+    { id: 3, catId: 3, name: "System Update", subject: "Important System Maintenance Notice", body: "Hello,\n\nWe will be performing scheduled maintenance on our platform on [Date] at [Time].\n\nRegards,\nIT Support" }
+  ];
+
+  const filtered = catId ? templates.filter(t => t.catId == catId) : [];
+  
+  tplSelect.innerHTML = '<option value="">Choose Template</option>' + filtered.map(t => `
+    <option value="${t.id}">${t.name}</option>
+  `).join('');
+};
+
+window.applyEmailTemplate = function(tplId) {
+  const templates = [
+    { id: 1, catId: 1, name: "Welcome Email", subject: "Welcome to the Community!", body: "Hi,\n\nWelcome aboard! We are thrilled to have you join our community.\n\nBest regards,\nThe Team" },
+    { id: 2, catId: 2, name: "Invoice Reminder", subject: "Reminder: Your Upcoming Invoice", body: "Hi,\n\nThis is a friendly reminder that your invoice for the amount of ₹5,000 is due soon.\n\nThank you for your business!" },
+    { id: 3, catId: 3, name: "System Update", subject: "Important System Maintenance Notice", body: "Hello,\n\nWe will be performing scheduled maintenance on our platform on 25th May 2026.\n\nRegards,\nIT Support" }
+  ];
+  
+  const t = templates.find(x => x.id == tplId);
+  if (!t) return;
+  
+  document.getElementById('email-subject').value = t.subject;
+  document.getElementById('email-body').value = t.body;
 };
 
 window.openStampModal = function(id) {
@@ -2390,7 +2449,7 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
   if (!b) return;
 
   if (action === 'Hide' || action === 'Suspend') {
-    openProfileDecisionModal(action.toLowerCase(), broadcastId, (reason) => {
+    openProfileDecisionModal(action.toLowerCase() === 'suspend' ? 'reject' : 'hide', broadcastId, (reason) => {
       b.status = action === 'Hide' ? 'Hidden' : 'Suspended';
       b.actionReason = reason; // Store reason
       showToast(`Broadcast ${action === 'Hide' ? 'hidden' : 'rejected'} successfully`, action === 'Hide' ? 'success' : 'error');
@@ -2427,14 +2486,14 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
 
 
 window.openProfileDecisionModal = function(type, id, onConfirm) {
-    const isSuspend = type === 'suspend';
+    const isReject = type === 'reject';
     const overlay = document.createElement('div');
     overlay.className = 'decision-modal-overlay';
     overlay.id = 'decision-modal';
-    const title = isSuspend ? 'Suspend broadcast' : 'Hide broadcast';
-    const btnText = isSuspend ? 'Confirm Suspend' : 'Confirm Hide';
-    const icon = isSuspend ? 'block' : 'visibility_off';
-    const iconColor = isSuspend ? '#dc2626' : '#f59e0b';
+    const title = isReject ? 'Reject broadcast' : 'Hide broadcast';
+    const btnText = isReject ? 'Confirm Reject' : 'Confirm Hide';
+    const icon = isReject ? 'cancel' : 'visibility_off';
+    const iconColor = isReject ? '#dc2626' : '#f59e0b';
 
     overlay.innerHTML = `
         <div class="decision-modal-content" style="max-width: 480px;">
@@ -2446,7 +2505,7 @@ window.openProfileDecisionModal = function(type, id, onConfirm) {
                 <h3 style="margin:0; font-family:'Outfit',sans-serif; font-weight:800; color:#1e293b;">${title}</h3>
             </div>
             <p style="margin:0 0 16px 0; color:#64748b; font-size:0.92rem; line-height:1.6;">
-                Are you sure you want to ${type} this broadcast? Please provide a reason for this action.
+                Are you sure you want to ${isReject ? 'reject' : 'hide'} this broadcast? Please provide a reason for this action.
             </p>
             <div style="margin-bottom: 24px;">
                 <textarea id="decision-reason" placeholder="Type reason here..." style="width:100%; height:80px; padding:12px; border:1.5px solid #e2e8f0; border-radius:10px; font-family:inherit; font-size:0.9rem; resize:none; outline:none;" oninput="this.style.borderColor = this.value ? '#4880FF' : '#e2e8f0'"></textarea>
@@ -2681,6 +2740,8 @@ function setupSidebarToggles() {
     if (menuToggle) {
         menuToggle.onclick = () => {
             document.getElementById('sidebar').classList.toggle('collapsed');
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.classList.toggle('expanded');
         };
     }
     
@@ -2690,6 +2751,8 @@ function setupSidebarToggles() {
             const sidebar = document.getElementById('sidebar');
             const icon = document.getElementById('sidebar-toggle-icon');
             sidebar.classList.toggle('collapsed');
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.classList.toggle('expanded');
             if (icon) {
                 icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
             }

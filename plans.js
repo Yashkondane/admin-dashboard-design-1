@@ -406,6 +406,8 @@ function setupSidebarToggles() {
   if (menuToggle) {
     menuToggle.onclick = () => {
       document.getElementById('sidebar').classList.toggle('collapsed');
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) mainContent.classList.toggle('expanded');
     };
   }
   
@@ -414,7 +416,11 @@ function setupSidebarToggles() {
     sidebarToggle.onclick = () => {
       const sidebar = document.getElementById('sidebar');
       const icon = document.getElementById('sidebar-toggle-icon');
+      const mainContent = document.querySelector('.main-content');
+      
       sidebar.classList.toggle('collapsed');
+      if (mainContent) mainContent.classList.toggle('expanded');
+      
       if (icon) {
         icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
       }

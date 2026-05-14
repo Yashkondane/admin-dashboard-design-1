@@ -418,7 +418,37 @@ function toggleNavGroup(btn) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', renderTable);
+function setupSidebarToggles() {
+  const menuToggle = document.getElementById('menu-toggle');
+  if (menuToggle) {
+    menuToggle.onclick = () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) mainContent.classList.toggle('expanded');
+    };
+  }
+  
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  if (sidebarToggle) {
+    sidebarToggle.onclick = () => {
+      const sidebar = document.getElementById('sidebar');
+      const icon = document.getElementById('sidebar-toggle-icon');
+      const mainContent = document.querySelector('.main-content');
+      
+      sidebar.classList.toggle('collapsed');
+      if (mainContent) mainContent.classList.toggle('expanded');
+      
+      if (icon) {
+        icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+      }
+    };
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderTable();
+  setupSidebarToggles();
+});
 
 function renderPagination(totalPages) {
   const container = document.getElementById('pagination-controls');

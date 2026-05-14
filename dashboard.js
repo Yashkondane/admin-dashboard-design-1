@@ -175,8 +175,8 @@ function renderDashBroadcastTable() {
                             <button class="dash-action-btn dash-action-btn--approve" onclick="window.handleBroadcastAction('Approve', null, '${b.id}')" title="Approve">
                                 <span class="material-icons-round">check</span>Approve
                             </button>
-                            <button class="dash-action-btn dash-action-btn--reject" onclick="window.handleBroadcastAction('Suspend', null, '${b.id}')" title="Suspend">
-                                <span class="material-icons-round">close</span>Suspend
+                            <button class="dash-action-btn dash-action-btn--reject" onclick="window.handleBroadcastAction('Suspend', null, '${b.id}')" title="Reject">
+                                <span class="material-icons-round">close</span>Reject
                             </button>
                             <button class="dash-action-btn dash-action-btn--hide" onclick="window.handleBroadcastAction('Hide', null, '${b.id}')" title="Hide">
                                 <span class="material-icons-round">visibility_off</span>Hide
@@ -249,6 +249,8 @@ function setupSidebarToggles() {
     if (menuToggle) {
         menuToggle.onclick = () => {
             document.getElementById('sidebar').classList.toggle('collapsed');
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.classList.toggle('expanded');
         };
     }
     
@@ -257,7 +259,11 @@ function setupSidebarToggles() {
         sidebarToggle.onclick = () => {
             const sidebar = document.getElementById('sidebar');
             const icon = document.getElementById('sidebar-toggle-icon');
+            const mainContent = document.querySelector('.main-content');
+            
             sidebar.classList.toggle('collapsed');
+            if (mainContent) mainContent.classList.toggle('expanded');
+            
             if (icon) {
                 icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
             }
