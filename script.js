@@ -148,24 +148,24 @@ window.filterTimeline = function (memberId, filterType) {
   if (!activityView && !tableBody) return;
 
   // Filter the plans
-  let filtered = filterType === 'all' 
-    ? [...m.assignedPlans] 
+  let filtered = filterType === 'all'
+    ? [...m.assignedPlans]
     : m.assignedPlans.filter(p => {
-        if (filterType === 'assign') return p.type === 'assign';
-        if (filterType === 'extend') return p.type === 'extend';
-        if (filterType === 'upgrade') return p.type === 'upgrade';
-        if (filterType === 'suspend') return p.type === 'suspend' || p.name === 'Suspended';
-        if (filterType === 'reactivate') return p.type === 'reactivate' || p.name === 'Reactivated';
-        return true;
-      });
+      if (filterType === 'assign') return p.type === 'assign';
+      if (filterType === 'extend') return p.type === 'extend';
+      if (filterType === 'upgrade') return p.type === 'upgrade';
+      if (filterType === 'suspend') return p.type === 'suspend' || p.name === 'Suspended';
+      if (filterType === 'reactivate') return p.type === 'reactivate' || p.name === 'Reactivated';
+      return true;
+    });
 
   // Apply sorting for table view
   filtered.sort((a, b) => {
     let valA = a[phSortCol] || '';
     let valB = b[phSortCol] || '';
     if (phSortCol === 'date') {
-       valA = new Date(valA.split(' to ')[0] || 0);
-       valB = new Date(valB.split(' to ')[0] || 0);
+      valA = new Date(valA.split(' to ')[0] || 0);
+      valB = new Date(valB.split(' to ')[0] || 0);
     }
     if (valA < valB) return phSortDir === 'asc' ? -1 : 1;
     if (valA > valB) return phSortDir === 'asc' ? 1 : -1;
@@ -174,7 +174,7 @@ window.filterTimeline = function (memberId, filterType) {
 
   // Re-render activity feed
   if (activityView) {
-    activityView.innerHTML = filtered.length > 0 
+    activityView.innerHTML = filtered.length > 0
       ? filtered.map(p => renderTimelineEvent(p)).join('')
       : `<div style="padding: 48px; text-align: center; color: var(--text-soft); font-weight: 700;">No ${filterType === 'all' ? '' : filterType} events found.</div>`;
   }
@@ -185,7 +185,7 @@ window.filterTimeline = function (memberId, filterType) {
       ? filtered.map(p => `
           <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
             <td style="font-weight: 700; color: #64748b;">#${p.sr}</td>
-            <td style="font-weight: 800; color: #1e293b;">
+            <td style="font-weight: 700; color: #1e293b;">
               <div>${p.name}</div>
               <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 600;">${p.type.charAt(0).toUpperCase() + p.type.slice(1)}</div>
             </td>
@@ -195,7 +195,7 @@ window.filterTimeline = function (memberId, filterType) {
             </td>
             <td style="font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
             <td style="text-align: center;">
-              <span class="timeline-event-status" style="color: ${p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
+              <span class="timeline-event-status" style="color: ${p.status === 'Paid' ? '#008767' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#e6f4f1' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#cde7e1' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
                 ${p.status}
               </span>
             </td>
@@ -205,14 +205,14 @@ window.filterTimeline = function (memberId, filterType) {
   }
 };
 
-window.sortPlanHistory = function(memberId, col) {
+window.sortPlanHistory = function (memberId, col) {
   if (phSortCol === col) {
     phSortDir = phSortDir === 'asc' ? 'desc' : 'asc';
   } else {
     phSortCol = col;
     phSortDir = 'asc';
   }
-  
+
   const filterType = document.getElementById('tl-activity-filter')?.value || 'all';
   filterTimeline(memberId, filterType);
 };
@@ -221,16 +221,16 @@ window.renderTimelineEvent = function (p) {
   let actIcon = 'history';
   let actColor = '#64748b';
   let actBg = '#f1f5f9';
-  if (p.type === 'assign') { actIcon = 'add_task'; actColor = '#3b82f6'; actBg = '#eff6ff'; }
-  else if (p.type === 'extend') { actIcon = 'more_time'; actColor = '#2563eb'; actBg = '#eff6ff'; }
+  if (p.type === 'assign') { actIcon = 'add_task'; actColor = '#4880FF'; actBg = '#eff6ff'; }
+  else if (p.type === 'extend') { actIcon = 'more_time'; actColor = '#4880FF'; actBg = '#eff6ff'; }
   else if (p.type === 'upgrade') { actIcon = 'upgrade'; actColor = '#7c3aed'; actBg = '#f3e8ff'; }
   else if (p.type === 'suspend' || p.name === 'Suspended') { actIcon = 'block'; actColor = '#ef4444'; actBg = '#fef2f2'; }
   else if (p.type === 'reactivate' || p.name === 'Reactivated') { actIcon = 'verified_user'; actColor = '#16a34a'; actBg = '#f0fdf4'; }
 
-  const statusBg = p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb');
-  const statusColor = p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b');
-  const statusBorder = p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7');
-  
+  const statusBg = p.status === 'Paid' ? '#e6f4f1' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb');
+  const statusColor = p.status === 'Paid' ? '#008767' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b');
+  const statusBorder = p.status === 'Paid' ? '#cde7e1' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7');
+
   return `
     <div class="plan-timeline-event" style="padding-left:0; padding-right:0;">
       <div style="width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:${actBg}; color:${actColor}; flex-shrink:0;">
@@ -239,7 +239,7 @@ window.renderTimelineEvent = function (p) {
       <div class="timeline-event-content">
         <div class="timeline-event-main">
           <span class="timeline-event-name">${p.name}</span>
-          ${p.type === 'extend' ? '<span class="timeline-event-badge" style="background:#eff6ff;color:#2563eb;">Extension</span>' : ''}
+          ${p.type === 'extend' ? '<span class="timeline-event-badge" style="background:#eff6ff;color:#4880FF;">Extension</span>' : ''}
           ${p.type === 'upgrade' ? '<span class="timeline-event-badge" style="background:#f3e8ff;color:#7c3aed;">Upgrade</span>' : ''}
           ${p.name === 'Suspended' ? '<span class="timeline-event-badge" style="background:#fef2f2;color:#dc2626;">Suspension</span>' : ''}
           ${p.name === 'Reactivated' ? '<span class="timeline-event-badge" style="background:#f0fdf4;color:#16a34a;">Restored</span>' : ''}
@@ -283,6 +283,20 @@ function closeAllDropdowns() {
 }
 
 document.addEventListener('click', closeAllDropdowns);
+
+window.toggleActionMenu = function (event, id) {
+  if (event) event.stopPropagation();
+  const dropdown = document.getElementById(`dropdown-${id}`);
+  if (!dropdown) return;
+
+  const isShowing = dropdown.classList.contains('show');
+  closeAllDropdowns();
+
+  if (!isShowing) {
+    dropdown.style.display = 'flex';
+    dropdown.classList.add('show');
+  }
+};
 
 function setFilter(status) {
   currentFilter = status;
@@ -518,13 +532,13 @@ function openProfile(id, tab = 'company', pushState = true) {
               <span class="material-icons-round" style="color:var(--blue); font-size:20px; margin-left:4px;">verified</span>
             </div>
             <p class="profile-header-sub">
-              <span style="color: #1e293b; font-weight: 800;">${m.company}</span>, ${m.companyType || 'Manufacturer'}
+              <span style="color: #1e293b; font-weight: 700;">${m.company}</span>, ${m.companyType || 'Manufacturer'}
             </p>
           </div>
         </div>
         <div class="profile-header-right">
           <div class="profile-plan-text" style="font-size: 0.8rem; font-weight: 700; color: #94a3b8;">Plan: <span style="color:var(--blue); font-weight:800; text-transform: capitalize;">${m.plan || 'enterprise'}</span></div>
-          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 800; text-transform: capitalize; 
+          <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; text-transform: capitalize; 
             background: ${m.status === 'active' ? '#E8F5EC' : (m.status === 'suspended' ? '#FEE2E2' : (m.status === 'pending' ? '#FFF7ED' : (m.status === 'incomplete' ? '#F3E8FF' : '#F3F4F6')))}; 
             color: ${m.status === 'active' ? '#15803D' : (m.status === 'suspended' ? '#B91C1C' : (m.status === 'pending' ? '#A34E0C' : (m.status === 'incomplete' ? '#6D28D9' : '#4B5563')))}; 
             border: 1px solid ${m.status === 'active' ? '#22C55E' : (m.status === 'suspended' ? '#EF4444' : (m.status === 'pending' ? '#FB923C' : (m.status === 'incomplete' ? '#A855F7' : '#D1D5DB')))}; 
@@ -617,7 +631,7 @@ function renderProfileTab(m, tab) {
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Company</div>
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <span style="font-size: 0.85rem; font-weight: 600; color: #1e293b;">${m.company}</span>
-              <span style="font-size: 0.65rem; color: #2563eb; font-weight: 700; background: #eff6ff; border-radius: 4px; padding: 2px 6px;">${m.companyType}</span>
+              <span style="font-size: 0.65rem; color: #4880FF; font-weight: 700; background: #eff6ff; border-radius: 4px; padding: 2px 6px;">${m.companyType}</span>
             </div>
           </div>
           <div style="padding: 16px 24px; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
@@ -644,7 +658,7 @@ function renderProfileTab(m, tab) {
 
 
         <div style="padding: 16px 24px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; margin-top: 16px;">
-          <h3 style="margin: 0 0 12px 0; font-size: 0.78rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">About Business</h3>
+          <h3 style="margin: 0 0 12px 0; font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">About Business</h3>
           <p style="margin:0; color:#475569; font-size:0.88rem; line-height:1.6;">
             ${m.company} is a leading manufacturer of industrial-grade mining equipment and raw mineral processing units. Established in 2008, the company serves clients across India and Southeast Asia.
           </p>
@@ -736,7 +750,7 @@ function renderProfileTab(m, tab) {
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('contact', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
-            <span class="material-icons-round">add</span> Add
+            + Add
           </button>
         </div>
 
@@ -774,7 +788,7 @@ function renderProfileTab(m, tab) {
                       <div class="cell-member profile-contact-person">
                         <img src="${avatar}" alt="${c.name}" class="member-avatar profile-contact-avatar">
                         <div class="profile-contact-name-stack">
-                          <span class="member-name" style="font-size: 0.88rem; font-weight: 800; color: #1e293b;">${c.name}</span>
+                          <span class="member-name" style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${c.name}</span>
                           ${isMainContact ? `
                             <span class="main-contact-indicator">
                               <span class="material-icons-round">star</span>
@@ -799,17 +813,21 @@ function renderProfileTab(m, tab) {
                         ${status}
                       </div>
                     </td>
-                    <td style="text-align:right;">
-                    <div class="action-btn-wrap">
-                      <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-table-${m.id}-${ci}', this)">
-                        <span class="material-icons-round">more_vert</span>
-                      </button>
-                      <div class="dropdown-menu" id="dropdown-contact-table-${m.id}-${ci}">
-                        <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-                        <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Contact removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+                    <td style="text-align:right; position: relative;">
+                      <div class="action-btn-wrap" style="display:flex; justify-content:flex-end;">
+                        <button class="action-btn" onclick="toggleDropdown('contact-${m.id}-${ci}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; transition:all 0.2s;">
+                          <span class="material-icons-round">more_vert</span>
+                        </button>
+                        <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="position: fixed; background: white; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 140px; z-index: 9999; display: none; flex-direction: column; overflow: hidden;">
+                          <button onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.82rem; font-weight: 600; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+                            <span class="material-icons-round" style="font-size: 16px; color: #64748b;">edit</span> Edit
+                          </button>
+                          <button onclick="event.stopPropagation(); if(confirm('Are you sure?')){ m.contacts.splice(${ci}, 1); showToast('Contact removed', 'error'); switchTab(${m.id}, 'contact-table'); }; closeAllDropdowns();" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.82rem; font-weight: 600; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%; border-top: 1px solid #f1f5f9;">
+                            <span class="material-icons-round" style="font-size: 16px; color: #ef4444;">delete</span> Delete
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
                   </tr>
                 `;
     }).join('') : `
@@ -834,7 +852,7 @@ function renderProfileTab(m, tab) {
             </div>
           </div>
           <button class="btn-primary" onclick="openAddModal('address', ${m.id})" style="padding: 10px 24px; border-radius:10px;">
-            <span class="material-icons-round">add</span> Add
+            + Add
           </button>
         </div>
         <div class="table-scroll-wrap profile-contact-table-wrap">
@@ -863,7 +881,7 @@ function renderProfileTab(m, tab) {
                   <tr>
                     <td style="padding: 16px 24px;">
                       <div style="display:flex; flex-direction:column; gap:2px;">
-                        <span style="color: #1e293b; font-weight: 800; font-size: 0.88rem;">${title}</span>
+                        <span style="color: #1e293b; font-weight: 700; font-size: 0.88rem;">${title}</span>
                         ${isDefault ? '<span class="main-contact-indicator">Default</span>' : '<span class="profile-contact-muted">Secondary</span>'}
                       </div>
                     </td>
@@ -878,17 +896,21 @@ function renderProfileTab(m, tab) {
                     <td style="padding: 16px 24px;">
                       <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${a.pincode || '-'}</span>
                     </td>
-                    <td style="text-align:right;">
-                      <div class="action-btn-wrap">
-                        <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
+                    <td style="text-align:right; position: relative;">
+                      <div class="action-btn-wrap" style="display:flex; justify-content:flex-end;">
+                        <button class="action-btn" onclick="toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; transition:all 0.2s;">
                           <span class="material-icons-round">more_vert</span>
                         </button>
-                        <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}">
-                        <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
-                        <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
+                        <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}" style="position: fixed; background: white; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 140px; z-index: 9999; display: none; flex-direction: column; overflow: hidden;">
+                          <button onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.82rem; font-weight: 600; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+                            <span class="material-icons-round" style="font-size: 16px; color: #64748b;">edit</span> Edit
+                          </button>
+                          <button onclick="event.stopPropagation(); if(confirm('Are you sure?')){ m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); switchTab(${m.id}, 'addresses'); }; closeAllDropdowns();" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.82rem; font-weight: 600; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%; border-top: 1px solid #f1f5f9;">
+                            <span class="material-icons-round" style="font-size: 16px; color: #ef4444;">delete</span> Delete
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
                   </tr>
                 `;
     }).join('') : `
@@ -915,7 +937,7 @@ function renderProfileTab(m, tab) {
     const actualPlan = assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {};
     const hasPlan = actualPlan.name && actualPlan.name !== 'None';
     const latestInvoice = assignedPlans.find(p => p.invoice) || {};
-    
+
     // Check if plan is expired
     const activePlanExpiry = actualPlan.date ? actualPlan.date.split(' to ')[1] : 'N/A';
     let isExpired = false;
@@ -949,12 +971,15 @@ function renderProfileTab(m, tab) {
 
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 0; padding: 24px 0;">
-          <div>
-            <h3 class="profile-section-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#1e293b;">Subscription Management</h3>
-            <p style="margin: 4px 0 0; font-size: 0.8rem; font-weight: 600; color: #64748b;">Manage member plans and billing history</p>
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 18px;">
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">assignment</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#1e293b;">Assign Plan</h3>
+            </div>
           </div>
-          <button class="btn-primary" onclick="window.openManagePlanModal(${m.id})" style="height: 40px; padding: 0 20px; border-radius:10px; font-weight: 800;">
+          <button class="btn-primary" onclick="window.openManagePlanModal(${m.id})" style="height: 40px; padding: 0 20px; border-radius:10px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+            <span class="material-icons-round" style="font-size: 18px;">card_membership</span>
             Manage Plan
           </button>
         </div>
@@ -972,15 +997,15 @@ function renderProfileTab(m, tab) {
               </div>
             </div>
             <div class="plan-timeline-header-right" style="display:flex; align-items:center; gap:12px;">
-              <div id="tl-filter-container" class="pm-field-modern compact" style="width: 140px; margin: 0; height: 34px; border-radius: 6px; background: #fff;">
-                <select id="tl-activity-filter" onchange="filterTimeline(${m.id}, this.value)" style="font-size: 0.78rem; font-weight: 700; color: #475569; padding-right: 12px;">
-                  <option value="all">All Events</option>
-                  <option value="assign">Assignments</option>
-                  <option value="extend">Extensions</option>
-                  <option value="upgrade">Upgrades</option>
-                  <option value="suspend">Suspensions</option>
-                  <option value="reactivate">Reactivations</option>
-                </select>
+              <div id="tl-filter-container" style="width: 160px;">
+                ${renderCustomSelect('tl-activity-filter', [
+      { value: 'all', label: 'All Events' },
+      { value: 'assign', label: 'Assignments' },
+      { value: 'extend', label: 'Extensions' },
+      { value: 'upgrade', label: 'Upgrades' },
+      { value: 'suspend', label: 'Suspensions' },
+      { value: 'reactivate', label: 'Reactivations' }
+    ], 'all', (val) => { filterTimeline(m.id, val); }, { compact: true })}
               </div>
               <div class="timeline-view-toggle">
                 <button class="tl-toggle-btn active" data-view="activity" onclick="switchTimelineView('activity', this, ${m.id})">
@@ -1002,37 +1027,37 @@ function renderProfileTab(m, tab) {
               <table class="plan-history-table">
                 <thead style="background: #f8fafc;">
                   <tr>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 70px;">Sr No</th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 120px;">Date</th>
-                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Plan & Validity <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice #</th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Amount</th>
-                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 110px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
-                    <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px;">Action</th>
+                    <th style="padding: 12px 24px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 85px; white-space: nowrap;">Sr No</th>
+                    <th style="padding: 12px 24px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 130px; white-space: nowrap;">Date</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 12px 24px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; cursor:pointer;">Plan & Validity <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 12px 24px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;">Invoice #</th>
+                    <th style="padding: 12px 24px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;">Amount</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 12px 24px; text-align: center; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 110px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 12px 24px; text-align: center; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 100px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${assignedPlans.map(p => {
-                    const safeInvId = `inv-${p.sr}`;
-                    const statusColor = p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b');
-                    const statusBg = p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb');
-                    const statusBorder = p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7');
-                    
-                    // Parse validity from date field
-                    const dateParts = p.date.split(' to ');
-                    const startDate = dateParts[0] || '';
-                    const endDate = dateParts[1] || '';
-                    
-                    return `
+      const safeInvId = `inv-${p.sr}`;
+      const statusColor = p.status === 'Paid' ? '#008767' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b');
+      const statusBg = p.status === 'Paid' ? '#e6f4f1' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb');
+      const statusBorder = p.status === 'Paid' ? '#cde7e1' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7');
+
+      // Parse validity from date field
+      const dateParts = p.date.split(' to ');
+      const startDate = dateParts[0] || '';
+      const endDate = dateParts[1] || '';
+
+      return `
                       <!-- Main Invoice Row -->
                       <tr class="invoice-accordion-row" id="inv-row-${safeInvId}" onclick="window.toggleInvoiceAccordion('${safeInvId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#fcfcfc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 800; color: #475569;">${p.sr < 10 ? '0' + p.sr : p.sr}</td>
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 800; color: #1e293b;">${startDate}</td>
+                        <td style="padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #475569; white-space: nowrap;">${p.sr < 10 ? '0' + p.sr : p.sr}</td>
+                        <td style="padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: #1e293b; white-space: nowrap;">${startDate}</td>
                         <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
-                           <div style="font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</div>
+                           <div style="font-size: 0.88rem; font-weight: 700; color: #1e293b;">${p.name}</div>
                            <div style="font-size: 0.72rem; font-weight: 600; color: #94a3b8; margin-top: 2px;">${p.date}</div>
                         </td>
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 800; color: #1e293b;">${p.invoice || '—'}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #1e293b;">${p.invoice || '—'}</td>
                         <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #475569;">₹ 5,000</td>
                         <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
                           <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusBorder}; padding: 4px 12px; border-radius: 4px;">
@@ -1048,7 +1073,7 @@ function renderProfileTab(m, tab) {
                               </div>
                               <div class="dropdown-menu profile-inv-menu" id="prof-menu-${safeInvId}" style="position: absolute; top: 32px; right: 0; background: white; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 180px; z-index: 1000; display: none; flex-direction: column; overflow: hidden;">
                                 <button onclick="window.openStatusModalProfile(event, '${safeInvId}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
-                                  <span class="material-icons-round" style="font-size: 16px; color: #64748b;">edit</span> Update Status
+                                  <span class="material-icons-round" style="font-size: 16px; color: #64748b;">published_with_changes</span> Update Status
                                 </button>
                                 <button onclick="window.openEmailModalProfile(event, '${safeInvId}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
                                   <span class="material-icons-round" style="font-size: 16px; color: #64748b;">mail</span> Send Email
@@ -1070,64 +1095,39 @@ function renderProfileTab(m, tab) {
                         <td colspan="7" style="padding: 0 24px 16px 24px; border-bottom: 1px solid var(--border);">
                           <div style="padding: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; animation: slideDown 0.2s ease;">
                             
-                            <!-- Header -->
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #e2e8f0;">
-                              <div style="display:flex; align-items:center; gap:12px;">
-                                <span class="material-icons-round" style="font-size:22px; color:var(--blue);">receipt_long</span>
-                                <span style="font-size:1rem; font-weight:900; color:#1e293b;">${p.name} — Record #${p.sr}</span>
+                            <!-- Content -->
+                            <div style="background:#fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 24px;">
+                              <div style="display: flex; align-items: center; gap: 24px;">
+                                <div style="display: flex; align-items: center; gap: 10px; min-width: 180px;">
+                                  <span class="material-icons-round" style="font-size: 20px; color: var(--blue);">account_balance</span>
+                                  <span style="font-size: 0.72rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 0.05em;">Bank Information</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; flex: 1;">
+                                  <div>
+                                    <div class="pm-form-label-modern" style="margin-bottom: 4px;">Settlement Date</div>
+                                    <div style="font-size: 0.85rem; font-weight: 700; color: #1e293b;">${startDate}</div>
+                                  </div>
+                                  <div>
+                                    <div class="pm-form-label-modern" style="margin-bottom: 4px;">Amount Paid</div>
+                                    <div style="font-size: 0.85rem; font-weight: 700; color: #1e293b;">₹ 5,000</div>
+                                  </div>
+                                  <div>
+                                    <div class="pm-form-label-modern" style="margin-bottom: 4px;">Recipient Bank</div>
+                                    <div style="font-size: 0.85rem; font-weight: 700; color: #1e293b;">HDFC Bank</div>
+                                  </div>
+                                  <div>
+                                    <div class="pm-form-label-modern" style="margin-bottom: 4px;">Payment Mode</div>
+                                    <div style="font-size: 0.85rem; font-weight: 700; color: #1e293b;">Bank Transfer</div>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                            
-                            <!-- Details Grid -->
-                            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:20px;">
-                              <div>
-                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Validity Start</div>
-                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${startDate}</div>
-                              </div>
-                              <div>
-                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Validity End</div>
-                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${endDate}</div>
-                              </div>
-                              <div>
-                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Invoice Type</div>
-                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${p.invoiceType || 'N/A'}</div>
-                              </div>
-                              <div>
-                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Assigned By</div>
-                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${p.admin || 'System'}</div>
-                              </div>
-                              <div>
-                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Timestamp</div>
-                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${p.timestamp || '—'}</div>
-                              </div>
-                              <div>
-                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Action Type</div>
-                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b; text-transform:capitalize;">${p.type || '—'}</div>
-                              </div>
-                            </div>
-                            
-                            <!-- Banking History -->
-                            <div style="background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:16px;">
-                              <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                                <span class="material-icons-round" style="font-size:18px; color:var(--blue);">account_balance</span>
-                                <span style="font-size:0.85rem; font-weight:900; color:#1e293b;">Banking History</span>
-                              </div>
-                              ${p.status === 'Paid' ? 
-                                '<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px;"><div><div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#94a3b8; margin-bottom:4px;">Payment Mode</div><div style="font-size:0.85rem; font-weight:800; color:#1e293b;">NEFT / Bank Transfer</div></div><div><div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#94a3b8; margin-bottom:4px;">Transaction ID</div><div style="font-size:0.85rem; font-weight:800; color:#1e293b; font-family:monospace;">TXN' + p.sr + '00489</div></div><div><div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#94a3b8; margin-bottom:4px;">Paid On</div><div style="font-size:0.85rem; font-weight:800; color:#1e293b;">' + (p.timestamp || '—') + '</div></div></div>' 
-                                : '<div style="font-size:0.85rem; font-weight:700; color:#94a3b8; font-style:italic;">No payment recorded for this entry.</div>'
-                              }
-                            </div>
-                            
-                            <!-- Remark -->
-                            <div style="font-size:0.82rem; font-weight:700; color:#64748b;">
-                              <span style="font-weight:900; color:#475569;">Remark:</span> ${p.remark}
                             </div>
                             
                           </div>
                         </td>
                       </tr>
                     `;
-                  }).join('')}
+    }).join('')}
                 </tbody>
               </table>
             </div>
@@ -1177,12 +1177,12 @@ function renderProfileTab(m, tab) {
             </thead>
             <tbody>
               ${emails.length ? emails.map((e, ei) => {
-                const words = e.body.split(' ');
-                const bodySnippet = words.length > 4 ? words.slice(0, 4).join(' ') + '...' : e.body;
-                return `
+      const words = e.body.split(' ');
+      const bodySnippet = words.length > 4 ? words.slice(0, 4).join(' ') + '...' : e.body;
+      return `
                 <tr class="email-row" style="cursor: pointer;" onclick="toggleEmailRow(${ei})">
                   <td style="padding: 12px 8px; text-align: center; vertical-align: top;">
-                    <span style="font-size: 0.82rem; color: #94a3b8; font-weight: 800;">${ei + 1}</span>
+                    <span style="font-size: 0.82rem; color: #94a3b8; font-weight: 700;">${ei + 1}</span>
                   </td>
                   <td style="padding: 12px 16px 12px 20px; vertical-align: top;">
                     <div style="font-size: 0.82rem; color: #475569; font-weight: 700;">${e.date.split(' ')[0]}</div>
@@ -1213,7 +1213,7 @@ function renderProfileTab(m, tab) {
                 <tr id="email-body-${ei}" style="display: none; background: #fcfcfc;">
                   <td colspan="5" style="padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
                     <div style="background: #fff; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
-                      <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display:flex; align-items:center; gap:6px;">
+                      <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display:flex; align-items:center; gap:6px;">
                         Full Message Content
                       </div>
                       <div style="font-size: 0.85rem; color: #475569; line-height: 1.6; white-space: pre-line; font-weight: 600;">${e.body}</div>
@@ -1241,45 +1241,48 @@ function renderProfileTab(m, tab) {
 
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding: 24px 0;">
-          <div>
-            <h3 class="profile-section-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#1e293b;">Broadcast History</h3>
-            <p style="margin: 4px 0 0; font-size: 0.8rem; font-weight: 600; color: #64748b;">Member activity logs for all broadcasted messages</p>
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding: 20px 32px; margin: 0;">
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div class="profile-section-icon" style="width: 40px; height: 40px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:10px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round" style="color: #64748b; font-size: 22px;">campaign</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#1e293b;">Broadcast History</h3>
+              <p style="margin: 2px 0 0; font-size: 0.8rem; font-weight: 600; color: #64748b;">Member activity logs for all broadcasted messages</p>
+            </div>
           </div>
           <div style="display:flex; align-items:center; gap:12px;">
-            <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; background:#f8fafc; border:1px solid var(--border); border-radius:10px;">
-              <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid);">Approval Required</span>
+            <label style="display:flex; align-items:center; gap:10px; padding:8px 16px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; cursor:pointer;">
+              <span style="font-size: 0.78rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Approval Required</span>
               <input type="checkbox" style="width: 18px; height: 18px; accent-color:var(--blue); cursor:pointer;">
-            </div>
+            </label>
           </div>
         </div>
         
-        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
-          <table class="plan-history-table" style="width: 100%;">
+        <div class="table-scroll-wrap" style="margin: 0;">
+          <table class="data-table" style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 140px;">Date & Time</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;">Message Detail</th>
-                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 130px;">Recipient</th>
-                <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 100px;">Status</th>
+              <tr style="background: #f8fafc;">
+                <th style="padding: 12px 32px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 150px;">Date & Time</th>
+                <th style="padding: 12px 32px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;">Message Detail</th>
+                <th style="padding: 12px 32px; text-align: left; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 140px;">Recipient</th>
+                <th style="padding: 12px 32px; text-align: center; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; width: 110px;">Status</th>
               </tr>
             </thead>
             <tbody>
               ${broadcasts.map(b => `
-                <tr style="transition: all 0.1s; cursor:pointer;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'" onclick="openBroadcastHistoryModal('${m.id}', '${b.id}')">
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
-                    <div style="font-size: 0.82rem; color: #1e293b; font-weight: 800;">${b.date.split(' ')[0]}</div>
+                <tr class="hover-row" style="transition: all 0.2s; cursor:pointer;" onclick="openBroadcastHistoryModal('${m.id}', '${b.id}')">
+                  <td style="padding: 14px 32px; border-bottom: 1px solid #f1f5f9;">
+                    <div style="font-size: 0.82rem; color: #1e293b; font-weight: 700;">${b.date.split(' ')[0]}</div>
                     <div style="font-size: 0.72rem; color: #64748b; font-weight: 600; margin-top:2px;">${b.date.split(' ').slice(1).join(' ')}</div>
                   </td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
-                    <div style="font-size: 0.88rem; color: #1e293b; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
+                  <td style="padding: 14px 32px; border-bottom: 1px solid #f1f5f9;">
+                    <div style="font-size: 0.88rem; color: #1e293b; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
                     <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; margin-top:2px;">Sent by ${b.broadcaster}</div>
                   </td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
-                    <span style="font-size: 0.78rem; font-weight: 800; color: #64748b; background:#f1f5f9; padding:4px 10px; border-radius:6px;">${b.sendTo}</span>
+                  <td style="padding: 14px 32px; border-bottom: 1px solid #f1f5f9;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; background:#f1f5f9; padding:4px 10px; border-radius:6px; border: 1px solid #e2e8f0;">${b.sendTo}</span>
                   </td>
-                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
-                    <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${b.status === 'Live' || b.status === 'Active' ? '#16a34a' : (b.status === 'Pending' ? '#f59e0b' : '#94a3b8')}; background: ${b.status === 'Live' || b.status === 'Active' ? '#f0fdf4' : (b.status === 'Pending' ? '#fffbeb' : '#f8fafc')}; border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#bbf7d0' : (b.status === 'Pending' ? '#fef3c7' : '#e2e8f0')}; padding: 4px 10px; border-radius: 4px;">
+                  <td style="padding: 14px 32px; border-bottom: 1px solid #f1f5f9; text-align: center;">
+                    <span style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: ${b.status === 'Live' || b.status === 'Active' ? '#16a34a' : (b.status === 'Pending' ? '#f59e0b' : '#94a3b8')}; background: ${b.status === 'Live' || b.status === 'Active' ? '#f0fdf4' : (b.status === 'Pending' ? '#fffbeb' : '#f8fafc')}; border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#bbf7d0' : (b.status === 'Pending' ? '#fef3c7' : '#e2e8f0')}; padding: 3px 8px; border-radius: 4px;">
                       ${b.status}
                     </span>
                   </td>
@@ -1304,9 +1307,12 @@ function renderProfileTab(m, tab) {
     return `
       <div class="content-card">
         <div class="profile-section-header" style="justify-content: flex-start; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 0; padding: 24px 32px;">
-          <div>
-            <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:900; color:#1e293b;">Broadcast Settings</h3>
-            <p style="margin: 4px 0 0; font-size: 0.85rem; font-weight: 600; color: #64748b;">Select the subcategories to include in this broadcast.</p>
+          <div style="display:flex; gap:16px; align-items:center;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">settings_input_antenna</span></div>
+            <div>
+              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:900; color:#1e293b;">Broadcast Settings</h3>
+              <p style="margin: 4px 0 0; font-size: 0.85rem; font-weight: 600; color: #64748b;">Select the subcategories to include in this broadcast.</p>
+            </div>
           </div>
         </div>
         
@@ -1321,32 +1327,32 @@ function renderProfileTab(m, tab) {
             </thead>
             <tbody>
               ${settings.map((s, idx) => {
-                const iconsMap = {
-                  'Stainless Steel': 'shield',
-                  'Mobile': 'phone_iphone',
-                  'Components': 'layers',
-                  'Aluminium': 'architecture',
-                  'Server': 'storage',
-                  'PC': 'desktop_windows',
-                  'Laptop': 'laptop'
-                };
-                const icon = iconsMap[s.category] || 'settings';
-                const safeId = s.category.replace(/\s+/g, '-');
-                
-                const subcategories = {
-                  'Stainless Steel': ['Circle', 'Plate', 'Pipe', 'Sheet', 'Coil', 'Strip'],
-                  'Mobile': ['Iphone', 'Samsung', 'Google Pixel', 'OnePlus', 'Xiaomi', 'Oppo'],
-                  'Components': ['Motherboard', 'Memory', 'Processor', 'Graphic Card', 'SSD', 'PSU'],
-                  'Aluminium': ['Sheet', 'Extrusion', 'Ingot', 'Foil', 'Plate', 'Rod'],
-                  'Server': ['Hard Drive', 'Rack', 'CPU', 'Power Supply', 'RAM', 'Chassis'],
-                  'PC': ['Monitor', 'Keyboard', 'Mouse', 'UPS', 'Speaker', 'Webcam'],
-                  'Laptop': ['Display', 'Battery', 'Keyboard', 'Touchpad', 'Charger', 'RAM']
-                }[s.category] || [];
+      const iconsMap = {
+        'Stainless Steel': 'shield',
+        'Mobile': 'phone_iphone',
+        'Components': 'layers',
+        'Aluminium': 'architecture',
+        'Server': 'storage',
+        'PC': 'desktop_windows',
+        'Laptop': 'laptop'
+      };
+      const icon = iconsMap[s.category] || 'settings';
+      const safeId = s.category.replace(/\s+/g, '-');
 
-                return `
+      const subcategories = {
+        'Stainless Steel': ['Circle', 'Plate', 'Pipe', 'Sheet', 'Coil', 'Strip'],
+        'Mobile': ['Iphone', 'Samsung', 'Google Pixel', 'OnePlus', 'Xiaomi', 'Oppo'],
+        'Components': ['Motherboard', 'Memory', 'Processor', 'Graphic Card', 'SSD', 'PSU'],
+        'Aluminium': ['Sheet', 'Extrusion', 'Ingot', 'Foil', 'Plate', 'Rod'],
+        'Server': ['Hard Drive', 'Rack', 'CPU', 'Power Supply', 'RAM', 'Chassis'],
+        'PC': ['Monitor', 'Keyboard', 'Mouse', 'UPS', 'Speaker', 'Webcam'],
+        'Laptop': ['Display', 'Battery', 'Keyboard', 'Touchpad', 'Charger', 'RAM']
+      }[s.category] || [];
+
+      return `
                   <!-- Main Row -->
                   <tr class="broadcast-settings-row" id="row-${safeId}" onclick="window.toggleBroadcastAccordion('${safeId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
-                    <td style="padding: 18px 16px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; border-left: 1px solid #f1f5f9; border-radius: 12px 0 0 12px; font-size: 0.95rem; font-weight: 800; color: #1e293b;">
+                    <td style="padding: 18px 16px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; border-left: 1px solid #f1f5f9; border-radius: 12px 0 0 12px; font-size: 0.95rem; font-weight: 700; color: #1e293b;">
                       <div style="display:flex; align-items:center; gap:16px;">
                         <span class="material-icons-round category-icon" style="font-size:24px; color:#64748b; transition: color 0.2s;">${icon}</span>
                         <span class="category-name-label">${s.category}</span>
@@ -1390,7 +1396,7 @@ function renderProfileTab(m, tab) {
                     </td>
                   </tr>
                 `;
-              }).join('')}
+    }).join('')}
             </tbody>
           </table>
         </div>
@@ -1457,8 +1463,8 @@ function renderProfileTab(m, tab) {
       <!-- History Table -->
       <div class="content-card">
         <div class="profile-section-header" style="border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px; justify-content:space-between; align-items:center;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div class="profile-section-icon" style="background:#f1f5f9; color:var(--text-mid);"><span class="material-icons-round">history</span></div>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center;"><span class="material-icons-round">verified</span></div>
             <div>
               <h3 class="profile-section-title" style="margin:0;">Stamp History</h3>
             </div>
@@ -1471,17 +1477,17 @@ function renderProfileTab(m, tab) {
           <table class="data-table" style="width: 100%; border-collapse: collapse;">
             <thead>
               <tr>
-                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Applied Date</th>
-                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Badges Applied</th>
-                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Remark / Note</th>
-                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Verified By</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing:0.5px;">Applied Date</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing:0.5px;">Badges Applied</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing:0.5px;">Remark / Note</th>
+                <th style="padding: 12px 16px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing:0.5px;">Verified By</th>
               </tr>
             </thead>
             <tbody>
               ${stamps.length ? stamps.map((s, idx) => `
                 <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
-                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${s.date}</div>
+                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 700;">${s.date}</div>
                   </td>
                   <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
                     <div style="display:flex; align-items:center; gap:6px;">
@@ -1547,7 +1553,7 @@ function openEditModal(type, memberId, index) {
   if (type === 'broadcast-settings') {
     content.className = 'modal-content modal-full';
     content.style.maxWidth = '1300px';
-    
+
     const categories = [
       { id: 'ss', name: 'Stainless Steel', icon: 'shield', selected: 2, total: 2, active: true },
       { id: 'mo', name: 'Mobile', icon: 'phone_iphone', selected: 1, total: 1, active: false },
@@ -1657,12 +1663,12 @@ function openEditModal(type, memberId, index) {
           </div>
         </div>
       </div>
-      <div class="modal-footer" style="padding: 16px 32px; background: #fff; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
-        <button class="btn-outline" onclick="closeModal()" style="padding: 10px 24px; font-weight: 800; border-radius: 10px;">Cancel</button>
-        <button class="btn-primary" onclick="showToast('Broadcast Settings Updated', 'success'); closeModal();" style="padding: 10px 28px; font-weight: 800; border-radius: 10px; background: ${themeColor}; box-shadow: 0 4px 12px rgba(37,99,235,0.2);">
-          Save Changes
-        </button>
-      </div>
+        <div class="modal-footer" style="padding: 24px 32px; background: #fff; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+          <button class="btn-outline" onclick="closeModal()" style="padding: 10px 24px; font-weight: 700; border-radius: 10px;">Discard Changes</button>
+          <button class="btn-primary" id="bcast-update-btn" onclick="saveBroadcastChanges('${memberId}')" style="padding: 10px 32px; align-items: center; gap: 8px; font-weight: 700; border-radius: 10px; background: ${themeColor}; box-shadow: 0 4px 12px rgba(37,99,235,0.2);">
+            <span class="material-icons-round" style="font-size: 18px;">published_with_changes</span> Update
+          </button>
+        </div>
     `;
   } else if (type === 'contact') {
     const c = m.contacts[index];
@@ -1677,19 +1683,21 @@ function openEditModal(type, memberId, index) {
 
     html = `
       <div class="bem-wrap">
-        <div class="bem-header">
-          <div class="bem-header-left">
-            <div class="bem-title-row">
-              <h2 class="bem-title">Edit Contact</h2>
-              <span class="bem-badge"><span class="material-icons-round">edit</span>EDITING</span>
+        <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 36px; border-bottom: 1px solid #e2e8f0;">
+          <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Edit Contact</h3>
+              <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+                <span class="material-icons-round" style="font-size: 15px;">edit</span> Editing
+              </div>
             </div>
-            <div class="bem-meta">
-              <span>${m.company}</span><span>•</span>
-              <span class="material-icons-round" style="color:#2563eb;">account_circle</span>
-              <span>${c.name}</span>
-            </div>
+            <button class="modal-close" onclick="closeModal()" style="margin-left: auto; position: static;">
+              <span class="material-icons-round">close</span>
+            </button>
           </div>
-          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+            <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">business</span> ${m.company} · ${c.name}
+          </div>
         </div>
 
         <div class="bem-body">
@@ -1732,13 +1740,23 @@ function openEditModal(type, memberId, index) {
                 <span class="material-icons-round bem-chevron">expand_more</span>
               </div>
             </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Email Address</label>
+              <input class="bcast-edit-input" type="email" value="${c.email || ''}" id="edit-c-email" data-orig="${c.email || ''}" oninput="checkProfileDirty()">
+            </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Mobile Number</label>
+              <input class="bcast-edit-input" type="text" value="${c.phone || ''}" id="edit-c-phone" data-orig="${c.phone || ''}" oninput="checkProfileDirty()">
+            </div>
           </div>
         </div>
 
         <div class="bem-footer">
           <button class="bem-btn-cancel" onclick="window.closeModal()">Cancel</button>
           <button class="bem-btn-update" id="profile-update-btn" onclick="saveContactChanges(${memberId}, ${index})">
-            <span class="material-icons-round">save</span> Update
+            <span class="material-icons-round">published_with_changes</span> Update
           </button>
         </div>
       </div>
@@ -1752,16 +1770,21 @@ function openEditModal(type, memberId, index) {
     const flags = m.planFlags || { sendall: true, state: true, city: true, contacts: false, phone: true, address: false };
 
     html = `
-      <div class="modal-header" style="border-bottom: 1px solid var(--border); padding: 24px 32px; background: #fff;">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-            <span class="material-icons-round">assignment</span>
+      <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Manage Member Plan</h3>
+            <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+              <span class="material-icons-round" style="font-size: 15px;">edit</span> Editing
+            </div>
           </div>
-          <div>
-            <h3 style="margin:0; font-size:1.1rem; font-weight:900; color:var(--text);">Manage Member Plan</h3>
-          </div>
+          <button class="modal-close" onclick="closeModal()" style="margin-left: auto; position: static;">
+            <span class="material-icons-round">close</span>
+          </button>
         </div>
-        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+          <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">assignment</span> ${m.member} · ${m.id}
+        </div>
       </div>
 
       <div class="modal-body" style="padding: 32px;">
@@ -1774,10 +1797,10 @@ function openEditModal(type, memberId, index) {
             <div style="display:flex; flex-direction:column; gap:4px;">
               <label class="modal-label">Select Plan</label>
               ${renderCustomSelect('edit-plan-select', [
-                { value: 'starter', label: 'Starter Plan' },
-                { value: 'business', label: 'Business Plan' },
-                { value: 'enterprise', label: 'Enterprise Plan' }
-              ], m.plan, (val) => { m.plan = val; })}
+      { value: 'starter', label: 'Starter Plan' },
+      { value: 'business', label: 'Business Plan' },
+      { value: 'enterprise', label: 'Enterprise Plan' }
+    ], m.plan, (val) => { m.plan = val; })}
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
@@ -1788,11 +1811,11 @@ function openEditModal(type, memberId, index) {
               <div style="display:flex; flex-direction:column; gap:4px;">
                 <label class="modal-label">Validity</label>
                 ${renderCustomSelect('edit-plan-validity', [
-                  { value: 'monthly', label: 'Monthly' },
-                  { value: 'quarterly', label: 'Quarterly' },
-                  { value: 'halfyearly', label: 'Half Yearly' },
-                  { value: 'yearly', label: 'Yearly' }
-                ], planValidity, (val) => { /* Update logic if needed */ })}
+      { value: 'monthly', label: 'Monthly' },
+      { value: 'quarterly', label: 'Quarterly' },
+      { value: 'halfyearly', label: 'Half Yearly' },
+      { value: 'yearly', label: 'Yearly' }
+    ], planValidity, (val) => { /* Update logic if needed */ })}
               </div>
             </div>
 
@@ -1853,9 +1876,21 @@ function openEditModal(type, memberId, index) {
     content.className = 'modal-content';
     content.style.maxWidth = '580px';
     html = `
-      <div class="modal-header">
-        <h3>Update Location</h3>
-        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+      <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Update Location</h3>
+            <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+              <span class="material-icons-round" style="font-size: 15px;">edit</span> Editing
+            </div>
+          </div>
+          <button class="modal-close" onclick="closeModal()" style="margin-left: auto; position: static;">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+          <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">location_on</span> ${m.company} · ${title}
+        </div>
       </div>
       <div class="modal-body" style="padding: 40px 32px;">
         <div class="modal-form-row">
@@ -1891,7 +1926,9 @@ function openEditModal(type, memberId, index) {
       <div class="modal-footer">
         <button class="btn-outline" style="background:#f1f5f9; border:none; color:var(--text-mid);" onclick="m.addresses.splice(${index}, 1); closeModal(); showToast('Address removed', 'error'); switchTab(${memberId}, 'addresses');">Delete</button>
         <button class="btn-outline" style="background:#f1f5f9; border:none; color:var(--text-mid);" onclick="closeModal()">Close</button>
-        <button class="btn-primary" style="padding: 10px 32px;" onclick="saveAddress(${memberId}, ${index})">Save</button>
+        <button class="btn-primary" style="padding: 10px 32px; display: flex; align-items: center; gap: 8px;" onclick="saveAddress(${memberId}, ${index})">
+          <span class="material-icons-round" style="font-size: 18px;">published_with_changes</span> Update
+        </button>
       </div>
     `;
   } else if (type === 'company') {
@@ -1902,19 +1939,21 @@ function openEditModal(type, memberId, index) {
 
     html = `
       <div class="bem-wrap">
-        <div class="bem-header">
-          <div class="bem-header-left">
-            <div class="bem-title-row">
-              <h2 class="bem-title">Company Information</h2>
-              <span class="bem-badge"><span class="material-icons-round">edit</span>EDITING</span>
+        <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+          <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Company Information</h3>
+              <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+                <span class="material-icons-round" style="font-size: 15px;">edit</span> Editing
+              </div>
             </div>
-            <div class="bem-meta">
-              <span>${m.id}</span><span>•</span>
-              <span class="material-icons-round" style="color:#2563eb;">business</span>
-              <span>${m.company}</span>
-            </div>
+            <button class="modal-close" onclick="closeModal()" style="margin-left: auto; position: static;">
+              <span class="material-icons-round">close</span>
+            </button>
           </div>
-          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+            <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">business</span> ${m.company}
+          </div>
         </div>
         
         <div class="bem-body">
@@ -1985,8 +2024,8 @@ function openEditModal(type, memberId, index) {
 
         <div class="bem-footer">
           <button class="bem-btn-cancel" onclick="window.closeModal()">Cancel</button>
-          <button class="bem-btn-update" id="profile-update-btn" onclick="saveProfileChanges(${memberId})">
-            <span class="material-icons-round">save</span> Update
+          <button class="bem-btn-update" id="profile-update-btn" style="display:flex; align-items:center; gap:8px;" onclick="saveProfileChanges(${memberId})">
+            <span class="material-icons-round">published_with_changes</span> Update
           </button>
         </div>
       </div>
@@ -2008,15 +2047,36 @@ function openAddModal(type, memberId) {
     content.style.maxWidth = '680px';
     html = `
       <div class="bem-wrap">
-        <div class="bem-header">
-          <div class="bem-header-left">
-            <h2 class="bem-title">Add New Contact</h2>
-            <div class="bem-meta"><span>${m.company}</span></div>
+        <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 36px; border-bottom: 1px solid #e2e8f0;">
+          <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Contact Information</h3>
+              <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+                <span class="material-icons-round" style="font-size: 15px;">add</span> New
+              </div>
+            </div>
+            <button class="modal-close" onclick="closeModal()" style="margin-left: auto;">
+              <span class="material-icons-round">close</span>
+            </button>
           </div>
-          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+            <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">business</span> ${m.company}
+          </div>
         </div>
         <div class="bem-body">
           <div class="bem-grid">
+            <div class="bem-field bem-field--full" style="margin-top: 4px; margin-bottom: 8px;">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <div id="add-contact-img-preview" style="width:64px; height:64px; background:#475569; border-radius:50%; color:#fff; display:grid; place-items:center; flex-shrink:0; overflow:hidden;">
+                  <span class="material-icons-round" style="font-size:32px;">person</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <button class="bem-btn-cancel" style="padding: 6px 14px; font-size: 0.75rem;" onclick="document.getElementById('add-contact-img-input').click()">Choose File</button>
+                  <span id="add-contact-img-status" style="color:#94a3b8; font-size:0.7rem; font-weight:600;">No file chosen</span>
+                  <input type="file" id="add-contact-img-input" style="display: none;" accept="image/*" onchange="const fr=new FileReader(); fr.onload=(e)=>{document.getElementById('add-contact-img-preview').innerHTML='<img src=\''+e.target.result+'\' style=\'width:100%;height:100%;object-fit:cover;\'>'; document.getElementById('add-contact-img-status').innerText=this.files[0].name}; fr.readAsDataURL(this.files[0])">
+                </div>
+              </div>
+            </div>
             <div class="bem-field"><label class="bem-label">First Name</label><input class="bcast-edit-input" type="text" id="add-c-fname" placeholder="John"></div>
             <div class="bem-field"><label class="bem-label">Last Name</label><input class="bcast-edit-input" type="text" id="add-c-lname" placeholder="Doe"></div>
             <div class="bem-field"><label class="bem-label">Designation</label><input class="bcast-edit-input" type="text" id="add-c-role" placeholder="Manager"></div>
@@ -2026,7 +2086,9 @@ function openAddModal(type, memberId) {
         </div>
         <div class="bem-footer">
           <button class="bem-btn-cancel" onclick="window.closeModal()">Cancel</button>
-          <button class="bem-btn-update" style="display:flex;" onclick="saveNewContact(${memberId})">Add Contact</button>
+          <button class="bem-btn-update" style="display:flex; align-items: center; gap: 8px;" onclick="saveNewContact(${memberId})">
+            + Add
+          </button>
         </div>
       </div>
     `;
@@ -2034,7 +2096,22 @@ function openAddModal(type, memberId) {
     content.className = 'modal-content';
     content.style.maxWidth = '580px';
     html = `
-      <div class="modal-header"><h3>Add Address</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
+      <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px;">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Company Address</h3>
+                <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+                  <span class="material-icons-round" style="font-size: 15px;">add</span> New
+                </div>
+              </div>
+          <button class="modal-close" onclick="closeModal()" style="margin-left: auto;">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+          <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">business</span> ${members.find(x => x.id == memberId).name}
+        </div>
+      </div>
       <div class="modal-body" style="padding:32px;">
         <div class="modal-form-row"><label class="modal-label">Title</label><input class="modal-input" type="text" id="add-addr-title" placeholder="e.g. Warehouse"></div>
         <div class="modal-form-row"><label class="modal-label">Address Line 1</label><input class="modal-input" type="text" id="add-addr-line1"></div>
@@ -2043,7 +2120,9 @@ function openAddModal(type, memberId) {
       </div>
       <div class="modal-footer">
         <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveNewAddress(${memberId})">Add Address</button>
+        <button class="btn-primary" style="display: flex; align-items: center; gap: 8px;" onclick="saveNewAddress(${memberId})">
+          + Add
+        </button>
       </div>
     `;
   }
@@ -2053,56 +2132,93 @@ function openAddModal(type, memberId) {
 }
 
 
-window.openComposeModal = function(id) {
+window.openComposeModal = function (id) {
   const m = members.find(x => x.id === id);
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
   content.className = 'modal-content';
-  content.style.maxWidth = '600px';
+  content.className = 'modal-content';
+  content.style.maxWidth = '680px';
   content.innerHTML = `
-    <div class="modal-header"><h3>Compose Email</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
-    <div class="modal-body" style="padding:32px;">
-      <div class="modal-form-row"><label class="modal-label">To</label><input class="modal-input" type="text" value="${m.email}" readonly></div>
+    <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px;">
+      <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #0f172a;">Compose Email</h3>
+          <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase;">
+            <span class="material-icons-round" style="font-size: 15px;">send</span> Create
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()" style="margin-left: auto;">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+        <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">person</span> ${m.name}
+      </div>
+    </div>
+    
+    <div class="modal-body" style="padding: 32px;">
+      <!-- Recipient Field -->
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-size: 0.72rem; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Recipient</label>
+        <div style="position: relative;">
+          <input type="text" id="email-to-modal" value="${m.email}" style="width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #fff; font-weight: 700; color: #1e293b; font-size: 0.95rem; outline: none; transition: all 0.2s;" onfocus="this.style.borderColor='#4880FF'; this.style.boxShadow='0 0 0 3px rgba(72, 128, 255, 0.08)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+          <span class="material-icons-round" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 18px;">mail</span>
+        </div>
+      </div>
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-        <div class="modal-form-row" style="margin-bottom:0;">
-          <label class="modal-label">Select Category</label>
+      <!-- Template Selection Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Select Category</label>
           <div style="position: relative;">
-            <select class="modal-input" id="email-category-select" onchange="window.updateEmailTemplates(this.value)" style="appearance: none; cursor: pointer;">
+            <select id="email-category-select" onchange="window.updateEmailTemplates(this.value)" style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 0.9rem; appearance: none; background: #fff; cursor: pointer; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4880FF'" onblur="this.style.borderColor='#e2e8f0'">
               <option value="">Choose Category</option>
               <option value="1">Welcome Emails</option>
               <option value="2">Billing Updates</option>
               <option value="3">System Announcements</option>
             </select>
-            <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+            <span class="material-icons-round" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 20px;">expand_more</span>
           </div>
         </div>
-        <div class="modal-form-row" style="margin-bottom:0;">
-          <label class="modal-label">Select Template</label>
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Select Template</label>
           <div style="position: relative;">
-            <select class="modal-input" id="email-template-select" onchange="window.applyEmailTemplate(this.value)" style="appearance: none; cursor: pointer;">
+            <select id="email-template-select" onchange="window.applyEmailTemplate(this.value)" style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 700; font-size: 0.9rem; appearance: none; background: #fff; cursor: pointer; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4880FF'" onblur="this.style.borderColor='#e2e8f0'">
               <option value="">Choose Template</option>
             </select>
-            <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+            <span class="material-icons-round" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 20px;">expand_more</span>
           </div>
         </div>
       </div>
 
-      <div class="modal-form-row"><label class="modal-label">Subject</label><input class="modal-input" type="text" id="email-subject"></div>
-      <div class="modal-form-row"><label class="modal-label">Message</label><textarea class="modal-input" style="height:150px;" id="email-body"></textarea></div>
+      <!-- Subject Field -->
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-size: 0.72rem; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Subject</label>
+        <input type="text" id="email-subject" placeholder="Enter email subject..." style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 700; color: #1e293b; font-size: 0.95rem; outline: none; transition: all 0.2s;" onfocus="this.style.borderColor='#4880FF'; this.style.boxShadow='0 0 0 3px rgba(72, 128, 255, 0.08)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+      </div>
+
+      <!-- Message Field -->
+      <div>
+        <label style="display: block; font-size: 0.72rem; font-weight: 900; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Message</label>
+        <textarea id="email-body" placeholder="Write your message here..." style="width: 100%; height: 180px; padding: 16px; border: 1.5px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-size: 0.95rem; font-weight: 500; color: #334155; line-height: 1.6; resize: none; outline: none; transition: all 0.2s;" onfocus="this.style.borderColor='#4880FF'; this.style.boxShadow='0 0 0 3px rgba(72, 128, 255, 0.08)'" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="showToast('Email sent', 'success'); closeModal();">Send Email</button>
+    
+    <div class="modal-footer" style="padding: 24px 32px; background: #f8fafc; border-top: 1px solid #e2e8f0; gap: 16px;">
+      <button class="btn-outline" onclick="closeModal()" style="min-width: 120px; height: 48px; border-radius: 10px; font-weight: 700;">Cancel</button>
+      <button class="btn-primary" onclick="showToast('Email sent successfully', 'success'); closeModal();" style="min-width: 160px; height: 48px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="material-icons-round" style="font-size: 20px;">send</span> Send Email
+      </button>
     </div>
   `;
   modal.classList.remove('hidden');
 };
 
-window.updateEmailTemplates = function(catId) {
+window.updateEmailTemplates = function (catId) {
   const tplSelect = document.getElementById('email-template-select');
   if (!tplSelect) return;
-  
+
   const templates = [
     { id: 1, catId: 1, name: "Welcome Email", subject: "Welcome to the Community!", body: "Hi [Name],\n\nWelcome aboard! We are thrilled to have you join our community.\n\nBest regards,\nThe Team" },
     { id: 2, catId: 2, name: "Invoice Reminder", subject: "Reminder: Your Upcoming Invoice", body: "Hi [Name],\n\nThis is a friendly reminder that your invoice #[Invoice_ID] for the amount of [Amount] is due on [Date].\n\nThank you for your business!" },
@@ -2110,46 +2226,126 @@ window.updateEmailTemplates = function(catId) {
   ];
 
   const filtered = catId ? templates.filter(t => t.catId == catId) : [];
-  
+
   tplSelect.innerHTML = '<option value="">Choose Template</option>' + filtered.map(t => `
     <option value="${t.id}">${t.name}</option>
   `).join('');
 };
 
-window.applyEmailTemplate = function(tplId) {
+window.applyEmailTemplate = function (tplId) {
   const templates = [
     { id: 1, catId: 1, name: "Welcome Email", subject: "Welcome to the Community!", body: "Hi,\n\nWelcome aboard! We are thrilled to have you join our community.\n\nBest regards,\nThe Team" },
     { id: 2, catId: 2, name: "Invoice Reminder", subject: "Reminder: Your Upcoming Invoice", body: "Hi,\n\nThis is a friendly reminder that your invoice for the amount of ₹5,000 is due soon.\n\nThank you for your business!" },
     { id: 3, catId: 3, name: "System Update", subject: "Important System Maintenance Notice", body: "Hello,\n\nWe will be performing scheduled maintenance on our platform on 25th May 2026.\n\nRegards,\nIT Support" }
   ];
-  
+
   const t = templates.find(x => x.id == tplId);
   if (!t) return;
-  
+
   document.getElementById('email-subject').value = t.subject;
   document.getElementById('email-body').value = t.body;
 };
 
-window.openStampModal = function(id) {
+window.openStampModal = function (id) {
+  const m = (typeof members !== 'undefined') ? members.find(x => x.id == id) : null;
+  if (!m) return;
+
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
   content.className = 'modal-content';
-  content.style.maxWidth = '500px';
+  content.style.maxWidth = '540px';
+  
+  const badgeConfig = [
+    { key: 'identity', label: 'Identity', icon: 'badge', color: '#1e293b' },
+    { key: 'email', label: 'Email', icon: 'mark_email_read', color: '#16a34a' },
+    { key: 'docs', label: 'Documents', icon: 'verified_user', color: '#7c3aed' },
+    { key: 'account', label: 'Account', icon: 'account_circle', color: '#d97706' },
+  ];
+
   content.innerHTML = `
-    <div class="modal-header"><h3>Add Verification Stamp</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
-    <div class="modal-body" style="padding:32px;">
-      <div class="modal-form-row"><label class="modal-label">Remark</label><textarea class="modal-input" id="stamp-remark"></textarea></div>
+    <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+      <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Verification Stamp</h3>
+          <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;">
+            <span class="material-icons-round" style="font-size: 15px;">add</span> New
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeModal()" style="margin-left: auto; position: static;">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+        <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">verified</span> ${m.member} · ${m.id}
+      </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-body" style="padding:32px; display:flex; flex-direction:column; gap:24px;">
+      
+      <!-- Verification Badges Section -->
+      <div>
+        <label style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:16px;">Verification Badges</label>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+          ${badgeConfig.map(b => `
+            <label style="display:flex; align-items:center; gap:12px; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; cursor:pointer; transition:all 0.2s; background:#f8fafc;" onmouseover="this.style.borderColor='#4880FF'; this.style.background='#fff';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc';">
+              <input type="checkbox" value="${b.key}" class="badge-checkbox" style="width:18px; height:18px; accent-color:#4880FF; cursor:pointer;">
+              <span class="material-icons-round" style="font-size:20px; color:${b.color};">${b.icon}</span>
+              <span style="font-size:0.9rem; font-weight:700; color:#1e293b;">${b.label}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Remark Section -->
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <label class="modal-label" style="margin:0;">Remark</label>
+        <textarea class="modal-input" id="stamp-remark" placeholder="Enter verification notes..." style="min-height:100px; padding:12px;"></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer" style="padding: 24px 32px; border-top: 1px solid #f1f5f9; background: #fff; border-radius: 0 0 16px 16px;">
       <button class="btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="showToast('Stamp added', 'success'); closeModal();">Apply Stamp</button>
+      <button class="btn-primary" onclick="saveStamp(${m.id})">Save</button>
     </div>
   `;
   modal.classList.remove('hidden');
 };
 
+window.saveStamp = function (id) {
+  const m = members.find(x => x.id == id);
+  if (!m) return;
 
-window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = false, options = {}) {
+  const remark = document.getElementById('stamp-remark').value;
+  const selectedBadges = Array.from(document.querySelectorAll('.badge-checkbox:checked')).map(cb => cb.value);
+
+  if (!m.stamps) m.stamps = [];
+  
+  m.stamps.unshift({
+    date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+    badges: selectedBadges,
+    remark: remark || 'Verified',
+    admin: 'Admin User'
+  });
+
+  showToast('Verification stamp added', 'success');
+  closeModal();
+  if (typeof renderProfileTab === 'function') {
+    renderProfileTab('stamp'); // Refresh the tab
+  }
+};
+
+window.deleteStamp = function (memberId, index) {
+  if (!confirm('Are you sure you want to delete this verification record?')) return;
+  const m = members.find(x => x.id == memberId);
+  if (!m || !m.stamps) return;
+
+  m.stamps.splice(index, 1);
+  showToast('Record deleted', 'error');
+  renderProfileTab('stamp');
+};
+
+
+
+window.openBroadcastHistoryModal = function (memberId, broadcastId, isEditing = false, options = {}) {
   const canEdit = options.canEdit !== undefined ? options.canEdit : true;
 
   let b = null;
@@ -2189,19 +2385,21 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
   if (isEditing) {
     content = `
       <div class="bem-wrap">
-        <div class="bem-header">
-          <div class="bem-header-left">
-            <div class="bem-title-row">
-              <h2 class="bem-title">Broadcast Details</h2>
-              <span class="bem-badge"><span class="material-icons-round">edit</span>EDITING</span>
+        <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px; border-bottom: 1px solid #e2e8f0;">
+          <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h3 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #0f172a;">Broadcast Details</h3>
+              <div style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #4880FF; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase;">
+                <span class="material-icons-round" style="font-size: 15px;">edit</span> Editing
+              </div>
             </div>
-            <div class="bem-meta">
-              <span>${b.id}</span><span>•</span>
-              <span class="material-icons-round">person</span>
-              <span>${b.broadcaster} · ${b.company}</span>
-            </div>
+            <button class="modal-close" onclick="closeModal()" style="margin-left: auto;">
+              <span class="material-icons-round">close</span>
+            </button>
           </div>
-          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+            <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">person</span> ${b.broadcaster} · ${b.company}
+          </div>
         </div>
         <div class="bem-body">
           <div class="bem-grid">
@@ -2209,8 +2407,8 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
               <label class="bem-label">Broadcast Type</label>
               <div class="bem-select-wrap">
                 <select class="bcast-edit-select" id="edit-broadcast-type" data-orig="${bType}" onchange="checkBroadcastDirty()">
-                  <option value="Want to buy" ${bType==='Want to buy'?'selected':''}>Want to buy</option>
-                  <option value="Want to sell" ${bType==='Want to sell'?'selected':''}>Want to sell</option>
+                  <option value="Want to buy" ${bType === 'Want to buy' ? 'selected' : ''}>Want to buy</option>
+                  <option value="Want to sell" ${bType === 'Want to sell' ? 'selected' : ''}>Want to sell</option>
                 </select>
                 <span class="material-icons-round bem-chevron">expand_more</span>
               </div>
@@ -2229,9 +2427,9 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
               <label class="bem-label">Main Category</label>
               <div class="bem-select-wrap">
                 <select class="bcast-edit-select" id="edit-main-cat" data-orig="${mainCat}" onchange="checkBroadcastDirty()">
-                  <option value="Accessories" ${mainCat==='Accessories'?'selected':''}>Accessories</option>
-                  <option value="Electronics" ${mainCat==='Electronics'?'selected':''}>Electronics</option>
-                  <option value="Mobile" ${mainCat==='Mobile'?'selected':''}>Mobile</option>
+                  <option value="Accessories" ${mainCat === 'Accessories' ? 'selected' : ''}>Accessories</option>
+                  <option value="Electronics" ${mainCat === 'Electronics' ? 'selected' : ''}>Electronics</option>
+                  <option value="Mobile" ${mainCat === 'Mobile' ? 'selected' : ''}>Mobile</option>
                 </select>
                 <span class="material-icons-round bem-chevron">expand_more</span>
               </div>
@@ -2240,9 +2438,9 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
               <label class="bem-label">Sub Category</label>
               <div class="bem-select-wrap">
                 <select class="bcast-edit-select" id="edit-sub-cat" data-orig="${subCat}" onchange="checkBroadcastDirty()">
-                  <option value="Chargers" ${subCat==='Chargers'?'selected':''}>Chargers</option>
-                  <option value="Laptops" ${subCat==='Laptops'?'selected':''}>Laptops</option>
-                  <option value="iPhone" ${subCat==='iPhone'?'selected':''}>iPhone</option>
+                  <option value="Chargers" ${subCat === 'Chargers' ? 'selected' : ''}>Chargers</option>
+                  <option value="Laptops" ${subCat === 'Laptops' ? 'selected' : ''}>Laptops</option>
+                  <option value="iPhone" ${subCat === 'iPhone' ? 'selected' : ''}>iPhone</option>
                 </select>
                 <span class="material-icons-round bem-chevron">expand_more</span>
               </div>
@@ -2260,9 +2458,9 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
                 <input type="text" class="bcast-edit-input" id="edit-qty" value="${qty}" data-orig="${qty}" oninput="checkBroadcastDirty()" style="flex:2;min-width:0;">
                 <div class="bem-select-wrap" style="flex:1;">
                   <select class="bcast-edit-select" id="edit-unit" data-orig="${unit}" onchange="checkBroadcastDirty()">
-                    <option value="Pcs" ${unit==='Pcs'?'selected':''}>Pcs</option>
-                    <option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option>
-                    <option value="MT" ${unit==='MT'?'selected':''}>MT</option>
+                    <option value="Pcs" ${unit === 'Pcs' ? 'selected' : ''}>Pcs</option>
+                    <option value="Kg" ${unit === 'Kg' ? 'selected' : ''}>Kg</option>
+                    <option value="MT" ${unit === 'MT' ? 'selected' : ''}>MT</option>
                   </select>
                   <span class="material-icons-round bem-chevron">expand_more</span>
                 </div>
@@ -2273,8 +2471,8 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
               <div class="bem-inline">
                 <div class="bem-select-wrap" style="flex:1;">
                   <select class="bcast-edit-select" id="edit-price-opt" data-orig="${price}" onchange="checkBroadcastDirty()">
-                    <option value="Quote" ${price==='Quote'?'selected':''}>Quote</option>
-                    <option value="Fixed" ${price==='Fixed'?'selected':''}>Fixed</option>
+                    <option value="Quote" ${price === 'Quote' ? 'selected' : ''}>Quote</option>
+                    <option value="Fixed" ${price === 'Fixed' ? 'selected' : ''}>Fixed</option>
                   </select>
                   <span class="material-icons-round bem-chevron">expand_more</span>
                 </div>
@@ -2315,25 +2513,27 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
     `;
   } else {
     content = `
-      <div class="modal-header-modern" style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <h2 style="font-family:'Outfit',sans-serif; font-size: 1.25rem; font-weight: 800; color: #1e293b; margin:0;">Broadcast Details</h2>
-            <div class="modal-header-meta" style="display:flex; align-items:center; gap:8px; margin-top:8px; font-size:0.85rem; color:#64748b; font-weight:600;">
-              <span>${b.id}</span>
-              <span style="font-size:18px;">•</span>
-              <span class="material-icons-round" style="color: #2563eb; font-size:16px;">person</span>
-              <span>${b.broadcaster} · ${b.company}</span>
+      <div class="modal-header" style="flex-direction: column; align-items: flex-start; gap: 4px; padding: 24px 32px; border-bottom: 1px solid #f1f5f9;">
+        <div style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #0f172a;">Broadcast Information</h3>
+            <div style="display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;">
+              <span class="material-icons-round" style="font-size: 14px;">visibility</span> Viewing
             </div>
           </div>
-          <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
             ${canEdit ? `
-            <button onclick="openBroadcastHistoryModal('${memberId}', '${b.id}', true)" style="display:flex; align-items:center; gap:6px; border:1.5px solid #dbeafe; border-radius:8px; background:#fff; color:#2563eb; font-weight:800; font-size:0.9rem; cursor:pointer; padding:7px 14px;">
-              <span class="material-icons-round" style="font-size:17px;">edit</span> Edit
+            <button onclick="openBroadcastHistoryModal('${memberId}', '${b.id}', true)" style="display:flex; align-items:center; gap:6px; border:1.5px solid #dbeafe; border-radius:8px; background:#fff; color:#4880FF; font-weight:800; font-size:0.82rem; cursor:pointer; padding:6px 12px; transition: all 0.2s;" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='#fff'">
+              <span class="material-icons-round" style="font-size:16px;">edit</span> Edit
             </button>
             ` : ''}
-            <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
+            <button class="modal-close" onclick="closeModal()" style="position: static;">
+              <span class="material-icons-round">close</span>
+            </button>
           </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: #64748b; font-weight: 700;">
+          <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">business</span> ${b.company} · ID: ${b.id}
         </div>
       </div>
       <div class="details-grid-modern" style="padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
@@ -2362,8 +2562,8 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
           <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${qty} <span style="color:#94a3b8; font-weight:600;">${unit}</span></span>
         </div>
         <div class="detail-box">
-          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Price</span>
-          <span style="font-size:0.95rem; font-weight:700; color:#94a3b8;">${price}</span>
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:600; color:#94a3b8; text-transform:none; margin-bottom:8px;">Price</span>
+          <span style="font-size:0.95rem; font-weight:600; color:#64748b;">${price}</span>
         </div>
         <div class="detail-box">
           <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Sending Option</span>
@@ -2378,17 +2578,17 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
         <span class="material-icons-round" style="font-size:14px;">schedule</span> Submitted ${b.submittedAt || '28 mins ago'}
       </div>
       <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
-        <button onclick="window.closeModal()" style="display:flex; align-items:center; gap:8px; border:1.5px solid #e2e8f0; border-radius:10px; background:#fff; color:#64748b; font-weight:700; font-size:0.9rem; cursor:pointer; padding:8px 16px;">Cancel</button>
+        <button onclick="window.closeModal()" style="display:flex; align-items:center; gap:8px; border:1.5px solid #e2e8f0; border-radius:10px; background:#fff; color:#64748b; font-weight:600; font-size:0.9rem; cursor:pointer; padding:0 16px; height: 42px; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">Cancel</button>
         <div style="display: flex; gap: 12px;">
-          <button onclick="handleBroadcastAction('Hide', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 10px 22px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #fff; color: #475569; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+          <button onclick="handleBroadcastAction('Hide', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 0 22px; height: 42px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #fff; color: #475569; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
             <span class="material-icons-round" style="font-size:20px;">visibility_off</span> Hide
           </button>
           ${(!memberId || memberId === 'null') ? `
-          <button onclick="handleBroadcastAction('Suspend', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 10px 22px; border: 1.5px solid #fee2e2; border-radius: 12px; background: #fff; color: #ef4444; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+          <button onclick="handleBroadcastAction('Suspend', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 0 22px; height: 42px; border: 1.5px solid #fee2e2; border-radius: 10px; background: #fff; color: #ef4444; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='#fff'">
             <span class="material-icons-round" style="font-size:20px;">cancel</span> Reject
           </button>
           ` : ''}
-          <button onclick="handleBroadcastAction('${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 10px 22px; border: none; border-radius: 12px; background: #059669; color: #fff; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
+          <button onclick="handleBroadcastAction('${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 0 22px; height: 42px; border: none; border-radius: 10px; background: #059669; color: #fff; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);" onmouseover="this.style.background='#047857'" onmouseout="this.style.background='#059669'">
             <span class="material-icons-round" style="font-size:20px;">check_circle</span> ${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}
           </button>
         </div>
@@ -2408,7 +2608,7 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
   window.currentBroadcastInitialStatus = b.status === 'Active' ? 'Live' : b.status;
 };
 
-window.saveBroadcastChanges = function(memberId, broadcastId) {
+window.saveBroadcastChanges = function (memberId, broadcastId) {
   let b = null;
   if (memberId && memberId !== 'null') {
     const m = members.find(x => x.id == memberId);
@@ -2416,13 +2616,13 @@ window.saveBroadcastChanges = function(memberId, broadcastId) {
   } else {
     if (window.broadcasts) b = window.broadcasts.find(x => x.id === broadcastId);
   }
-  
+
   if (!b) return;
 
   const newMsg = document.getElementById('edit-message').value;
   const newQty = document.getElementById('edit-qty').value;
   const newUnit = document.getElementById('edit-unit').value;
-  
+
   if (b.broadcast) b.broadcast = newMsg;
   if (b.message) b.message = newMsg;
   if (b.quantity) b.quantity = newQty;
@@ -2430,13 +2630,13 @@ window.saveBroadcastChanges = function(memberId, broadcastId) {
 
   showToast('Broadcast updated successfully', 'success');
   openBroadcastHistoryModal(memberId, broadcastId, false);
-  
+
   // Refresh the main table
   if (window.renderBroadcastTable) window.renderBroadcastTable();
   if (memberId && memberId !== 'null' && typeof switchTab === 'function') switchTab(memberId, 'broadcasts');
 };
 
-window.handleBroadcastAction = function(action, memberId, broadcastId) {
+window.handleBroadcastAction = function (action, memberId, broadcastId) {
   let b = null;
   if (memberId && memberId !== 'null') {
     const m = (typeof members !== 'undefined') ? members.find(x => x.id == memberId) : null;
@@ -2445,7 +2645,7 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
     if (window.broadcasts) b = window.broadcasts.find(x => x.id === broadcastId);
     if (!b && window.pendingBroadcasts) b = window.pendingBroadcasts.find(x => x.id === broadcastId);
   }
-  
+
   if (!b) return;
 
   if (action === 'Hide' || action === 'Suspend') {
@@ -2454,7 +2654,7 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
       b.actionReason = reason; // Store reason
       showToast(`Broadcast ${action === 'Hide' ? 'hidden' : 'rejected'} successfully`, action === 'Hide' ? 'success' : 'error');
       closeModal();
-      
+
       // Remove from pending if in dashboard
       if (window.pendingBroadcasts) {
         const idx = window.pendingBroadcasts.findIndex(pb => pb.id === broadcastId);
@@ -2470,7 +2670,7 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
     b.status = 'Approved';
     showToast(`Broadcast is now ${action === 'Approve' ? 'Approved' : 'Live'}`, 'success');
     closeModal();
-    
+
     // Remove from pending if in dashboard
     if (window.pendingBroadcasts) {
       const idx = window.pendingBroadcasts.findIndex(pb => pb.id === broadcastId);
@@ -2485,17 +2685,17 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
 
 
 
-window.openProfileDecisionModal = function(type, id, onConfirm) {
-    const isReject = type === 'reject';
-    const overlay = document.createElement('div');
-    overlay.className = 'decision-modal-overlay';
-    overlay.id = 'decision-modal';
-    const title = isReject ? 'Reject broadcast' : 'Hide broadcast';
-    const btnText = isReject ? 'Confirm Reject' : 'Confirm Hide';
-    const icon = isReject ? 'cancel' : 'visibility_off';
-    const iconColor = isReject ? '#dc2626' : '#f59e0b';
+window.openProfileDecisionModal = function (type, id, onConfirm) {
+  const isReject = type === 'reject';
+  const overlay = document.createElement('div');
+  overlay.className = 'decision-modal-overlay';
+  overlay.id = 'decision-modal';
+  const title = isReject ? 'Reject broadcast' : 'Hide broadcast';
+  const btnText = isReject ? 'Confirm Reject' : 'Confirm Hide';
+  const icon = isReject ? 'cancel' : 'visibility_off';
+  const iconColor = isReject ? '#dc2626' : '#f59e0b';
 
-    overlay.innerHTML = `
+  overlay.innerHTML = `
         <div class="decision-modal-content" style="max-width: 480px;">
             <button onclick="closeProfileDecisionModal()" style="position:absolute; top:24px; right:24px; background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
             <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
@@ -2516,75 +2716,75 @@ window.openProfileDecisionModal = function(type, id, onConfirm) {
             </div>
         </div>
     `;
-    document.body.appendChild(overlay);
-    document.getElementById('confirm-decision-btn').onclick = () => {
-      const reason = document.getElementById('decision-reason').value;
-      if (!reason) {
-          document.getElementById('decision-reason').style.borderColor = '#dc2626';
-          return;
-      }
-      if (onConfirm) onConfirm(reason);
-      closeProfileDecisionModal();
-    };
+  document.body.appendChild(overlay);
+  document.getElementById('confirm-decision-btn').onclick = () => {
+    const reason = document.getElementById('decision-reason').value;
+    if (!reason) {
+      document.getElementById('decision-reason').style.borderColor = '#dc2626';
+      return;
+    }
+    if (onConfirm) onConfirm(reason);
+    closeProfileDecisionModal();
+  };
 };
 
 
-window.closeProfileDecisionModal = function() {
-    const modal = document.getElementById('decision-modal');
-    if (modal) modal.remove();
+window.closeProfileDecisionModal = function () {
+  const modal = document.getElementById('decision-modal');
+  if (modal) modal.remove();
 };
 
-window.checkBroadcastDirty = function() {
+window.checkBroadcastDirty = function () {
   const btn = document.getElementById('bcast-update-btn');
   if (!btn) return;
-  
+
   let isDirty = false;
   const selects = document.querySelectorAll('.bcast-edit-select');
   selects.forEach(s => {
     if (s.value !== s.getAttribute('data-orig')) isDirty = true;
   });
-  
+
   const inputs = document.querySelectorAll('.bcast-edit-input');
   inputs.forEach(i => {
     if (i.value !== i.getAttribute('data-orig')) isDirty = true;
   });
-  
+
   const msg = document.getElementById('edit-message');
   if (msg && msg.value !== msg.getAttribute('data-orig')) isDirty = true;
-  
+
   btn.style.display = isDirty ? 'flex' : 'none';
 };
 
-window.updateBroadcastCharCount = function(textarea) {
+window.updateBroadcastCharCount = function (textarea) {
   const count = document.getElementById('bcast-char-count');
   if (count) count.textContent = `${textarea.value.length}/500`;
 };
 
-window.checkProfileDirty = function() {
+window.checkProfileDirty = function () {
   const btn = document.getElementById('profile-update-btn');
   if (!btn) return;
-  
+
   let isDirty = false;
   const selects = document.querySelectorAll('.bcast-edit-select');
   selects.forEach(s => {
     if (s.value !== s.getAttribute('data-orig')) isDirty = true;
   });
-  
+
   const inputs = document.querySelectorAll('.bcast-edit-input');
   inputs.forEach(i => {
     if (i.value !== i.getAttribute('data-orig')) isDirty = true;
   });
-  
+
   const textarea = document.querySelector('.bem-textarea');
   if (textarea && textarea.value !== textarea.getAttribute('data-orig')) isDirty = true;
-  
+
   btn.style.display = isDirty ? 'flex' : 'none';
 };
 
-window.saveProfileChanges = function(id) {
+window.saveProfileChanges = function (id) {
   const m = members.find(x => x.id === id);
   if (!m) return;
-  
+
   m.gst = document.getElementById('edit-co-gst').value;
   m.company = document.getElementById('edit-co-name').value;
   m.email = document.getElementById('edit-co-email').value;
@@ -2593,32 +2793,34 @@ window.saveProfileChanges = function(id) {
   m.phone2 = document.getElementById('edit-co-phone2').value;
   const about = document.getElementById('edit-co-about');
   if (about) m.about = about.value;
-  
+
   showToast('Profile updated successfully', 'success');
   closeModal();
   switchTab(id, 'company');
 };
 
-window.saveContactChanges = function(memberId, index) {
-  const m = members.find(x => x.id === memberId);
+window.saveContactChanges = function (memberId, index) {
+  const m = members.find(x => x.id == memberId);
   if (!m || !m.contacts[index]) return;
-  
+
   const c = m.contacts[index];
   const fname = document.getElementById('edit-c-fname').value;
   const lname = document.getElementById('edit-c-lname').value;
   c.name = `${fname} ${lname}`.trim();
   c.role = document.getElementById('edit-c-role').value;
   c.status = document.getElementById('edit-c-status').value;
-  
+  c.email = document.getElementById('edit-c-email').value;
+  c.phone = document.getElementById('edit-c-phone').value;
+
   showToast('Contact updated successfully', 'success');
   closeModal();
   switchTab(memberId, 'contact-table');
 };
 
-window.saveAddress = function(memberId, index) {
-  const m = members.find(x => x.id === memberId);
+window.saveAddress = function (memberId, index) {
+  const m = members.find(x => x.id == memberId);
   if (!m || !m.addresses[index]) return;
-  
+
   const a = m.addresses[index];
   a.title = document.getElementById('edit-addr-title').value;
   a.line1 = document.getElementById('edit-addr-line1').value;
@@ -2626,48 +2828,48 @@ window.saveAddress = function(memberId, index) {
   a.city = document.getElementById('edit-addr-city').value;
   a.pincode = document.getElementById('edit-addr-pincode').value;
   a.isDefault = document.getElementById('edit-addr-default').checked;
-  
+
   if (a.isDefault) {
     m.addresses.forEach((addr, i) => { if (i !== index) addr.isDefault = false; });
   }
-  
+
   showToast('Address updated', 'success');
   closeModal();
   switchTab(memberId, 'addresses');
 };
 
-window.saveNewContact = function(memberId) {
+window.saveNewContact = function (memberId) {
   const m = members.find(x => x.id === memberId);
   if (!m) return;
-  
+
   const fname = document.getElementById('add-c-fname').value;
   const lname = document.getElementById('add-c-lname').value;
   const role = document.getElementById('add-c-role').value;
   const phone = document.getElementById('add-c-phone').value;
   const email = document.getElementById('add-c-email').value;
-  
+
   m.contacts.push({
     name: `${fname} ${lname}`.trim(),
     role: role,
-    mobile: phone,
+    phone: phone,
     email: email,
     status: 'Active'
   });
-  
+
   showToast('Contact added', 'success');
   closeModal();
   switchTab(memberId, 'contact-table');
 };
 
-window.saveNewAddress = function(memberId) {
+window.saveNewAddress = function (memberId) {
   const m = members.find(x => x.id === memberId);
   if (!m) return;
-  
+
   const title = document.getElementById('add-addr-title').value;
   const line1 = document.getElementById('add-addr-line1').value;
   const city = document.getElementById('add-addr-city').value;
   const pincode = document.getElementById('add-addr-pincode').value;
-  
+
   m.addresses.push({
     title: title,
     line1: line1,
@@ -2675,13 +2877,13 @@ window.saveNewAddress = function(memberId) {
     pincode: pincode,
     isDefault: false
   });
-  
+
   showToast('Address added', 'success');
   closeModal();
   switchTab(memberId, 'addresses');
 };
 
-window.deleteStamp = function(memberId, stampId) {
+window.deleteStamp = function (memberId, stampId) {
   const m = members.find(x => x.id === memberId);
   if (m && m.stamps) {
     m.stamps = m.stamps.filter(s => s.id !== stampId);
@@ -2690,7 +2892,7 @@ window.deleteStamp = function(memberId, stampId) {
   }
 };
 
-window.toggleEmailRow = function(id) {
+window.toggleEmailRow = function (id) {
   const content = document.getElementById(`email-content-${id}`);
   const icon = document.getElementById(`email-icon-${id}`);
   if (content) {
@@ -2700,90 +2902,153 @@ window.toggleEmailRow = function(id) {
   }
 };
 
-window.renderCustomSelect = function(id, options, selectedValue, onchange, config = {}) {
+window.selectCallbacks = {};
+
+window.renderCustomSelect = function (id, options, selectedValue, onchange, config = {}) {
   const compact = config.compact || false;
-  
+  const label = options.find(o => o.value === selectedValue)?.label || 'Select option';
+
+  if (onchange) {
+    window.selectCallbacks[id] = onchange;
+  }
+
   return `
-    <div class="bem-select-wrap ${compact ? 'bem-select-wrap--compact' : ''}">
-      <select class="bcast-edit-select" id="${id}" data-orig="${selectedValue}" onchange="${onchange ? (onchange.includes('(') ? onchange : onchange + '(this.value)') : ''}">
-        ${options.map(o => `<option value="${o.value}" ${o.value === selectedValue ? 'selected' : ''}>${o.label}</option>`).join('')}
-      </select>
-      <span class="material-icons-round bem-chevron">expand_more</span>
+    <div class="pm-field-modern clickable ${compact ? 'compact' : ''}" style="position: relative;" onclick="toggleActionMenu(event, '${id}-dropdown')">
+      <div style="flex: 1; font-size: 0.88rem; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0;">${label}</div>
+      <span class="material-icons-round pm-field-icon">expand_more</span>
+      
+      <div class="dropdown-menu" id="dropdown-${id}-dropdown" style="position: absolute; top: 100%; left: 0; right: 0; margin-top: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 1000; display: none; flex-direction: column; overflow: hidden; animation: slideIn 0.2s ease-out;">
+        ${options.map(o => `
+          <div class="dropdown-item ${o.value === selectedValue ? 'selected' : ''}" 
+               onclick="event.stopPropagation(); window.handleSelectChange('${id}', '${o.value}', '${o.label}');" 
+               style="padding: 12px 16px; font-size: 0.85rem; font-weight: 700; color: ${o.value === selectedValue ? '#fff' : '#475569'}; background: ${o.value === selectedValue ? '#4880FF' : 'transparent'}; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;">
+            ${o.label}
+            ${o.value === selectedValue ? '<span class="material-icons-round" style="font-size: 16px;">check</span>' : ''}
+          </div>
+        `).join('')}
+      </div>
+      <input type="hidden" id="${id}" value="${selectedValue}" data-orig="${selectedValue}">
     </div>
   `;
 };
 
-// ===== SIDEBAR & MENU TOGGLES =====
-window.toggleNavGroup = function(btn) {
-    const group = btn.closest('.nav-group');
-    const sub = group.querySelector('.nav-sub');
-    const isOpen = group.classList.contains('open');
-    
-    document.querySelectorAll('.nav-group.open').forEach(g => {
-        if (g !== group) {
-            g.classList.remove('open');
-            if (g.querySelector('.nav-sub')) g.querySelector('.nav-sub').style.height = '0px';
-        }
-    });
+window.handleSelectChange = function (id, value, label) {
+  const input = document.getElementById(id);
+  if (input) {
+    input.value = value;
+    // Update the display label
+    const wrap = input.closest('.pm-field-modern');
+    if (wrap) {
+      wrap.querySelector('div').textContent = label;
 
-    if (isOpen) {
-        group.classList.remove('open');
-        if (sub) sub.style.height = '0px';
-    } else {
-        group.classList.add('open');
-        if (sub) sub.style.height = sub.scrollHeight + 'px';
+      // Update selected state in dropdown
+      wrap.querySelectorAll('.dropdown-item').forEach(item => {
+        const isSelected = item.textContent.trim() === label;
+        item.classList.toggle('selected', isSelected);
+        item.style.background = isSelected ? '#4880FF' : 'transparent';
+        item.style.color = isSelected ? '#fff' : '#475569';
+
+        // Update check icon
+        const check = item.querySelector('.material-icons-round');
+        if (isSelected) {
+          if (!check) {
+            const span = document.createElement('span');
+            span.className = 'material-icons-round';
+            span.style.fontSize = '16px';
+            span.textContent = 'check';
+            item.appendChild(span);
+          }
+        } else if (check) {
+          check.remove();
+        }
+      });
     }
+  }
+
+  closeAllDropdowns();
+
+  // Trigger callback if stored
+  if (window.selectCallbacks && window.selectCallbacks[id]) {
+    const cb = window.selectCallbacks[id];
+    if (typeof cb === 'function') {
+      cb(value);
+    } else if (typeof cb === 'string' && typeof window[cb] === 'function') {
+      window[cb](value);
+    }
+  }
+};
+
+// ===== SIDEBAR & MENU TOGGLES =====
+window.toggleNavGroup = function (btn) {
+  const group = btn.closest('.nav-group');
+  const sub = group.querySelector('.nav-sub');
+  const isOpen = group.classList.contains('open');
+
+  document.querySelectorAll('.nav-group.open').forEach(g => {
+    if (g !== group) {
+      g.classList.remove('open');
+      if (g.querySelector('.nav-sub')) g.querySelector('.nav-sub').style.height = '0px';
+    }
+  });
+
+  if (isOpen) {
+    group.classList.remove('open');
+    if (sub) sub.style.height = '0px';
+  } else {
+    group.classList.add('open');
+    if (sub) sub.style.height = sub.scrollHeight + 'px';
+  }
 };
 
 function setupSidebarToggles() {
-    const menuToggle = document.getElementById('menu-toggle');
-    if (menuToggle) {
-        menuToggle.onclick = () => {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) mainContent.classList.toggle('expanded');
-        };
-    }
-    
-    const sidebarToggle = document.getElementById('sidebar-toggle');
-    if (sidebarToggle) {
-        sidebarToggle.onclick = () => {
-            const sidebar = document.getElementById('sidebar');
-            const icon = document.getElementById('sidebar-toggle-icon');
-            sidebar.classList.toggle('collapsed');
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent) mainContent.classList.toggle('expanded');
-            if (icon) {
-                icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
-            }
-        };
-    }
+  const menuToggle = document.getElementById('menu-toggle');
+  if (menuToggle) {
+    menuToggle.onclick = () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) mainContent.classList.toggle('expanded');
+    };
+  }
+
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  if (sidebarToggle) {
+    sidebarToggle.onclick = () => {
+      const sidebar = document.getElementById('sidebar');
+      const icon = document.getElementById('sidebar-toggle-icon');
+      sidebar.classList.toggle('collapsed');
+      const mainContent = document.querySelector('.main-content');
+      if (mainContent) mainContent.classList.toggle('expanded');
+      if (icon) {
+        icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+      }
+    };
+  }
 }
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial render
-    if (getTbody()) {
-        renderTable();
-    }
-    
-    // Check for deep links (Profile view, etc.)
-    if (typeof checkUrlParams === 'function') {
-        checkUrlParams();
-    }
+  // Initial render
+  if (getTbody()) {
+    renderTable();
+  }
 
-    // Setup sidebar and menu toggles
-    setupSidebarToggles();
+  // Check for deep links (Profile view, etc.)
+  if (typeof checkUrlParams === 'function') {
+    checkUrlParams();
+  }
 
-    // Global Search Listener
-    const searchInput = document.getElementById('top-search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            searchQuery = e.target.value.toLowerCase();
-            currentPage = 1;
-            renderTable();
-        });
-    }
+  // Setup sidebar and menu toggles
+  setupSidebarToggles();
+
+  // Global Search Listener
+  const searchInput = document.getElementById('top-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      currentPage = 1;
+      renderTable();
+    });
+  }
 });
 
 // Handle browser back/forward buttons
@@ -2791,7 +3056,7 @@ window.addEventListener('popstate', () => {
   if (typeof checkUrlParams === 'function') checkUrlParams();
 });
 
-window.closeModal = function() {
+window.closeModal = function () {
   const modal = document.getElementById('modal-container');
   if (modal) {
     modal.classList.add('hidden');
@@ -2801,13 +3066,13 @@ window.closeModal = function() {
   }
 };
 
-window.closeProfileDecisionModal = function() {
-    const modal = document.getElementById('decision-modal');
-    if (modal) modal.remove();
+window.closeProfileDecisionModal = function () {
+  const modal = document.getElementById('decision-modal');
+  if (modal) modal.remove();
 };
 
 // ===== BROADCAST SETTINGS ACCORDION (DROPDOWN) =====
-window.toggleBroadcastAccordion = function(safeId, rowEl) {
+window.toggleBroadcastAccordion = function (safeId, rowEl) {
   const expandRow = document.getElementById(`expand-${safeId}`);
   if (!expandRow) return;
 
@@ -2840,7 +3105,7 @@ window.toggleBroadcastAccordion = function(safeId, rowEl) {
     expandRow.style.display = 'table-row';
     rowEl.classList.add('active-edit');
     rowEl.style.background = 'var(--blue-light)';
-    
+
     const icon = rowEl.querySelector('.category-icon');
     if (icon) icon.style.color = 'var(--blue)';
     const label = rowEl.querySelector('.category-name-label');
@@ -2850,14 +3115,14 @@ window.toggleBroadcastAccordion = function(safeId, rowEl) {
       chevron.textContent = 'expand_more';
       chevron.style.color = 'var(--blue)';
     }
-    
+
     // Smooth scroll if needed
     expandRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } else {
     expandRow.style.display = 'none';
     rowEl.classList.remove('active-edit');
     rowEl.style.background = 'transparent';
-    
+
     const icon = rowEl.querySelector('.category-icon');
     if (icon) icon.style.color = '#64748b';
     const label = rowEl.querySelector('.category-name-label');
@@ -2870,7 +3135,7 @@ window.toggleBroadcastAccordion = function(safeId, rowEl) {
   }
 };
 
-window.saveAccordionEdit = function(cat, event) {
+window.saveAccordionEdit = function (cat, event) {
   if (event) event.stopPropagation();
   showToast(`${cat} Configuration Updated`, 'success');
   const safeId = cat.replace(/\s+/g, '-');
@@ -2878,7 +3143,7 @@ window.saveAccordionEdit = function(cat, event) {
 };
 
 // ===== INVOICE ACCORDION (DROPDOWN) =====
-window.toggleInvoiceAccordion = function(safeInvId, rowEl) {
+window.toggleInvoiceAccordion = function (safeInvId, rowEl) {
   const expandRow = document.getElementById(`inv-expand-${safeInvId}`);
   if (!expandRow) return;
 
@@ -2927,11 +3192,11 @@ window.toggleInvoiceAccordion = function(safeInvId, rowEl) {
 
 
 // Profile Invoices 3-dots Dropdown Logic
-window.toggleProfileActionMenu = function(event, id) {
+window.toggleProfileActionMenu = function (event, id) {
   event.stopPropagation();
   const targetMenu = document.getElementById('prof-menu-' + id);
   if (!targetMenu) return;
-  
+
   const isShowing = targetMenu.style.display === 'flex';
 
   // Close all other dropdowns
@@ -2950,14 +3215,14 @@ document.addEventListener('click', () => {
     m.style.display = 'none';
   });
 });
-window.openStatusModalProfile = function(event, invId) {
+window.openStatusModalProfile = function (event, invId) {
   event.stopPropagation();
-  
+
   // Close all open dropdowns
   document.querySelectorAll('.profile-inv-menu').forEach(m => {
     m.style.display = 'none';
   });
-  
+
   // Create overlay
   let overlay = document.getElementById('prof-status-modal');
   if (!overlay) {
@@ -3054,7 +3319,9 @@ window.openStatusModalProfile = function(event, invId) {
 
       <div style="padding: 0 32px 32px 32px; background: #fff; display: flex; justify-content: flex-end; gap: 16px; border-radius: 0 0 16px 16px;">
         <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'">Discard</button>
-        <button class="btn-primary" onclick="window.saveProfileStatus('${invId}')">Update Status</button>
+        <button class="btn-primary" onclick="window.saveProfileStatus('${invId}')" style="display:flex; align-items:center; gap:8px;">
+          <span class="material-icons-round" style="font-size:18px;">published_with_changes</span> Update Status
+        </button>
       </div>
     </div>
   `;
@@ -3062,15 +3329,15 @@ window.openStatusModalProfile = function(event, invId) {
   overlay.style.display = 'flex';
 };
 
-window.saveProfileStatus = function(invId) {
+window.saveProfileStatus = function (invId) {
   const selectedStatus = document.querySelector('input[name="prof_status"]:checked').value;
   const row = document.getElementById('inv-row-' + invId);
-  
+
   if (row) {
     const statusSpan = row.querySelector('td:nth-child(5) span');
     if (statusSpan) {
       statusSpan.textContent = selectedStatus;
-      
+
       // Update badge colors
       if (selectedStatus === 'Paid') {
         statusSpan.style.color = '#16a34a';
@@ -3096,10 +3363,10 @@ window.saveProfileStatus = function(invId) {
   }
 };
 
-window.openEmailModalProfile = function(event, invId) {
+window.openEmailModalProfile = function (event, invId) {
   event.stopPropagation();
   document.querySelectorAll('.profile-inv-menu').forEach(m => m.style.display = 'none');
-  
+
   let overlay = document.getElementById('prof-status-modal');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -3144,15 +3411,15 @@ window.openEmailModalProfile = function(event, invId) {
   overlay.style.display = 'flex';
 };
 
-window.confirmSendEmailProfile = function(id) {
+window.confirmSendEmailProfile = function (id) {
   document.getElementById('prof-status-modal').style.display = 'none';
   if (typeof showToast === 'function') showToast(`Email sent for record #${id}`, 'success');
 };
 
-window.openPDFModalProfile = function(event, invId) {
+window.openPDFModalProfile = function (event, invId) {
   event.stopPropagation();
   document.querySelectorAll('.profile-inv-menu').forEach(m => m.style.display = 'none');
-  
+
   let overlay = document.getElementById('prof-status-modal');
   overlay.innerHTML = `
     <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
@@ -3170,15 +3437,15 @@ window.openPDFModalProfile = function(event, invId) {
   overlay.style.display = 'flex';
 };
 
-window.confirmDownloadPDFProfile = function(id) {
+window.confirmDownloadPDFProfile = function (id) {
   document.getElementById('prof-status-modal').style.display = 'none';
   if (typeof showToast === 'function') showToast(`Downloading PDF #${id}`, 'success');
 };
 
-window.openDeleteModalProfile = function(event, invId) {
+window.openDeleteModalProfile = function (event, invId) {
   event.stopPropagation();
   document.querySelectorAll('.profile-inv-menu').forEach(m => m.style.display = 'none');
-  
+
   let overlay = document.getElementById('prof-status-modal');
   overlay.innerHTML = `
     <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
@@ -3196,7 +3463,7 @@ window.openDeleteModalProfile = function(event, invId) {
   overlay.style.display = 'flex';
 };
 
-window.confirmDeleteProfile = function(id) {
+window.confirmDeleteProfile = function (id) {
   document.getElementById('prof-status-modal').style.display = 'none';
   const row = document.getElementById('inv-row-' + id);
   const expand = document.getElementById('inv-expand-' + id);
@@ -3205,11 +3472,11 @@ window.confirmDeleteProfile = function(id) {
   if (typeof showToast === 'function') showToast(`Record #${id} deleted`, 'success');
 };
 
-window.toggleProfileActionMenu = function(event, id) {
+window.toggleProfileActionMenu = function (event, id) {
   if (event) event.stopPropagation();
   const targetMenu = document.getElementById(`prof-menu-${id}`);
   if (!targetMenu) return;
-  
+
   const isShowing = targetMenu.style.display === 'flex';
 
   // Close all other profile menus
@@ -3235,13 +3502,13 @@ document.addEventListener('click', () => {
     m.classList.remove('show');
   });
 });
-window.openEmailModalProfile = function(event, invId) {
+window.openEmailModalProfile = function (event, invId) {
   if (event) event.stopPropagation();
   document.querySelectorAll('.profile-inv-menu').forEach(m => {
     m.style.display = 'none';
     m.classList.remove('show');
   });
-  
+
   let overlay = document.getElementById('prof-status-modal');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -3259,13 +3526,13 @@ window.openEmailModalProfile = function(event, invId) {
   overlay.innerHTML = `
     <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
       <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Send Invoice Email</h2>
+        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #1e293b;">Send Invoice Email</h2>
         <button onclick="document.getElementById('prof-status-modal').style.display='none'" style="width: 32px; height: 32px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-round">close</span></button>
       </div>
       <div style="padding: 32px;">
         <p style="margin-bottom: 24px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Confirm sending invoice record <strong>#${invId}</strong>?</p>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Recipient Email</label>
+          <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Recipient Email</label>
           <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
             <input type="email" placeholder="client@example.com" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
           </div>
@@ -3273,51 +3540,51 @@ window.openEmailModalProfile = function(event, invId) {
       </div>
       <div style="padding: 16px 32px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 12px;">
         <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'" style="border-radius: 10px; font-weight: 700;">Cancel</button>
-        <button class="btn-primary" onclick="window.confirmActionProfile('Email', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #2563eb;">Send Now</button>
+        <button class="btn-primary" onclick="window.confirmActionProfile('Email', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #4880FF;">Send Now</button>
       </div>
     </div>
   `;
   overlay.style.display = 'flex';
 };
 
-window.openPDFModalProfile = function(event, invId) {
+window.openPDFModalProfile = function (event, invId) {
   if (event) event.stopPropagation();
   document.querySelectorAll('.profile-inv-menu').forEach(m => {
     m.style.display = 'none';
     m.classList.remove('show');
   });
-  
+
   let overlay = document.getElementById('prof-status-modal');
   overlay.innerHTML = `
     <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
       <div style="width: 64px; height: 64px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
         <span class="material-icons-round" style="font-size: 32px; color: #16a34a;">picture_as_pdf</span>
       </div>
-      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800; color: #1e293b;">Download Invoice</h2>
+      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 700; color: #1e293b;">Download Invoice</h2>
       <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Download the PDF for record <strong>#${invId}</strong>?</p>
       <div style="display: flex; justify-content: center; gap: 12px;">
         <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'" style="border-radius: 10px; font-weight: 700;">Cancel</button>
-        <button class="btn-primary" onclick="window.confirmActionProfile('PDF', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #2563eb;">Download</button>
+        <button class="btn-primary" onclick="window.confirmActionProfile('PDF', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #4880FF;">Download</button>
       </div>
     </div>
   `;
   overlay.style.display = 'flex';
 };
 
-window.openDeleteModalProfile = function(event, invId) {
+window.openDeleteModalProfile = function (event, invId) {
   if (event) event.stopPropagation();
   document.querySelectorAll('.profile-inv-menu').forEach(m => {
     m.style.display = 'none';
     m.classList.remove('show');
   });
-  
+
   let overlay = document.getElementById('prof-status-modal');
   overlay.innerHTML = `
     <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
       <div style="width: 64px; height: 64px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
         <span class="material-icons-round" style="font-size: 32px; color: #ef4444;">delete_outline</span>
       </div>
-      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800; color: #1e293b;">Delete Record</h2>
+      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 700; color: #1e293b;">Delete Record</h2>
       <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Are you sure you want to delete record <strong>#${invId}</strong>?</p>
       <div style="display: flex; justify-content: center; gap: 12px;">
         <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'" style="border-radius: 10px; font-weight: 700;">Cancel</button>
@@ -3328,7 +3595,7 @@ window.openDeleteModalProfile = function(event, invId) {
   overlay.style.display = 'flex';
 };
 
-window.confirmActionProfile = function(type, id) {
+window.confirmActionProfile = function (type, id) {
   document.getElementById('prof-status-modal').style.display = 'none';
   if (type === 'Delete') {
     const row = document.getElementById('inv-row-' + id);

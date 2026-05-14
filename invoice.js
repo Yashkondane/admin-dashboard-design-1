@@ -134,29 +134,29 @@ function renderTable() {
       </tr>
       <tr class="expanded-content ${isExpanded ? '' : 'hidden'}">
         <td colspan="8" style="padding: 0;">
-          <div class="dropdown-pop" style="padding: 24px 32px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-            <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+          <div class="dropdown-pop" style="padding: 24px 32px; background: #fff; border-bottom: 1px solid #f1f5f9;">
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
               <div>
-                <h4 style="font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-                  <span class="material-icons-round" style="font-size: 18px; color: #94a3b8;">account_balance</span>
+                <h4 style="font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                  <span class="material-icons-round" style="font-size: 20px; color: #4880FF;">account_balance</span>
                   Bank Information
                 </h4>
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
-                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">SETTLEMENT DATE</span>
-                    <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">${inv.bankInfo?.date || '-'}</span>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; padding: 16px 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Settlement Date</span>
+                    <span style="font-size: 0.9rem; color: #1e293b; font-weight: 700;">${inv.bankInfo?.date || '-'}</span>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">AMOUNT PAID</span>
-                    <span style="font-size: 0.82rem; color: #334155; font-weight: 700;">₹ ${inv.bankInfo?.amount || '-'}</span>
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Amount Paid</span>
+                    <span style="font-size: 0.9rem; color: #1e293b; font-weight: 700;">₹ ${inv.bankInfo?.amount || '-'}</span>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">RECIPIENT BANK</span>
-                    <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">${inv.bankInfo?.bankName || '-'}</span>
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Recipient Bank</span>
+                    <span style="font-size: 0.9rem; color: #1e293b; font-weight: 700;">${inv.bankInfo?.bankName || '-'}</span>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <span style="font-size: 0.68rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.02em;">PAYMENT MODE</span>
-                    <span style="font-size: 0.82rem; color: #334155; font-weight: 600;">${inv.bankInfo?.mode || '-'}</span>
+                  <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 600;">Payment Mode</span>
+                    <span style="font-size: 0.9rem; color: #1e293b; font-weight: 700;">${inv.bankInfo?.mode || '-'}</span>
                   </div>
                 </div>
               </div>
@@ -263,13 +263,13 @@ function openStatusModal(event, id) {
           <label style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; width: 80px;">Status</label>
           <div style="display: flex; gap: 20px;">
             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
-              <input type="radio" name="status" value="Unpaid" ${inv.status === 'Unpaid' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Unpaid
+              <input type="radio" name="status" value="Unpaid" ${inv.status === 'Unpaid' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #4880FF;"> Unpaid
             </label>
             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
-              <input type="radio" name="status" value="Paid" ${inv.status === 'Paid' ? 'checked' : ''} onchange="togglePaidFields(true)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Paid
+              <input type="radio" name="status" value="Paid" ${inv.status === 'Paid' ? 'checked' : ''} onchange="togglePaidFields(true)" style="width: 18px; height: 18px; accent-color: #4880FF;"> Paid
             </label>
             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
-              <input type="radio" name="status" value="Cancel" ${inv.status === 'Cancel' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Cancel
+              <input type="radio" name="status" value="Cancel" ${inv.status === 'Cancel' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #4880FF;"> Cancel
             </label>
           </div>
         </div>
@@ -277,39 +277,40 @@ function openStatusModal(event, id) {
         <div id="paid-fields" class="${inv.status === 'Paid' ? '' : 'hidden'}">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Date</label>
+              <label class="pm-form-label-modern">Payment Date</label>
               <div class="pm-field-modern">
-                <input type="date" id="status-date" value="${formatDateForInput(inv.bankInfo?.date)}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+                <input type="date" id="status-date" value="${formatDateForInput(inv.bankInfo?.date)}">
+                <span class="material-icons-round pm-field-icon">calendar_today</span>
               </div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Mode</label>
-              <div class="pm-field-modern" style="position: relative;">
-                <select id="status-mode" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b; appearance: none; cursor: pointer; padding-right: 24px;">
+              <label class="pm-form-label-modern">Payment Mode</label>
+              <div class="pm-field-modern">
+                <select id="status-mode">
                   <option value="Bank Transfer" ${inv.bankInfo?.mode === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
                   <option value="Cash" ${inv.bankInfo?.mode === 'Cash' ? 'selected' : ''}>Cash</option>
                   <option value="Check" ${inv.bankInfo?.mode === 'Check' ? 'selected' : ''}>Check</option>
                   <option value="UPI" ${inv.bankInfo?.mode === 'UPI' ? 'selected' : ''}>UPI / QR</option>
                 </select>
-                <span class="material-icons-round" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 20px;">expand_more</span>
+                <span class="material-icons-round pm-field-icon">expand_more</span>
               </div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Reference Number</label>
+              <label class="pm-form-label-modern">Reference Number</label>
               <div class="pm-field-modern">
-                <input type="text" id="status-ref" placeholder="TXN..." value="${inv.bankInfo?.refNo || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+                <input type="text" id="status-ref" placeholder="TXN..." value="${inv.bankInfo?.refNo || ''}">
               </div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Settlement Amount</label>
+              <label class="pm-form-label-modern">Settlement Amount</label>
               <div class="pm-field-modern">
-                <input type="text" id="status-amount" placeholder="0.00" value="${inv.bankInfo?.amount || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+                <input type="text" id="status-amount" placeholder="0.00" value="${inv.bankInfo?.amount || ''}">
               </div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 8px; grid-column: span 2;">
-              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Bank</label>
+              <label class="pm-form-label-modern">Recipient Bank</label>
               <div class="pm-field-modern">
-                <input type="text" id="status-bank" placeholder="e.g. HDFC Bank" value="${inv.bankInfo?.bankName || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+                <input type="text" id="status-bank" placeholder="e.g. HDFC Bank" value="${inv.bankInfo?.bankName || ''}">
               </div>
             </div>
           </div>
@@ -319,7 +320,7 @@ function openStatusModal(event, id) {
 
     <div style="padding: 16px 32px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
       <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem;">Discard</button>
-      <button class="btn-primary" onclick="saveStatus()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">Update Status</button>
+      <button class="btn-primary" onclick="saveStatus()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background: #4880FF; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">Update Status</button>
     </div>
   `;
 
@@ -520,7 +521,7 @@ function openEmailModal(event, id) {
     </div>
     <div style="padding: 16px 32px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
       <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
-      <button class="btn-primary" onclick="confirmAction('Email', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #2563eb;">Send Now</button>
+      <button class="btn-primary" onclick="confirmAction('Email', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #4880FF;">Send Now</button>
     </div>
   `;
   modalContainer.classList.remove('hidden');
@@ -541,7 +542,7 @@ function openPDFModal(event, id) {
       <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Generate and download the PDF for invoice <strong>${id}</strong>?</p>
       <div style="display: flex; justify-content: center; gap: 12px;">
         <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
-        <button class="btn-primary" onclick="confirmAction('PDF', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #2563eb;">Download</button>
+        <button class="btn-primary" onclick="confirmAction('PDF', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #4880FF;">Download</button>
       </div>
     </div>
   `;

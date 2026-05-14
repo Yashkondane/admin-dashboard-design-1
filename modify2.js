@@ -2,7 +2,7 @@ const fs = require('fs');
 
 let script = fs.readFileSync('script.js', 'utf8');
 
-const bannerRegex = /<div style="margin-top:24px; border-radius:16px; background: linear-gradient\(135deg, #1e3a5f 0%, #2563eb 100%\); padding:28px 32px; display:flex; justify-content:space-between; align-items:center; position:relative; overflow:hidden;">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/;
+const bannerRegex = /<div style="margin-top:24px; border-radius:16px; background: linear-gradient\(135deg, #1e3a5f 0%, #4880FF 100%\); padding:28px 32px; display:flex; justify-content:space-between; align-items:center; position:relative; overflow:hidden;">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/;
 
 script = script.replace(
   bannerRegex,

@@ -29,7 +29,7 @@ var currentFilter = 'all';
 
 const typeConfig = {
   success: { icon: 'check_circle', color: '#10b981', bg: '#ecfdf5', label: 'Success' },
-  info:    { icon: 'info',         color: '#2563eb', bg: '#eff6ff', label: 'Info' },
+  info:    { icon: 'info',         color: '#4880FF', bg: '#eff6ff', label: 'Info' },
   warning: { icon: 'warning',      color: '#f59e0b', bg: '#fffbeb', label: 'Warning' }
 };
 

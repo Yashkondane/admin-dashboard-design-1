@@ -41,8 +41,8 @@ function renderTable() {
       <td style="font-weight: 500; color: #475569; font-size: 0.88rem;">${l.planRate}</td>
       <td style="font-weight: 500; color: #64748b; font-size: 0.88rem;">${l.planValidity}</td>
       <td style="text-align: center;">
-        <span class="status-badge" style="min-width: 90px; padding: 6px 14px; font-size: 0.75rem; font-weight: 700; background: ${l.status === 'Active' ? '#f0fdf4' : '#f8fafc'}; color: ${l.status === 'Active' ? '#15803d' : '#475569'}; border: 1px solid ${l.status === 'Active' ? '#bbf7d0' : '#e2e8f0'}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
-          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${l.status === 'Active' ? '#15803d' : '#475569'};"></span>
+        <span class="status-badge" style="min-width: 100px; padding: 6px 16px; font-size: 0.82rem; font-weight: 700; background: ${l.status === 'Active' ? '#E8F5EC' : '#F3F4F6'}; color: ${l.status === 'Active' ? '#15803D' : '#4B5563'}; border: 1px solid ${l.status === 'Active' ? '#22C55E' : '#D1D5DB'}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-transform: capitalize;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${l.status === 'Active' ? '#15803D' : '#4B5563'};"></span>
           ${l.status}
         </span>
       </td>

@@ -34,16 +34,55 @@ function buildInvoiceSection(m) {
         <span class="material-icons-round">check</span>
       </div>
       <div class="pm-invoice-toggle-text" style="flex:1;">
-        <h4 class="pm-invoice-toggle-title" style="margin-bottom: 0;">Generate Invoice?</h4>
+        <h4 class="pm-invoice-toggle-title" style="margin-bottom: 0; font-weight: 700;">Generate Invoice?</h4>
         
-        <div id="pm-invoice-options" style="display:none; margin-top: 8px;">
-           <div style="display: flex; gap: 8px;">
+        <div id="pm-invoice-options" style="display:none; margin-top: 12px;">
+           <div style="display: flex; gap: 8px; margin-bottom: 16px;">
               <div class="pm-inv-type-chip" id="type-proforma" onclick="window.selectInvoiceType('proforma', this, event)">
                 Proforma
               </div>
               <div class="pm-inv-type-chip" id="type-final" onclick="window.selectInvoiceType('final', this, event)">
                 Final Invoice
               </div>
+           </div>
+
+           <!-- Premium Bank Details Section (Visible for Final Invoice) -->
+           <div id="pm-final-invoice-details" style="display:none; margin-top: 20px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; animation: slideDown 0.3s ease-out;">
+             <h4 style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+               <span class="material-icons-round" style="font-size: 16px; color: #4880FF;">account_balance</span>
+               Bank Information
+             </h4>
+             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+               <div style="display: flex; flex-direction: column;">
+                 <label class="pm-form-label-modern">Settlement Date</label>
+                 <div class="pm-field-modern">
+                   <input type="date" id="pm-inv-date" value="${new Date().toISOString().split('T')[0]}">
+                   <span class="material-icons-round pm-field-icon">calendar_today</span>
+                 </div>
+               </div>
+               <div style="display: flex; flex-direction: column;">
+                 <label class="pm-form-label-modern">Amount Paid</label>
+                 <div class="pm-field-modern">
+                   <input type="text" id="pm-inv-amount" placeholder="₹ 0.00">
+                 </div>
+               </div>
+               <div style="display: flex; flex-direction: column;">
+                  <label class="pm-form-label-modern">Recipient Bank</label>
+                  ${renderCustomSelect('pm-inv-bank', [
+                    { value: 'HDFC Bank', label: 'HDFC Bank' },
+                    { value: 'ICICI Bank', label: 'ICICI Bank' },
+                    { value: 'SBI', label: 'SBI' }
+                  ], 'HDFC Bank')}
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                  <label class="pm-form-label-modern">Payment Mode</label>
+                  ${renderCustomSelect('pm-inv-mode', [
+                    { value: 'Bank Transfer', label: 'Bank Transfer' },
+                    { value: 'UPI', label: 'UPI / QR' },
+                    { value: 'Cash', label: 'Cash' }
+                  ], 'Bank Transfer')}
+                </div>
+             </div>
            </div>
         </div>
       </div>
@@ -85,6 +124,12 @@ window.selectInvoiceType = function(val, el, e) {
       opt.classList.remove('active');
     });
     el.classList.add('active');
+
+    // Show/Hide Bank Details
+    const bankDetails = document.getElementById('pm-final-invoice-details');
+    if (bankDetails) {
+      bankDetails.style.display = (val === 'final') ? 'block' : 'none';
+    }
   }
 };
 
@@ -161,18 +206,19 @@ window.openManagePlanModal = function (memberId) {
   ];
 
   modalContent.innerHTML = `
-    <div class="pm-header-modern" style="padding: 24px 32px 20px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
-      <div class="pm-header-left" style="display: flex; flex-direction: column; gap: 6px;">
-        <h3 class="plan-modal-title">Plan Actions</h3>
-        <div class="pm-action-dropdown-wrap" style="width: 180px; margin-top: 4px;">
+    <div class="pm-header-modern" style="padding: 24px 32px 12px; display: flex; justify-content: space-between; align-items: flex-start; background: #fff;">
+      <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+        <h2 style="font-size: 1.15rem; font-weight: 700; color: #1e293b; margin: 0;">Plan Actions</h2>
+        
+        <div class="pm-action-dropdown-wrap" style="width: 240px;">
           <div class="action-btn-wrap" style="width: 100%; position: relative;">
-            <button class="pm-action-hover-trigger" onclick="const menu = this.nextElementSibling; const isOpen = menu.style.opacity === '1'; document.querySelectorAll('.dropdown-menu').forEach(m => { m.style.opacity = '0'; m.style.visibility = 'hidden'; m.style.transform = 'translateY(10px)'; }); if (!isOpen) { menu.style.opacity = '1'; menu.style.visibility = 'visible'; menu.style.transform = 'translateY(0)'; } event.stopPropagation();" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-weight: 700; color: #1e293b; cursor: pointer;">
-              <span id="pm-current-action-label">Assign Plan</span>
-              <span class="material-icons-round">expand_more</span>
-            </button>
-            <div class="dropdown-menu" style="position: absolute; display: flex; flex-direction: column; width: 100%; left: 0; top: 100%; margin-top: 4px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 100; transition: all 0.2s ease; opacity: 0; visibility: hidden; transform: translateY(10px);">
+            <div class="pm-field-modern clickable" onclick="const menu = this.nextElementSibling; const isOpen = menu.style.opacity === '1'; document.querySelectorAll('.dropdown-menu').forEach(m => { m.style.opacity = '0'; m.style.visibility = 'hidden'; m.style.transform = 'translateY(10px)'; }); if (!isOpen) { menu.style.opacity = '1'; menu.style.visibility = 'visible'; menu.style.transform = 'translateY(0)'; } event.stopPropagation();" style="width: 100%; height: 40px; background: #f8fafc; border: 1px solid #e2e8f0;">
+              <div style="flex: 1; font-size: 0.85rem; font-weight: 600; color: #1e293b; padding: 0 14px;" id="pm-current-action-label">Assign Plan</div>
+              <span class="material-icons-round pm-field-icon" style="color: #94a3b8; font-size: 18px;">expand_more</span>
+            </div>
+            <div class="dropdown-menu" style="position: absolute; display: flex; flex-direction: column; width: 100%; left: 0; top: 100%; margin-top: 4px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 1000; transition: all 0.2s ease; opacity: 0; visibility: hidden; transform: translateY(10px);">
               ${actions.map(a => `
-                <button class="dropdown-item" onclick="selectManageAction(${memberId}, '${a.key}'); this.parentElement.style.opacity='0'; this.parentElement.style.visibility='hidden';" style="padding: 12px 16px; font-weight: 600; text-align: left; background: transparent; border: none; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                <button class="dropdown-item" onclick="selectManageAction(${memberId}, '${a.key}');" style="padding: 10px 16px; font-weight: 600; font-size: 0.85rem; text-align: left; background: transparent; border: none; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.2s; color: #475569;" onmouseover="this.style.background='#f8fafc'; this.style.color='#1e293b'" onmouseout="this.style.background='transparent'; this.style.color='#475569'">
                   ${a.name}
                 </button>
               `).join('')}
@@ -180,17 +226,17 @@ window.openManagePlanModal = function (memberId) {
           </div>
         </div>
       </div>
-      <div class="pm-header-right">
-        <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;">
-          <span class="material-icons-round" style="font-size:18px;">close</span>
-        </button>
-      </div>
+      <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+        <span class="material-icons-round" style="font-size:18px;">close</span>
+      </button>
     </div>
-    <div class="modal-body" id="pm-modal-body">
+    <div style="border-bottom: 1px solid #f1f5f9; width: 100%;"></div>
+
+    <div class="modal-body" id="pm-modal-body" style="padding: 20px 32px;">
       <div id="pm-dynamic-form-area" style="display: flex; flex-direction: column;"></div>
     </div>
-    <div class="pm-footer-modern" id="pm-footer" style="display:none; justify-content: flex-end; gap:12px; padding: 16px 32px; background: #fafbfc;">
-      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+    <div class="pm-footer-modern" id="pm-footer" style="display:none; justify-content: flex-end; gap:12px; padding: 14px 32px; background: #fafbfc; border-top: 1px solid #f1f5f9; border-radius: 0 0 20px 20px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 40px; padding: 0 20px; font-size: 0.85rem;">Cancel</button>
       <div id="pm-footer-actions"></div>
     </div>
   `;
@@ -233,11 +279,11 @@ window.selectManageAction = function (memberId, action) {
 
   if (action === 'assign') {
     html = `
-      <div class="pm-form-grid">
+      <div class="pm-form-grid" style="gap: 12px;">
         <div class="pm-form-full">
-          <label class="pm-form-label-modern">Target Plan</label>
+          <label class="pm-form-label-modern">TARGET PLAN</label>
           ${renderCustomSelect('pm-plan-select', 
-            (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
+            (typeof plans !== 'undefined' ? plans : []).filter(p => p.name !== 'TK-Premium').map(p => ({ 
               value: p.name, 
               label: `${p.name} • ₹${Number(p.price).toLocaleString()}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
             })), 
@@ -246,38 +292,40 @@ window.selectManageAction = function (memberId, action) {
           )}
         </div>
         <div>
-          <label class="pm-form-label-modern">Start Date</label>
-          <div class="pm-field-modern">
+          <label class="pm-form-label-modern">START DATE</label>
+          <div class="pm-field-modern" style="height: 40px;">
             <input type="date" id="pm-start-date" value="${new Date().toISOString().split('T')[0]}" onchange="autoSetEndDate()">
+            <span class="material-icons-round pm-field-icon" style="font-size: 18px;">calendar_today</span>
           </div>
         </div>
         <div>
-          <label class="pm-form-label-modern">Expiry Date</label>
-          <div class="pm-field-modern">
+          <label class="pm-form-label-modern">END DATE</label>
+          <div class="pm-field-modern" style="height: 40px;">
             <input type="date" id="pm-end-date" onchange="updateAssignDuration()">
+            <span class="material-icons-round pm-field-icon" style="font-size: 18px;">calendar_today</span>
           </div>
         </div>
       </div>
 
-      <div id="assign-duration-preview" class="pm-period-card" style="display:none; margin-top: 16px;">
-        <div class="pm-period-info">
-          <div class="pm-period-label">Subscription Period</div>
-          <div class="pm-period-range" id="ad-period"></div>
+      <div id="assign-duration-preview" style="display:none; margin-top: 16px; padding-top: 12px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label class="pm-form-label-modern" style="margin-bottom:0;">NEW SUBSCRIPTION PERIOD</label>
+          <div id="ad-period" style="font-size: 0.88rem; font-weight: 700; color: #1e293b;"></div>
         </div>
-        <div class="pm-period-duration" id="ad-duration"></div>
+        <div id="ad-duration" style="background: #eff6ff; color: #4880FF; padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; border: 1px solid #dbeafe;"></div>
       </div>
 
-      <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
+      <div class="pm-divider-dashed" style="margin: 12px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'assign')">Assign Plan</button>`;
+    footerBtn = `<button class="btn-primary" onclick="submitPlanAction(${m.id}, 'assign')" style="height: 40px; padding: 0 20px; font-size: 0.85rem;">Assign Plan <span class="material-icons-round" style="font-size: 16px; margin-left: 6px;">arrow_forward</span></button>`;
 
   } else if (action === 'extend') {
     const actualPlan = (m.assignedPlans && m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name))) || {};
     const currentExpiryStr = actualPlan.date ? actualPlan.date.split(' to ')[1] : '';
 
     html = `
-      <div class="pm-form-grid" style="gap: 16px;">
+      <div class="pm-form-grid" style="gap: 12px;">
         <div>
           <label class="pm-form-label-modern">EXTEND BY</label>
           ${renderCustomSelect('pm-ext-days', [
@@ -291,23 +339,23 @@ window.selectManageAction = function (memberId, action) {
         </div>
         <div>
           <label class="pm-form-label-modern">NEW EXPIRY</label>
-          <div class="pm-field-modern">
-            <span id="pm-ext-preview-date" style="font-weight: 700;">${currentExpiryStr || 'N/A'}</span>
+          <div class="pm-field-modern" style="height: 40px;">
+            <span id="pm-ext-preview-date" style="font-weight: 700; font-size: 0.88rem;">${currentExpiryStr || 'N/A'}</span>
           </div>
         </div>
       </div>
-      <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
+      <div class="pm-divider-dashed" style="margin: 12px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'extend')">Extend Plan <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="btn-primary" onclick="submitPlanAction(${m.id}, 'extend')" style="height: 40px; padding: 0 20px; font-size: 0.85rem;">Extend Plan <span class="material-icons-round" style="font-size: 16px; margin-left: 6px;">arrow_forward</span></button>`;
 
   } else if (action === 'upgrade') {
     html = `
-      <div class="pm-form-grid" style="gap: 16px;">
+      <div class="pm-form-grid" style="gap: 12px;">
         <div class="pm-form-full">
           <label class="pm-form-label-modern">TARGET PLAN</label>
           ${renderCustomSelect('pm-plan-select', 
-            (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
+            (typeof plans !== 'undefined' ? plans : []).filter(p => p.name !== 'TK-Premium').map(p => ({ 
               value: p.name, 
               label: `${p.name} • ₹${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
             })), 
@@ -317,8 +365,9 @@ window.selectManageAction = function (memberId, action) {
         </div>
         <div>
           <label class="pm-form-label-modern">START DATE</label>
-          <div class="pm-field-modern">
+          <div class="pm-field-modern" style="height: 40px;">
             <input type="date" id="pm-start-date" value="${new Date().toISOString().split('T')[0]}" onchange="autoSetEndDate()">
+            <span class="material-icons-round pm-field-icon" style="font-size: 18px;">calendar_today</span>
           </div>
         </div>
         <div>
@@ -330,18 +379,18 @@ window.selectManageAction = function (memberId, action) {
         </div>
       </div>
 
-      <div id="upgrade-period-preview" class="pm-period-card" style="display:none; margin-top: 8px;">
-        <div class="pm-period-info">
-          <div class="pm-period-label">New Subscription Period</div>
-          <div class="pm-period-range" id="up-period-range" style="font-weight: 600; font-size: 0.88rem;"></div>
+      <div id="upgrade-period-preview" style="display:none; margin-top: 16px; padding-top: 12px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label class="pm-form-label-modern" style="margin-bottom:0;">NEW SUBSCRIPTION PERIOD</label>
+          <div id="up-period-range" style="font-size: 0.88rem; font-weight: 700; color: #1e293b;"></div>
         </div>
-        <div class="pm-period-duration" id="up-period-duration" style="font-weight: 600;"></div>
+        <div id="up-period-duration" style="background: #eff6ff; color: #4880FF; padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; border: 1px solid #dbeafe;"></div>
       </div>
 
-      <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
+      <div class="pm-divider-dashed" style="margin: 12px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'upgrade')">Apply Upgrade <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="btn-primary" onclick="submitPlanAction(${m.id}, 'upgrade')" style="height: 40px; padding: 0 20px; font-size: 0.85rem;">Apply Upgrade <span class="material-icons-round" style="font-size: 16px; margin-left: 6px;">arrow_forward</span></button>`;
 
   } else if (action === 'suspend') {
     html = `
@@ -365,13 +414,20 @@ window.selectManageAction = function (memberId, action) {
         </div>
       </div>
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'reactivate')">Apply Reactivation <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="btn-primary" onclick="submitPlanAction(${m.id}, 'reactivate')" style="height: 42px; padding: 0 24px;">Apply Reactivation <span class="material-icons-round" style="font-size: 18px; margin-left: 8px;">arrow_forward</span></button>`;
   }
 
 
   formArea.innerHTML = html;
   footerActions.innerHTML = footerBtn;
   footer.style.display = 'flex';
+
+  // Ensure dropdown closes after selection
+  document.querySelectorAll('.dropdown-menu').forEach(m => {
+    m.style.opacity = '0';
+    m.style.visibility = 'hidden';
+    m.style.transform = 'translateY(10px)';
+  });
 
   // Initial state setup
   if (action === 'assign' || action === 'upgrade') {
@@ -446,57 +502,74 @@ function buildAssignModal(m, todayISO, po) {
 function buildExtendModal(m, todayISO, activePlanExpiry, actualPlan) {
   const presets = [1, 2, 3, 7, 15, 30];
   return `
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#eff6ff;color:#4880FF;">
-          <span class="material-icons-round">more_time</span>
+    <div class="modal-header-modern" style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; color: #4880FF; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons-round">more_time</span>
+          </div>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0;">Extend Plan</h2>
+            <p style="margin: 4px 0 0; color: #64748b; font-weight: 600; font-size: 0.88rem;">${actualPlan.name || 'Current Plan'} · ${m.member}</p>
+          </div>
         </div>
-        <div>
-          <h3 class="plan-modal-title">Extend Plan</h3>
-          <p class="plan-modal-subtitle">${actualPlan.name || 'Current Plan'} · ${m.member}</p>
-        </div>
+        <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
       </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
-    <div class="modal-body">
-      <div class="plan-field-group">
-        <div class="plan-field-label">Extension Duration</div>
+    <div style="padding: 32px;">
+      <div style="margin-bottom: 24px;">
+        <label class="pm-form-label-modern">Extension Duration</label>
         <div class="extension-chips" id="ext-chips">
           ${presets.map(d => `<button class="extension-chip${d === 30 ? ' active' : ''}" data-days="${d}" onclick="selectExtChip(this,${d})">${d} Day${d > 1 ? 's' : ''}</button>`).join('')}
           <button class="extension-chip" data-days="custom" onclick="selectExtChip(this,'custom')">Custom</button>
         </div>
         <div id="ext-custom-wrap" style="display:none;" class="extension-custom-group">
-          <div class="plan-field-group">
-            <div class="plan-field-label" style="font-size:0.68rem;">Amount</div>
-            <input type="number" class="plan-field-input" id="pm-ext-custom-val" value="45" min="1" oninput="updateExpiryPreview()">
-          </div>
-          <div class="plan-field-group">
-            <div class="plan-field-label" style="font-size:0.68rem;">Unit</div>
-            ${selWrap('pm-ext-custom-unit', '<option value="days">Days</option><option value="months">Months</option>', (val) => updateCustomExtendPreview())}
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+            <div>
+              <label class="pm-form-label-modern">Amount</label>
+              <div class="pm-field-modern">
+                <input type="number" id="pm-ext-custom-val" value="45" min="1" oninput="updateExpiryPreview()">
+              </div>
+            </div>
+            <div>
+              <label class="pm-form-label-modern">Unit</label>
+              <div class="pm-field-modern">
+                <select id="pm-ext-custom-unit" onchange="updateCustomExtendPreview()">
+                  <option value="days">Days</option>
+                  <option value="months">Months</option>
+                </select>
+                <span class="material-icons-round pm-field-icon">expand_more</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <input type="hidden" id="pm-ext-days" value="30">
-      <div class="expiry-preview" id="expiry-preview">
-        <div class="expiry-preview-item">
-          <div class="ep-label">Current Expiry</div>
-          <div class="ep-value" id="ep-current">${activePlanExpiry}</div>
+      
+      <div id="expiry-preview" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <label class="pm-form-label-modern" style="margin:0;">Current Expiry</label>
+          <div id="ep-current" style="font-size: 0.95rem; font-weight: 800; color: #64748b;">${activePlanExpiry}</div>
         </div>
-        <div class="expiry-preview-arrow"><span class="material-icons-round">arrow_forward</span></div>
-        <div class="expiry-preview-item new-expiry">
-          <div class="ep-label">New Expiry</div>
-          <div class="ep-value" id="ep-new">${calcNewExpiry(activePlanExpiry, 30)}</div>
+        <div style="color: #cbd5e1;"><span class="material-icons-round" style="font-size: 24px;">arrow_forward</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px; text-align: right;">
+          <label class="pm-form-label-modern" style="margin:0;">New Expiry</label>
+          <div id="ep-new" style="font-size: 0.95rem; font-weight: 800; color: #10b981;">${calcNewExpiry(activePlanExpiry, 30)}</div>
         </div>
       </div>
-      <div class="plan-modal-divider"></div>
+
+      <div class="pm-divider-dashed" style="margin: 24px 0;"></div>
       <div id="pm-invoice-section">${buildInvoiceSection(actualPlan.name || '')}</div>
     </div>
-    <div class="modal-footer">
-      <div class="modal-footer-hint"><span class="material-icons-round">tips_and_updates</span> Adds more time to the current subscription.</div>
-      <div class="modal-footer-actions">
-        <button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="plan-btn-submit" onclick="submitPlanAction(${m.id},'extend')">
-          Apply Extension <span class="material-icons-round">arrow_forward</span>
+    <div class="modal-footer" style="padding: 24px 32px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+        <span class="material-icons-round" style="font-size: 18px; color: #4880FF;">tips_and_updates</span>
+        Adds more time to the current subscription.
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-outline" onclick="closeModal()" style="height: 42px; padding: 0 24px;">Cancel</button>
+        <button class="btn-primary" onclick="submitPlanAction(${m.id},'extend')" style="height: 42px; padding: 0 24px;">
+          Apply Extension <span class="material-icons-round" style="font-size: 18px; margin-left: 8px;">arrow_forward</span>
         </button>
       </div>
     </div>`;
@@ -505,52 +578,57 @@ function buildExtendModal(m, todayISO, activePlanExpiry, actualPlan) {
 // ===== UPGRADE PLAN MODAL =====
 function buildUpgradeModal(m, todayISO, po, actualPlan) {
   return `
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#f3e8ff;color:#7c3aed;">
-          <span class="material-icons-round">upgrade</span>
+    <div class="modal-header-modern" style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #f3e8ff; color: #7c3aed; display: flex; align-items: center; justify-content: center;">
+            <span class="material-icons-round">upgrade</span>
+          </div>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0;">Upgrade Plan</h2>
+            <p style="margin: 4px 0 0; color: #64748b; font-weight: 600; font-size: 0.88rem;">Current: ${actualPlan.name || 'None'} · ${m.member}</p>
+          </div>
+        </div>
+        <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
+      </div>
+    </div>
+    <div style="padding: 32px;">
+      <div class="pm-form-grid">
+        <div class="pm-form-full">
+          <label class="pm-form-label-modern">New Plan <span class="required" style="color:#ef4444;">*</span></label>
+          ${renderCustomSelect('pm-plan-select', (typeof plans !== 'undefined' ? plans : []).filter(p => p.name !== 'TK-Premium').map(p => ({ value: p.name, label: `${p.name} • ₹${p.price}` })), '', 'autoSetEndDate')}
         </div>
         <div>
-          <h3 class="plan-modal-title">Upgrade Plan</h3>
-          <p class="plan-modal-subtitle">Current: ${actualPlan.name || 'None'} · ${m.member}</p>
-        </div>
-      </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body">
-      <div class="plan-form-grid">
-        <div class="plan-field-group">
-          <div class="plan-field-label">New Plan <span class="required">*</span></div>
-          ${selWrap('pm-plan-select', po, (val) => autoSetEndDate())}
-        </div>
-        <div class="plan-field-group">
-          <div class="plan-field-label">Start Date</div>
-          <input type="date" class="plan-field-input" id="pm-start-date" value="${todayISO}">
-        </div>
-      </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Proration</div>
-        <div class="proration-options">
-          <div class="proration-option selected" onclick="selectProration(this,'yes')">
-            <div class="proration-radio"></div>
-            <span class="proration-option-text">Yes, prorate</span>
-          </div>
-          <div class="proration-option" onclick="selectProration(this,'no')">
-            <div class="proration-radio"></div>
-            <span class="proration-option-text">No proration</span>
+          <label class="pm-form-label-modern">Start Date</label>
+          <div class="pm-field-modern">
+            <input type="date" id="pm-start-date" value="${todayISO}">
+            <span class="material-icons-round pm-field-icon">calendar_today</span>
           </div>
         </div>
-        <input type="hidden" id="pm-proration" value="yes">
+        <div>
+          <label class="pm-form-label-modern">Proration</label>
+          <div class="pm-field-modern">
+            <select id="pm-proration">
+              <option value="yes">Yes, prorate</option>
+              <option value="no">No proration</option>
+            </select>
+            <span class="material-icons-round pm-field-icon">expand_more</span>
+          </div>
+        </div>
       </div>
-      <div class="plan-modal-divider"></div>
+
+      <div class="pm-divider-dashed" style="margin: 24px 0;"></div>
       <div id="pm-invoice-section">${buildInvoiceSection('')}</div>
     </div>
-    <div class="modal-footer">
-      <div class="modal-footer-hint"><span class="material-icons-round">tips_and_updates</span> Proration logic will be applied to the new tier.</div>
-      <div class="modal-footer-actions">
-        <button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="plan-btn-submit" onclick="submitPlanAction(${m.id},'upgrade')">
-          Upgrade Plan <span class="material-icons-round">arrow_forward</span>
+    <div class="modal-footer" style="padding: 24px 32px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+        <span class="material-icons-round" style="font-size: 18px; color: #7c3aed;">tips_and_updates</span>
+        Proration logic will be applied to the new tier.
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-outline" onclick="closeModal()" style="height: 42px; padding: 0 24px;">Cancel</button>
+        <button class="btn-primary" onclick="submitPlanAction(${m.id},'upgrade')" style="height: 42px; padding: 0 24px; background: #7c3aed; border-color: #7c3aed;">
+          Upgrade Plan <span class="material-icons-round" style="font-size: 18px; margin-left: 8px;">arrow_forward</span>
         </button>
       </div>
     </div>`;
@@ -559,41 +637,51 @@ function buildUpgradeModal(m, todayISO, po, actualPlan) {
 // ===== SUSPEND MODAL =====
 function buildSuspendModal(m) {
   return `
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#fef2f2; border:1px solid #fee2e2; color:#ef4444;">
-          <span class="material-icons-round">block</span>
+    <div class="modal-header-modern" style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #fef2f2; color: #ef4444; display: flex; align-items: center; justify-content: center; border: 1px solid #fee2e2;">
+            <span class="material-icons-round">block</span>
+          </div>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0;">Suspend Member</h2>
+            <p style="margin: 4px 0 0; color: #64748b; font-weight: 600; font-size: 0.88rem;">${m.member} · ${m.company}</p>
+          </div>
+        </div>
+        <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
+      </div>
+    </div>
+    <div style="padding: 32px;">
+      <div style="background: #fff5f5; border: 1px solid #fed7d7; border-radius: 12px; padding: 20px; display: flex; gap: 16px; margin-bottom: 24px;">
+        <span class="material-icons-round" style="color: #f56565; font-size: 24px;">warning</span>
+        <div>
+          <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #9b2c2c;">Restricting Access</h4>
+          <p style="margin: 4px 0 0; font-size: 0.85rem; font-weight: 600; color: #c53030; line-height: 1.5;">The member will be blocked from accessing the application. Active plan features will be suspended until reactivation.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div>
+          <label class="pm-form-label-modern">Suspension Reason <span class="required" style="color:#ef4444;">*</span></label>
+          <div class="pm-field-modern">
+            <input type="text" id="pm-suspend-reason" placeholder="e.g. Non-payment, violation of terms...">
+          </div>
         </div>
         <div>
-          <h3 class="plan-modal-title">Suspend Member</h3>
-          <p class="plan-modal-subtitle">${m.member} · ${m.company}</p>
+          <label class="pm-form-label-modern">Admin Note (optional)</label>
+          <textarea id="pm-admin-notes" class="plan-field-textarea" style="width: 100%; min-height: 100px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.88rem; font-weight: 600; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4880FF'" onblur="this.style.borderColor='#e2e8f0'" placeholder="Additional internal notes..."></textarea>
         </div>
       </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
-    <div class="modal-body">
-      <div class="suspend-warning-banner">
-        <span class="material-icons-round">warning</span>
-        <div class="suspend-warning-text">
-          <h4>This action will restrict member access</h4>
-          <p>The member will be blocked from accessing the application. All active plan features will be suspended until reactivation.</p>
-        </div>
+    <div class="modal-footer" style="padding: 24px 32px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+        <span class="material-icons-round" style="font-size: 18px; color: #ef4444;">info</span>
+        No invoice will be generated.
       </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Suspension Reason <span class="required">*</span></div>
-        <input type="text" class="plan-field-input" id="pm-suspend-reason" placeholder="e.g. Non-payment, violation of terms...">
-      </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Admin Note (optional)</div>
-        <textarea class="plan-field-textarea" id="pm-admin-notes" placeholder="Additional internal notes..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <div class="modal-footer-hint"><span class="material-icons-round">info</span> No invoice will be generated for suspensions.</div>
-      <div class="modal-footer-actions">
-        <button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="plan-btn-submit danger" onclick="confirmSuspend(${m.id})">
-          Suspend Member <span class="material-icons-round">block</span>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-outline" onclick="closeModal()" style="height: 42px; padding: 0 24px;">Cancel</button>
+        <button class="btn-primary" onclick="confirmSuspend(${m.id})" style="height: 42px; padding: 0 24px; background: #ef4444; border-color: #ef4444;">
+          Suspend Member <span class="material-icons-round" style="font-size: 18px; margin-left: 8px;">block</span>
         </button>
       </div>
     </div>`;
@@ -602,37 +690,43 @@ function buildSuspendModal(m) {
 // ===== REACTIVATE MODAL =====
 function buildReactivateModal(m) {
   return `
-    <div class="modal-header">
-      <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#f0fdf4; border:1px solid #dcfce7; color:#16a34a;">
-          <span class="material-icons-round">verified_user</span>
+    <div class="modal-header-modern" style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; border: 1px solid #dcfce7;">
+            <span class="material-icons-round">verified_user</span>
+          </div>
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin: 0;">Reactivate Member</h2>
+            <p style="margin: 4px 0 0; color: #64748b; font-weight: 600; font-size: 0.88rem;">${m.member} · ${m.company}</p>
+          </div>
         </div>
-        <div>
-          <h3 class="plan-modal-title">Reactivate Member</h3>
-          <p class="plan-modal-subtitle">${m.member} · ${m.company}</p>
-        </div>
-      </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body">
-      <div class="reactivate-success-banner">
-        <span class="material-icons-round">check_circle</span>
-        <div>
-          <div style="font-weight:800;color:#166534;font-size:0.88rem;margin-bottom:4px;">Restore full member access</div>
-          <div style="font-size:0.78rem;font-weight:600;color:#16a34a;line-height:1.4;">Plan access and all member privileges will be immediately restored upon reactivation.</div>
-        </div>
-      </div>
-      <div class="plan-field-group">
-        <div class="plan-field-label">Reactivation Note</div>
-        <textarea class="plan-field-textarea" id="pm-reactivate-note" placeholder="e.g. Payment verified, issue resolved..."></textarea>
+        <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
       </div>
     </div>
-    <div class="modal-footer">
-      <div class="modal-footer-hint"><span class="material-icons-round">tips_and_updates</span> Restores all member privileges immediately.</div>
-      <div class="modal-footer-actions">
-        <button class="plan-btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="plan-btn-submit success" onclick="submitPlanAction(${m.id},'reactivate')">
-          Reactivate Member <span class="material-icons-round">verified_user</span>
+    <div style="padding: 32px;">
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; display: flex; gap: 16px; margin-bottom: 24px;">
+        <span class="material-icons-round" style="color: #16a34a; font-size: 24px;">check_circle</span>
+        <div>
+          <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #166534;">Restoring Access</h4>
+          <p style="margin: 4px 0 0; font-size: 0.85rem; font-weight: 600; color: #15803d; line-height: 1.5;">Plan access and all member privileges will be immediately restored upon reactivation.</p>
+        </div>
+      </div>
+
+      <div>
+        <label class="pm-form-label-modern">Reactivation Note (optional)</label>
+        <textarea id="pm-reactivate-note" class="plan-field-textarea" style="width: 100%; min-height: 100px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; font-size: 0.88rem; font-weight: 600; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4880FF'" onblur="this.style.borderColor='#e2e8f0'" placeholder="e.g. Payment verified, issue resolved..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding: 24px 32px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
+      <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+        <span class="material-icons-round" style="font-size: 18px; color: #16a34a;">tips_and_updates</span>
+        Restores all member privileges immediately.
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-outline" onclick="closeModal()" style="height: 42px; padding: 0 24px;">Cancel</button>
+        <button class="btn-primary" onclick="submitPlanAction(${m.id},'reactivate')" style="height: 42px; padding: 0 24px; background: #16a34a; border-color: #16a34a;">
+          Reactivate Member <span class="material-icons-round" style="font-size: 18px; margin-left: 8px;">verified_user</span>
         </button>
       </div>
     </div>`;
@@ -726,8 +820,10 @@ window.updateAssignDuration = function () {
 
   if (preview) {
     preview.style.display = 'flex';
-    document.getElementById('ad-duration').textContent = diffDays + ' Days';
-    document.getElementById('ad-period').textContent = fmtDate(start) + ' to ' + fmtDate(end);
+    const durEl = document.getElementById('ad-duration');
+    const perEl = document.getElementById('ad-period');
+    if (durEl) durEl.textContent = diffDays + ' Days';
+    if (perEl) perEl.textContent = fmtDate(start) + ' to ' + fmtDate(end);
   }
 };
 
@@ -756,9 +852,8 @@ window.autoSetEndDate = function () {
   const upDuration = document.getElementById('up-period-duration');
   const upCard = document.getElementById('upgrade-period-preview');
   if (upRange && upDuration) {
-    const fmt = (d) => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
-    upRange.textContent = fmt(new Date(startVal)) + ' to ' + fmt(start);
-    upDuration.textContent = days + ' Days';
+    if (upRange) upRange.textContent = fmt(new Date(startVal)) + ' to ' + fmt(start);
+    if (upDuration) upDuration.textContent = days + ' Days';
     if (upCard) upCard.style.display = 'flex';
   }
 };
@@ -954,7 +1049,7 @@ function openPaymentStatusModal(m, planData) {
     <div class="modal-header-modern" style="padding: 24px; border-bottom: 1px solid #f1f5f9;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-          <h2 style="font-family:'Outfit',sans-serif; font-size: 1.5rem; font-weight: 800; color: #1e293b; margin:0;">Payment Confirmation</h2>
+          <h2 style="font-family:'Outfit',sans-serif; font-size: 1.5rem; font-weight: 700; color: #1e293b; margin:0;">Payment Confirmation</h2>
           <p style="margin: 4px 0 0; color: #64748b; font-weight: 600; font-size: 0.95rem;">Mark this invoice as paid and record bank details.</p>
         </div>
         <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>

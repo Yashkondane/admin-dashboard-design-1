@@ -138,8 +138,8 @@ window.renderBroadcastTable = function() {
                     </td>
                     <td><span style="font-weight: 600; color: #64748b; font-size: 0.82rem;">${b.sendingOption === 'SendToAll' ? 'Send To All' : b.sendingOption.replace(/([A-Z])/g, ' $1').trim()}</span></td>
                     <td style="text-align: center;">
-                        <span class="status-pill ${statusClass}" style="padding: 5px 12px; min-width: 85px; justify-content: center; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em;">
-                            <span class="status-dot" style="width: 5px; height: 5px;"></span>
+                        <span class="status-badge" style="min-width: 100px; padding: 6px 16px; font-size: 0.82rem; font-weight: 700; background: ${b.status === 'Approved' || b.status === 'Live' ? '#E8F5EC' : (b.status === 'Rejected' || b.status === 'Suspended' ? '#FEE2E2' : '#F3F4F6')}; color: ${b.status === 'Approved' || b.status === 'Live' ? '#15803D' : (b.status === 'Rejected' || b.status === 'Suspended' ? '#B91C1C' : '#4B5563')}; border: 1px solid ${b.status === 'Approved' || b.status === 'Live' ? '#22C55E' : (b.status === 'Rejected' || b.status === 'Suspended' ? '#EF4444' : '#D1D5DB')}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-transform: capitalize;">
+                            <span style="width: 6px; height: 6px; border-radius: 50%; background: ${b.status === 'Approved' || b.status === 'Live' ? '#15803D' : (b.status === 'Rejected' || b.status === 'Suspended' ? '#B91C1C' : '#4B5563')};"></span>
                             ${b.status}
                         </span>
                     </td>

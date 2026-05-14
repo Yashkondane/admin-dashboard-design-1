@@ -62,7 +62,8 @@ function renderTable() {
         <span style="font-weight: 700; color: #1e293b; font-size: 0.82rem;">${req.newContact}</span>
       </td>
       <td style="text-align: center;">
-        <span class="status-pill ${req.statusClass}" style="padding: 6px 14px; min-width: 90px; justify-content: center; font-size: 0.72rem; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.02em; background: ${req.status === 'Approved' ? '#E8F5EC' : '#FFF7ED'}; color: ${req.status === 'Approved' ? '#15803D' : '#A34E0C'}; border: none;">
+        <span class="status-badge" style="min-width: 100px; padding: 6px 16px; font-size: 0.82rem; font-weight: 700; background: ${req.status === 'Approved' ? '#E8F5EC' : '#FFF7ED'}; color: ${req.status === 'Approved' ? '#15803D' : '#A34E0C'}; border: 1px solid ${req.status === 'Approved' ? '#22C55E' : '#FB923C'}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-transform: capitalize;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${req.status === 'Approved' ? '#15803D' : '#A34E0C'};"></span>
           ${req.status}
         </span>
       </td>

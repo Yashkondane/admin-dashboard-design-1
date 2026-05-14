@@ -1,13 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard â€” Overview</title>
+  <title>Admin Dashboard — Overview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@700;800&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@700;800&display=swap"
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=26">
@@ -107,7 +108,8 @@
           <span class="help-box-title">Need Help?</span>
         </div>
         <p class="help-box-desc">Contact Support</p>
-        <span class="material-icons-round" style="align-self: flex-end; font-size: 18px; color: #4880FF;">chevron_right</span>
+        <span class="material-icons-round"
+          style="align-self: flex-end; font-size: 18px; color: #4880FF;">chevron_right</span>
       </div>
       <a href="#" class="nav-item logout-item"><span class="material-icons-round">logout</span><span
           class="nav-label">Log out</span></a>
@@ -120,16 +122,20 @@
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
       </div>
       <div class="top-bar-center" style="flex: 2; display: flex; justify-content: center;">
-        <div class="top-bar-search" style="max-width: 540px; width: 100%;"><span class="material-icons-round">search</span><input type="text"
-            placeholder="Search anything..." id="top-search-input"></div>
+        <div class="top-bar-search" style="max-width: 540px; width: 100%;"><span
+            class="material-icons-round">search</span><input type="text" placeholder="Search anything..."
+            id="top-search-input"></div>
       </div>
       <div class="top-bar-right" style="flex: 1; justify-content: flex-end; gap: 20px;">
-        <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span><span class="notif-dot"></span></button>
+        <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span><span
+            class="notif-dot"></span></button>
         <button class="header-icon-btn"><span class="material-icons-round">help_outline</span></button>
         <div class="header-user" style="background: none; border: none; padding: 0;">
-          <div style="width: 36px; height: 36px; border-radius: 10px; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">JA</div>
-          <div class="header-user-info" style="margin-left: 10px;"><span class="header-user-name">Jayesh Jain</span><span
-              class="header-user-email">Admin</span></div>
+          <div
+            style="width: 36px; height: 36px; border-radius: 10px; background: #4880FF; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">
+            JA</div>
+          <div class="header-user-info" style="margin-left: 10px;"><span class="header-user-name">Jayesh
+              Jain</span><span class="header-user-email">Admin</span></div>
           <span class="material-icons-round header-user-arrow">expand_more</span>
         </div>
       </div>
@@ -137,10 +143,14 @@
 
     <div id="dashboard-view" style="padding: 32px;">
       <!-- Page Title -->
-      <div class="page-title-row" style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-start;">
+      <div class="page-title-row"
+        style="margin-bottom: 28px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-          <h1 class="page-title" style="font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 12px;">Analytics Overview ðŸ‘‹</h1>
-          <p style="font-size: 0.88rem; font-weight: 600; color: #94a3b8; margin-top: 4px;">Welcome back, Jayesh Jain</p>
+          <h1 class="page-title"
+            style="font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 12px;">Analytics
+            Overview 👋</h1>
+          <p style="font-size: 0.88rem; font-weight: 600; color: #94a3b8; margin-top: 4px;">Welcome back, Jayesh Jain
+          </p>
         </div>
         <div style="display: flex; align-items: center; gap: 12px;">
           <div class="dash-date-chip" style="padding: 10px 20px; border-radius: 12px; cursor: pointer;">
@@ -153,143 +163,147 @@
 
       <!-- ===== STATS GRID ===== -->
       <div class="dash-stats-grid">
-
-        <!-- Section 1: Broadcast Info -->
-        <div class="dash-stats-section">
-          <div class="dash-stats-header">
-            <div class="dash-stats-icon" style="background: #eff6ff; color: #4880FF;">
+        <!-- Box 1: Broadcast Info -->
+        <div class="dash-info-box">
+          <div class="dash-box-header">
+            <div class="dash-box-icon" style="background: #eff6ff; color: #4880FF;">
               <span class="material-icons-round">campaign</span>
             </div>
-            <span class="dash-stats-title">Broadcast Info</span>
+            <span class="dash-box-title">Broadcast Info</span>
           </div>
-          <div class="dash-metrics-row">
-            <div class="dash-metric">
-              <span class="dash-metric-label">Total Broadcast</span>
-              <span class="dash-metric-value" id="stat-total-broadcasts">142</span>
+          <div class="dash-box-divider"></div>
+          <div class="dash-box-metrics">
+            <div class="dash-metric-item">
+              <span class="label">Total Broadcast</span>
+              <span class="value" id="stat-total-broadcasts">142</span>
             </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Today's Broadcast</span>
-              <span class="dash-metric-value" id="stat-today-broadcasts">7</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 2: Broadcast for Approval -->
-        <div class="dash-stats-section">
-          <div class="dash-stats-header">
-            <div class="dash-stats-icon" style="background: #f0fdf4; color: #16a34a;">
-              <span class="material-icons-round">check_circle_outline</span>
-            </div>
-            <span class="dash-stats-title">Broadcast for Approval</span>
-          </div>
-          <div class="dash-metrics-row">
-            <div class="dash-metric">
-              <span class="dash-metric-label">Today's Approval</span>
-              <span class="dash-metric-value" id="stat-today-approvals">5</span>
-            </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Total Approval</span>
-              <span class="dash-metric-value" id="stat-total-approvals">128</span>
+            <div class="dash-metric-item">
+              <span class="label">Today's Broadcast</span>
+              <span class="value" id="stat-today-broadcasts">7</span>
             </div>
           </div>
         </div>
 
-        <!-- Section 3: Members -->
-        <div class="dash-stats-section">
-          <div class="dash-stats-header">
-            <div class="dash-stats-icon" style="background: #f5f3ff; color: #8b5cf6;">
-              <span class="material-icons-round">people_outline</span>
+        <!-- Box 2: Broadcast for Approval -->
+        <div class="dash-info-box">
+          <div class="dash-box-header">
+            <div class="dash-box-icon" style="background: #f0fdf4; color: #16a34a;">
+              <span class="material-icons-round">check_circle</span>
             </div>
-            <span class="dash-stats-title">Members</span>
+            <span class="dash-box-title">Broadcast for Approval</span>
           </div>
-          <div class="dash-metrics-grid">
-            <div class="dash-metric">
-              <span class="dash-metric-label">Active</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-active-members">89</span>
+          <div class="dash-box-divider"></div>
+          <div class="dash-box-metrics">
+            <div class="dash-metric-item">
+              <span class="label">Today's Approval</span>
+              <span class="value" id="stat-today-approvals">5</span>
             </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Inactive</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-inactive-members">12</span>
-            </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Pending</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-pending-members">6</span>
-            </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Incomplete</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-incomplete-profiles">3</span>
-            </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Suspend</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-suspended-members">2</span>
+            <div class="dash-metric-item">
+              <span class="label">Total Approval</span>
+              <span class="value" id="stat-total-approvals">128</span>
             </div>
           </div>
         </div>
 
-        <!-- Section 4: Broadcast Approval (Reiterated from Design) -->
-        <div class="dash-stats-section">
-          <div class="dash-stats-header">
-            <div class="dash-stats-icon" style="background: #ecfdf5; color: #059669;">
+        <!-- Box 3: Members -->
+        <div class="dash-info-box">
+          <div class="dash-box-header">
+            <div class="dash-box-icon" style="background: #f5f3ff; color: #8b5cf6;">
+              <span class="material-icons-round">people</span>
+            </div>
+            <span class="dash-box-title">Members</span>
+          </div>
+          <div class="dash-box-divider"></div>
+          <div class="dash-box-metrics dash-box-metrics--compact">
+            <div class="dash-metric-item">
+              <span class="label">Active</span>
+              <span class="value" id="stat-active-members">89</span>
+            </div>
+            <div class="dash-metric-item">
+              <span class="label">Inactive</span>
+              <span class="value" id="stat-inactive-members">12</span>
+            </div>
+            <div class="dash-metric-item">
+              <span class="label">Pending</span>
+              <span class="value" id="stat-pending-members">6</span>
+            </div>
+            <div class="dash-metric-item">
+              <span class="label">Incomplete</span>
+              <span class="value" id="stat-incomplete-profiles">3</span>
+            </div>
+            <div class="dash-metric-item">
+              <span class="label">Suspend</span>
+              <span class="value" id="stat-suspended-members">2</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box 4: Broadcast Approval -->
+        <div class="dash-info-box">
+          <div class="dash-box-header">
+            <div class="dash-box-icon" style="background: #ecfdf5; color: #059669;">
               <span class="material-icons-round">verified</span>
             </div>
-            <span class="dash-stats-title">Broadcast Approval</span>
+            <span class="dash-box-title">Broadcast Approval</span>
           </div>
-          <div class="dash-metrics-row">
-            <div class="dash-metric">
-              <span class="dash-metric-label">Today's Broadcast Approval</span>
-              <span class="dash-metric-value" id="stat-today-approvals-2">5</span>
+          <div class="dash-box-divider"></div>
+          <div class="dash-box-metrics">
+            <div class="dash-metric-item">
+              <span class="label">Today's Broadcast Approval</span>
+              <span class="value" id="stat-today-approvals-2">5</span>
             </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Total Broadcast Approval</span>
-              <span class="dash-metric-value" id="stat-total-approvals-2">128</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section 5: Requests -->
-        <div class="dash-stats-section">
-          <div class="dash-stats-header">
-            <div class="dash-stats-icon" style="background: #fff7ed; color: #ea580c;">
-              <span class="material-icons-round">mail_outline</span>
-            </div>
-            <span class="dash-stats-title">Requests</span>
-          </div>
-          <div class="dash-metrics-grid">
-            <div class="dash-metric">
-              <span class="dash-metric-label">Call Requests</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-call-requests">18</span>
-            </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Contact Requests</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-contact-requests">24</span>
-            </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Suspicious Activity</span>
-              <span class="dash-metric-value dash-metric-value--small" id="stat-suspicious-reports">3</span>
+            <div class="dash-metric-item">
+              <span class="label">Total Broadcast Approval</span>
+              <span class="value" id="stat-total-approvals-2">128</span>
             </div>
           </div>
         </div>
 
-        <!-- Section 6: Plan Expiry -->
-        <div class="dash-stats-section">
-          <div class="dash-stats-header">
-            <div class="dash-stats-icon" style="background: #eff6ff; color: #4880FF;">
-              <span class="material-icons-round">calendar_month</span>
+        <!-- Box 5: Requests -->
+        <div class="dash-info-box">
+          <div class="dash-box-header">
+            <div class="dash-box-icon" style="background: #fff7ed; color: #ea580c;">
+              <span class="material-icons-round">mail</span>
             </div>
-            <span class="dash-stats-title">Members Plan Expiry Info</span>
+            <span class="dash-box-title">Requests</span>
           </div>
-          <div class="dash-metrics-row">
-            <div class="dash-metric">
-              <span class="dash-metric-label">Expiring Today</span>
-              <span class="dash-metric-value" id="stat-expiring-today">4</span>
+          <div class="dash-box-divider"></div>
+          <div class="dash-box-metrics">
+            <div class="dash-metric-item">
+              <span class="label">Call Requests</span>
+              <span class="value" id="stat-call-requests">18</span>
             </div>
-            <div class="dash-metric">
-              <span class="dash-metric-label">Expiring This Week</span>
-              <span class="dash-metric-value" id="stat-expiring-week">11</span>
+            <div class="dash-metric-item">
+              <span class="label">Contact Requests</span>
+              <span class="value" id="stat-contact-requests">24</span>
+            </div>
+            <div class="dash-metric-item">
+              <span class="label">Suspicious Activity</span>
+              <span class="value" id="stat-suspicious-reports">3</span>
             </div>
           </div>
         </div>
 
+        <!-- Box 6: Members Plan Expiry Info -->
+        <div class="dash-info-box">
+          <div class="dash-box-header">
+            <div class="dash-box-icon" style="background: #eff6ff; color: #4880FF;">
+              <span class="material-icons-round">calendar_today</span>
+            </div>
+            <span class="dash-box-title">Members Plan Expiry Info</span>
+          </div>
+          <div class="dash-box-divider"></div>
+          <div class="dash-box-metrics">
+            <div class="dash-metric-item">
+              <span class="label">Expiring Today</span>
+              <span class="value" id="stat-expiring-today">4</span>
+            </div>
+            <div class="dash-metric-item">
+              <span class="label">Expiring This Week</span>
+              <span class="value" id="stat-expiring-week">11</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ===== UPCOMING BROADCASTS TABLE ===== -->
@@ -305,18 +319,23 @@
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
-            <span class="dash-pending-count" id="pending-broadcast-count" style="background: #fee2e2; color: #dc2626; border-radius: 6px; padding: 6px 12px; font-weight: 800;">5 Pending</span>
-            <a href="broadcast-history.html" class="dash-link-btn" style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 8px 20px; font-weight: 700; color: #475569;">
+            <span class="dash-pending-count" id="pending-broadcast-count"
+              style="background: #fee2e2; color: #dc2626; border-radius: 6px; padding: 6px 12px; font-weight: 800;">5
+              Pending</span>
+            <a href="broadcast-history.html" class="dash-link-btn"
+              style="background: #fff; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 8px 20px; font-weight: 700; color: #475569;">
               View History
             </a>
           </div>
         </div>
 
-        <div class="broadcast-container" style="background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+        <div class="broadcast-container"
+          style="background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
           <div id="dash-broadcast-table-container">
             <!-- Table injected by dashboard.js -->
           </div>
-          <div class="table-footer" id="dash-broadcast-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff;">
+          <div class="table-footer" id="dash-broadcast-footer"
+            style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #fff;">
             <!-- Footer injected by dashboard.js -->
           </div>
         </div>

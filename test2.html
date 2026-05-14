@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Invoices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle-tab" id="sidebar-toggle" title="Toggle sidebar">
+            <span class="material-icons-round" id="sidebar-toggle-icon">chevron_left</span>
+        </button>
+        <div class="sidebar-top">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect x="2" y="2" width="10" height="10" rx="3" fill="#4880FF" />
+                        <rect x="16" y="2" width="10" height="10" rx="3" fill="#F9A825" />
+                        <rect x="2" y="16" width="10" height="10" rx="3" fill="#F9A825" />
+                        <rect x="16" y="16" width="10" height="10" rx="3" fill="#4880FF" />
+                    </svg></div>
+                <span class="brand-name">AdminPanel</span>
+            </div>
+
+            <div class="nav-section-label">MAIN MENU</div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span
+                        class="nav-label">Dashboard</span></a>
+                <a href="index.html" class="nav-item" id="nav-members">
+                    <span class="material-icons-round">people</span>
+                    <span class="nav-label">Members</span>
+                    <span class="nav-badge">15</span>
+                </a>
+                <div class="nav-group open">
+                    <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
+                        <span class="material-icons-round">credit_card</span>
+                        <span class="nav-label">Plans &amp; Billing</span>
+                        <span class="material-icons-round nav-chevron">expand_more</span>
+                    </button>
+                    <div class="nav-sub" style="height: auto;">
+                        <a href="plans.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Membership Plans</a>
+                        <a href="labels.html" class="nav-sub-item"><span class="nav-sub-dot"></span>App Membership
+                            Label</a>
+                        <a href="invoice.html" class="nav-sub-item nav-sub-item--active"><span
+                                class="nav-sub-dot"></span>Invoice</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
+                        <span class="material-icons-round">chat_bubble_outline</span>
+                        <span class="nav-label">Communication</span>
+                        <span class="material-icons-round nav-chevron">expand_more</span>
+                    </button>
+                    <div class="nav-sub">
+                        <a href="email.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Send Email</a>
+                        <a href="notifications.html" class="nav-sub-item"><span
+                                class="nav-sub-dot"></span>Notifications</a>
+                        <a href="broadcast-history.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Broadcast
+                            History</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
+                        <span class="material-icons-round">assignment</span>
+                        <span class="nav-label">Requests</span>
+                        <span class="material-icons-round nav-chevron">expand_more</span>
+                    </button>
+                    <div class="nav-sub">
+                        <a href="contact-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Contact
+                            Request</a>
+                        <a href="call-requests.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Call
+                            Request</a>
+                    </div>
+                </div>
+                <div class="nav-group">
+                    <button class="nav-item nav-toggle" onclick="toggleNavGroup(this)">
+                        <span class="material-icons-round">settings</span>
+                        <span class="nav-label">Settings</span>
+                        <span class="material-icons-round nav-chevron">expand_more</span>
+                    </button>
+                    <div class="nav-sub">
+                        <a href="settings-fields.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Field
+                            Setting</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="#" class="nav-item logout-item"><span class="material-icons-round">logout</span><span
+                    class="nav-label">Log out</span></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
+                <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
+                        placeholder="Search invoices…" id="top-search-input"></div>
+            </div>
+            <div class="top-bar-right">
+                <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
+                        class="notif-dot"></span></button>
+                <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span></button>
+                <div class="header-user">
+                    <img class="header-user-avatar" src="https://randomuser.me/api/portraits/women/44.jpg"
+                        alt="Jane Cooper">
+                    <div class="header-user-info"><span class="header-user-name">Jane Cooper</span><span
+                            class="header-user-email">jane234@example.com</span></div>
+                    <span class="material-icons-round header-user-arrow">expand_more</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div id="invoice-view">
+            <div class="page-title-row"
+                style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 class="page-title">Invoices</h1>
+                </div>
+                <div class="page-title-actions">
+                    <button class="btn-outline" style="border-radius: 10px;"><span
+                            class="material-icons-round">ios_share</span> Export</button>
+                </div>
+            </div>
+
+            <div class="tabs-container" style="margin-bottom: 16px;">
+                <button class="tab-item" data-filter="all" onclick="setFilter('all')">
+                    <span>All Invoices</span>
+                    <span class="badge" id="badge-all">0</span>
+                </button>
+                <button class="tab-item active" data-filter="paid" onclick="setFilter('paid')">
+                    <span>Paid</span>
+                    <span class="badge badge-active" id="badge-paid">0</span>
+                </button>
+                <button class="tab-item" data-filter="unpaid" onclick="setFilter('unpaid')">
+                    <span>Unpaid</span>
+                    <span class="badge badge-warning" id="badge-unpaid">0</span>
+                </button>
+                <button class="tab-item" data-filter="cancel" onclick="setFilter('cancel')">
+                    <span>Cancel</span>
+                    <span class="badge badge-inactive" id="badge-cancel">0</span>
+                </button>
+            </div>
+
+            <section class="table-section" style="display: flex; flex-direction: column; flex: 1;">
+                <div class="table-scroll-wrap" style="overflow: visible;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th
+                                    style="width: 5%; font-weight: 600; color: #475569; text-align: center; padding-left: 32px;">
+                                    SR No</th>
+                                <th
+                                    style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">
+                                    Company & Location</th>
+                                <th
+                                    style="width: 12%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">
+                                    Date</th>
+                                <th
+                                    style="width: 15%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">
+                                    Invoice #</th>
+                                <th
+                                    style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">
+                                    Plan & Validity</th>
+                                <th
+                                    style="width: 10%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">
+                                    Amount</th>
+                                <th
+                                    style="width: 10%; font-weight: 600; color: #475569; text-align: center; padding: 12px 16px;">
+                                    Status</th>
+                                <th
+                                    style="width: 8%; text-align:right; font-weight: 600; color: #475569; padding: 12px 16px; padding-right: 32px;">
+                                    Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoice-tbody"></tbody>
+                    </table>
+                </div>
+                <div class="table-footer"
+                    style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                    <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">
+                        Showing 0 invoices</div>
+                    <div class="pagination" id="pagination-controls" style="display: flex; align-items: center;"></div>
+                    <div>
+                        <select id="rows-per-page-bottom" onchange="updateRowsPerPage(this.value)"
+                            style="border: none; outline: none; background: transparent; font-size: 0.85rem; font-weight: 600; color: var(--text-mid); cursor: pointer;">
+                            <option value="10">10 / page</option>
+                            <option value="20">20 / page</option>
+                            <option value="50">50 / page</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Modal for Status Update -->
+        <div id="modal-container" class="modal-overlay hidden">
+            <div id="modal-content" class="modal-content"
+                style="width: 540px; padding: 0; overflow: hidden; border-radius: 16px;"></div>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container"></div>
+    <script src="invoice.js"></script>
+</body>
+
+</html>

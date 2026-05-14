@@ -67,7 +67,8 @@ function renderTable() {
       <td style="color: #64748b; font-weight: 700; font-size: 0.82rem; padding: 16px 24px;">${call.requestNo}</td>
       <td style="color: #1e293b; font-weight: 700; font-size: 0.82rem; padding: 16px 24px;">${call.topic}</td>
       <td style="text-align: center;">
-        <span class="status-pill" style="padding: 6px 14px; min-width: 100px; justify-content: center; font-size: 0.72rem; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.02em; background: ${statusBg}; color: ${statusColor}; border: none;">
+        <span class="status-badge" style="min-width: 100px; padding: 6px 16px; font-size: 0.82rem; font-weight: 700; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-transform: capitalize;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: ${statusColor};"></span>
           ${call.status}
         </span>
       </td>

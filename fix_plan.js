@@ -99,7 +99,7 @@ const planModalLogic = `
       </div>
       <div class="modal-footer" style="padding:24px 32px; background:#f8fafc; border-top:1px solid var(--border); justify-content:flex-end; gap:12px;">
         <button class="btn-outline" style="background:#64748b; color:#fff; border:none;" onclick="closeModal()">Close</button>
-        <button class="btn-primary" style="background:#4f46e5; border-radius:6px; padding: 12px 24px; font-weight:700;" onclick="showToast('Plan Updated!', 'success'); closeModal();">Save</button>
+        <button class="btn-primary" style="background:#4880FF; border-radius:6px; padding: 12px 24px; font-weight:700;" onclick="showToast('Plan Updated!', 'success'); closeModal();">Save</button>
       </div>
     \`;
   }

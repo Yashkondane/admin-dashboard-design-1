@@ -33,7 +33,8 @@
 
       <nav class="sidebar-nav">
         <!-- Dashboard -->
-        <a href="dashboard.html" class="nav-item"><span class="material-icons-round">grid_view</span><span class="nav-label">Dashboard</span></a>
+        <a href="dashboard.html" class="nav-item"><span class="material-icons-round">grid_view</span><span
+            class="nav-label">Dashboard</span></a>
 
         <!-- Members -->
         <a href="index.html" class="nav-item" id="nav-members">
@@ -64,7 +65,8 @@
             <span class="material-icons-round nav-chevron">expand_more</span>
           </button>
           <div class="nav-sub" style="height: auto;">
-            <a href="email.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Send Email</a>
+            <a href="email.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Send
+              Email</a>
             <a href="notifications.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Notifications</a>
             <a href="broadcast-history.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Broadcast History</a>
           </div>
@@ -99,7 +101,8 @@
       </nav>
     </div>
     <div class="sidebar-bottom">
-      <a href="#" class="nav-item logout-item"><span class="material-icons-round">logout</span><span class="nav-label">Log out</span></a>
+      <a href="#" class="nav-item logout-item"><span class="material-icons-round">logout</span><span
+          class="nav-label">Log out</span></a>
     </div>
   </aside>
 
@@ -127,47 +130,62 @@
       <div class="page-title-row" style="margin-bottom: 24px; padding: 0 32px;">
         <h1 class="page-title">Send Email</h1>
         <div class="page-title-actions">
-          <button class="btn-outline" onclick="saveDraft()"><span class="material-icons-round">save</span> Save Draft</button>
-          <button class="btn-primary" onclick="sendEmail()"><span class="material-icons-round">send</span> Send Now</button>
+          <button class="btn-outline" onclick="saveDraft()"><span class="material-icons-round">save</span> Save
+            Draft</button>
+          <button class="btn-primary" onclick="sendEmail()"><span class="material-icons-round">send</span> Send
+            Now</button>
         </div>
       </div>
-      
+
       <div style="display: flex; gap: 24px; align-items: stretch; height: calc(100vh - 240px); padding: 0 32px 32px;">
-        
+
         <!-- Templates Sidebar -->
-        <div style="width: 280px; flex-shrink: 0; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+        <div
+          style="width: 280px; flex-shrink: 0; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
           <div style="padding: 20px; border-bottom: 1px solid var(--border); background: #f8fafc;">
-            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
-              <span class="material-icons-round" style="color: var(--blue); font-size: 20px;">auto_awesome_mosaic</span> Templates
+            <h3
+              style="margin: 0; font-size: 1.05rem; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
+              <span class="material-icons-round" style="color: var(--blue); font-size: 20px;">auto_awesome_mosaic</span>
+              Templates
             </h3>
-            <p style="margin: 4px 0 12px 0; font-size: 0.8rem; color: var(--text-soft); font-weight: 600;">Choose a category to load templates.</p>
-            
+            <p style="margin: 4px 0 12px 0; font-size: 0.8rem; color: var(--text-soft); font-weight: 600;">Choose a
+              category to load templates.</p>
+
             <div style="position: relative;">
-                <select id="category-select" onchange="loadTemplatesByCategory(this.value)" style="width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 800; font-size: 0.85rem; appearance: none; background: #fff; cursor: pointer; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='#e2e8f0'">
-                    <option value="all">All Categories</option>
-                </select>
-                <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+              <select id="category-select" onchange="loadTemplatesByCategory(this.value)"
+                style="width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 800; font-size: 0.85rem; appearance: none; background: #fff; cursor: pointer; outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='#e2e8f0'">
+                <option value="all">All Categories</option>
+              </select>
+              <span class="material-icons-round"
+                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
             </div>
           </div>
           <div id="template-list" style="overflow-y: auto; flex: 1; padding: 16px;">
             <!-- Filled by email.js -->
           </div>
         </div>
-        
+
         <!-- Email Composer -->
-        <div style="flex: 1; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
+        <div
+          style="flex: 1; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02);">
           <div style="padding: 20px 24px; border-bottom: 1px solid var(--border);">
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
               <label style="font-weight: 800; font-size: 0.9rem; color: var(--text-mid); width: 60px;">To:</label>
-              <input type="text" id="email-to" placeholder="e.g. All Active Members, or Specific Emails..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+              <input type="text" id="email-to" placeholder="e.g. All Active Members, or Specific Emails..."
+                style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: var(--text); outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
             </div>
             <div style="display: flex; align-items: center; gap: 16px;">
               <label style="font-weight: 800; font-size: 0.9rem; color: var(--text-mid); width: 60px;">Subject:</label>
-              <input type="text" id="email-subject" placeholder="Enter email subject..." style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+              <input type="text" id="email-subject" placeholder="Enter email subject..."
+                style="flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; color: var(--text); outline: none; transition: border-color 0.2s;"
+                onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
             </div>
           </div>
-          
-          <div style="padding: 12px 24px; border-bottom: 1px solid var(--border); background: #f8fafc; display: flex; gap: 16px; align-items: center;">
+
+          <div
+            style="padding: 12px 24px; border-bottom: 1px solid var(--border); background: #f8fafc; display: flex; gap: 16px; align-items: center;">
             <div style="display: flex; gap: 4px;">
               <button class="editor-btn"><span class="material-icons-round">format_bold</span></button>
               <button class="editor-btn"><span class="material-icons-round">format_italic</span></button>
@@ -186,11 +204,13 @@
               <button class="editor-btn"><span class="material-icons-round">link</span></button>
             </div>
           </div>
-          
-          <textarea id="email-body" style="flex: 1; border: none; padding: 24px; font-family: inherit; font-size: 0.95rem; color: var(--text); line-height: 1.6; resize: none; outline: none;" placeholder="Write your message here..."></textarea>
-          
+
+          <textarea id="email-body"
+            style="flex: 1; border: none; padding: 24px; font-family: inherit; font-size: 0.95rem; color: var(--text); line-height: 1.6; resize: none; outline: none;"
+            placeholder="Write your message here..."></textarea>
+
         </div>
-        
+
       </div>
     </div>
   </main>
@@ -198,4 +218,5 @@
   <div id="toast-container" class="toast-container"></div>
   <script src="email.js"></script>
 </body>
+
 </html>
