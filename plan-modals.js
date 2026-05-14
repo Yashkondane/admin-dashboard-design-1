@@ -38,7 +38,7 @@ function buildInvoiceSection(m) {
         
         <div id="pm-invoice-options" style="display:none; margin-top: 8px;">
            <div style="display: flex; gap: 8px;">
-              <div class="pm-inv-type-chip active" id="type-proforma" onclick="window.selectInvoiceType('proforma', this, event)">
+              <div class="pm-inv-type-chip" id="type-proforma" onclick="window.selectInvoiceType('proforma', this, event)">
                 Proforma
               </div>
               <div class="pm-inv-type-chip" id="type-final" onclick="window.selectInvoiceType('final', this, event)">
@@ -48,7 +48,7 @@ function buildInvoiceSection(m) {
         </div>
       </div>
       <input type="checkbox" id="pm-gen-invoice" style="display:none;">
-      <input type="hidden" id="pm-invoice-type" value="proforma">
+      <input type="hidden" id="pm-invoice-type" value="">
     </div>
   `;
 }
@@ -73,13 +73,19 @@ window.toggleInvoiceSelection = function() {
 window.selectInvoiceType = function(val, el, e) {
   if (e) e.stopPropagation(); // Prevent card toggle
   const input = document.getElementById('pm-invoice-type');
-  if (input) input.value = val;
   
-  // UI Update
-  document.querySelectorAll('.pm-inv-type-chip').forEach(opt => {
-    opt.classList.remove('active');
-  });
-  el.classList.add('active');
+  if (el.classList.contains('active')) {
+    // Deselect if already active
+    el.classList.remove('active');
+    if (input) input.value = '';
+  } else {
+    // Select new option
+    if (input) input.value = val;
+    document.querySelectorAll('.pm-inv-type-chip').forEach(opt => {
+      opt.classList.remove('active');
+    });
+    el.classList.add('active');
+  }
 };
 
 function updateInvoiceDesc() {
@@ -159,14 +165,14 @@ window.openManagePlanModal = function (memberId) {
       <div class="pm-header-left" style="display: flex; flex-direction: column; gap: 6px;">
         <h3 class="plan-modal-title">Plan Actions</h3>
         <div class="pm-action-dropdown-wrap" style="width: 180px; margin-top: 4px;">
-          <div class="action-btn-wrap" style="width: 100%;">
-            <button class="pm-action-hover-trigger" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-weight: 700; color: #1e293b; cursor: pointer;">
+          <div class="action-btn-wrap" style="width: 100%; position: relative;">
+            <button class="pm-action-hover-trigger" onclick="const menu = this.nextElementSibling; const isOpen = menu.style.opacity === '1'; document.querySelectorAll('.dropdown-menu').forEach(m => { m.style.opacity = '0'; m.style.visibility = 'hidden'; m.style.transform = 'translateY(10px)'; }); if (!isOpen) { menu.style.opacity = '1'; menu.style.visibility = 'visible'; menu.style.transform = 'translateY(0)'; } event.stopPropagation();" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-weight: 700; color: #1e293b; cursor: pointer;">
               <span id="pm-current-action-label">Assign Plan</span>
               <span class="material-icons-round">expand_more</span>
             </button>
-            <div class="dropdown-menu" style="width: 100%; left: 0; top: 100%; margin-top: 4px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
+            <div class="dropdown-menu" style="position: absolute; display: flex; flex-direction: column; width: 100%; left: 0; top: 100%; margin-top: 4px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); z-index: 100; transition: all 0.2s ease; opacity: 0; visibility: hidden; transform: translateY(10px);">
               ${actions.map(a => `
-                <button class="dropdown-item" onclick="selectManageAction(${memberId}, '${a.key}')" style="padding: 12px 16px; font-weight: 600;">
+                <button class="dropdown-item" onclick="selectManageAction(${memberId}, '${a.key}'); this.parentElement.style.opacity='0'; this.parentElement.style.visibility='hidden';" style="padding: 12px 16px; font-weight: 600; text-align: left; background: transparent; border: none; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
                   ${a.name}
                 </button>
               `).join('')}
@@ -1068,5 +1074,14 @@ document.addEventListener('keydown', e => {
     if (overlay) { overlay.remove(); return; }
     const modal = document.getElementById('modal-container');
     if (modal && !modal.classList.contains('hidden')) closeModal();
+  }
+});
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.pm-action-dropdown-wrap')) {
+    document.querySelectorAll('.dropdown-menu').forEach(m => {
+      m.style.opacity = '0';
+      m.style.visibility = 'hidden';
+      m.style.transform = 'translateY(10px)';
+    });
   }
 });
