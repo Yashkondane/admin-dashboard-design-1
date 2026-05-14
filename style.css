@@ -1,4 +1,4 @@
-﻿/* ===== RESET & TOKENS ===== */
+/* ===== RESET & TOKENS ===== */
 *,
 *::before,
 *::after {
@@ -4914,8 +4914,9 @@ body {
 .nav-sub { transition: all 0.28s ease !important; }
 
 .action-btn-wrap { position: relative; display: inline-block; }
-.action-btn-wrap:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); display: flex; }
-.dropdown-menu { transition: all 0.2s ease; opacity: 0; visibility: hidden; transform: translateY(10px); }
+.action-btn-wrap:hover .dropdown-menu,
+.dropdown-menu.show { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; display: flex !important; }
+.dropdown-menu { transition: all 0.2s ease; opacity: 0; visibility: hidden; transform: translateY(10px); position: absolute; z-index: 1000; }
 
 
 .pm-inv-type-chip { padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 0.75rem; font-weight: 800; color: #64748b; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }

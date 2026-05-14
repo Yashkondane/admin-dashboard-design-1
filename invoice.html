@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -32,7 +32,8 @@
       <div class="nav-section-label">MAIN MENU</div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.html" class="nav-item"><span class="material-icons-round">grid_view</span><span class="nav-label">Dashboard</span></a>
+        <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span
+            class="nav-label">Dashboard</span></a>
         <a href="index.html" class="nav-item" id="nav-members">
           <span class="material-icons-round">people</span>
           <span class="nav-label">Members</span>
@@ -47,7 +48,8 @@
           <div class="nav-sub" style="height: auto;">
             <a href="plans.html" class="nav-sub-item"><span class="nav-sub-dot"></span>Membership Plans</a>
             <a href="labels.html" class="nav-sub-item"><span class="nav-sub-dot"></span>App Membership Label</a>
-            <a href="invoice.html" class="nav-sub-item nav-sub-item--active"><span class="nav-sub-dot"></span>Invoice</a>
+            <a href="invoice.html" class="nav-sub-item nav-sub-item--active"><span
+                class="nav-sub-dot"></span>Invoice</a>
           </div>
         </div>
         <div class="nav-group">
@@ -86,7 +88,8 @@
       </nav>
     </div>
     <div class="sidebar-bottom">
-      <a href="#" class="nav-item logout-item"><span class="material-icons-round">logout</span><span class="nav-label">Log out</span></a>
+      <a href="#" class="nav-item logout-item"><span class="material-icons-round">logout</span><span
+          class="nav-label">Log out</span></a>
     </div>
   </aside>
 
@@ -112,12 +115,14 @@
 
     <!-- PAGE CONTENT -->
     <div id="invoice-view">
-      <div class="page-title-row" style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+      <div class="page-title-row"
+        style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
         <div>
           <h1 class="page-title">Invoices</h1>
         </div>
         <div class="page-title-actions">
-          <button class="btn-outline" style="border-radius: 10px;"><span class="material-icons-round">ios_share</span> Export</button>
+          <button class="btn-outline" style="border-radius: 10px;"><span class="material-icons-round">ios_share</span>
+            Export</button>
         </div>
       </div>
 
@@ -145,21 +150,32 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th style="width: 5%; font-weight: 600; color: #475569; text-align: center; padding-left: 32px;">SR No</th>
-                <th style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Company & Location</th>
-                <th style="width: 12%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Date</th>
-                <th style="width: 15%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Invoice #</th>
-                <th style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Plan & Validity</th>
-                <th style="width: 10%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Amount</th>
-                <th style="width: 10%; font-weight: 600; color: #475569; text-align: center; padding: 12px 16px;">Status</th>
-                <th style="width: 8%; text-align:right; font-weight: 600; color: #475569; padding: 12px 16px; padding-right: 32px;">Action</th>
+                <th style="width: 5%; font-weight: 600; color: #475569; text-align: center; padding-left: 32px;">SR No
+                </th>
+                <th style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Company
+                  & Location</th>
+                <th style="width: 12%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Date
+                </th>
+                <th style="width: 15%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Invoice
+                  #</th>
+                <th style="width: 20%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Plan &
+                  Validity</th>
+                <th style="width: 10%; font-weight: 600; color: #475569; text-align: left; padding: 12px 16px;">Amount
+                </th>
+                <th style="width: 10%; font-weight: 600; color: #475569; text-align: center; padding: 12px 16px;">Status
+                </th>
+                <th
+                  style="width: 8%; text-align:right; font-weight: 600; color: #475569; padding: 12px 16px; padding-right: 32px;">
+                  Action</th>
               </tr>
             </thead>
             <tbody id="invoice-tbody"></tbody>
           </table>
         </div>
-        <div class="table-footer" style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 0 invoices</div>
+        <div class="table-footer"
+          style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 0
+            invoices</div>
           <div class="pagination" id="pagination-controls" style="display: flex; align-items: center;"></div>
           <div>
             <select id="rows-per-page-bottom" onchange="updateRowsPerPage(this.value)"
@@ -175,11 +191,13 @@
 
     <!-- Modal for Status Update -->
     <div id="modal-container" class="modal-overlay hidden">
-      <div id="modal-content" class="modal-content" style="width: 540px; padding: 0; overflow: hidden; border-radius: 16px;"></div>
+      <div id="modal-content" class="modal-content"
+        style="width: 540px; padding: 0; overflow: hidden; border-radius: 16px;"></div>
     </div>
   </main>
 
   <div id="toast-container" class="toast-container"></div>
   <script src="invoice.js"></script>
 </body>
+
 </html>

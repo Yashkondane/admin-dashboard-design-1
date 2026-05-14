@@ -47,15 +47,15 @@ function renderTable() {
   const tbody = document.getElementById('invoice-tbody');
   if (!tbody) return;
 
-  const filtered = currentFilter === 'all' 
-    ? invoices 
+  const filtered = currentFilter === 'all'
+    ? invoices
     : invoices.filter(inv => inv.status.toLowerCase() === currentFilter.toLowerCase());
 
   updateBadges();
-  
+
   const totalItems = filtered.length;
   const totalPages = Math.ceil(totalItems / rowsPerPage);
-  
+
   if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
 
   const start = (currentPage - 1) * rowsPerPage;
@@ -112,20 +112,20 @@ function renderTable() {
         <td style="text-align: right; position: relative; padding: 12px 16px; padding-right: 32px; overflow: visible;">
           <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
             <span class="material-icons-round" style="color: #94a3b8; font-size: 20px; transition: transform 0.3s; transform: rotate(${isExpanded ? '180deg' : '0deg'})">expand_more</span>
-            <button class="header-icon-btn" onclick="toggleActionMenu(event, '${inv.id}')">
+            <button class="header-icon-btn" onclick="window.toggleActionMenu(event, '${inv.id}')">
               <span class="material-icons-round">more_vert</span>
             </button>
             <div class="dropdown-menu" id="menu-${inv.id}" style="position: absolute; top: 40px; right: 32px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); width: 180px; z-index: 1000; display: none; flex-direction: column; overflow: hidden; animation: slideIn 0.2s ease-out;">
               <button onclick="openStatusModal(event, '${inv.id}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
                 <span class="material-icons-round" style="font-size: 16px; color: #64748b;">edit</span> Update Status
               </button>
-              <button onclick="event.stopPropagation(); alert('Send Email')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+              <button onclick="openEmailModal(event, '${inv.id}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
                 <span class="material-icons-round" style="font-size: 16px; color: #64748b;">mail</span> Send Email
               </button>
-              <button onclick="event.stopPropagation(); alert('Download PDF')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+              <button onclick="openPDFModal(event, '${inv.id}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
                 <span class="material-icons-round" style="font-size: 16px; color: #64748b;">download</span> Download PDF
               </button>
-              <button onclick="event.stopPropagation(); alert('Delete')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%; border-top: 1px solid #f1f5f9;">
+              <button onclick="openDeleteModal(event, '${inv.id}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%; border-top: 1px solid #f1f5f9;">
                 <span class="material-icons-round" style="font-size: 16px; color: #ef4444;">delete</span> Delete
               </button>
             </div>
@@ -203,11 +203,14 @@ function toggleInvoiceRow(id) {
   renderTable();
 }
 
-function toggleActionMenu(event, id) {
-  event.stopPropagation();
+window.toggleActionMenu = function(event, id) {
+  if (event) event.stopPropagation();
   const targetMenu = document.getElementById(`menu-${id}`);
-  const isShowing = targetMenu.style.display === 'flex';
+  if (!targetMenu) return;
 
+  const isShowing = targetMenu.style.display === 'flex' || targetMenu.classList.contains('show');
+
+  // Close all other dropdowns
   document.querySelectorAll('.dropdown-menu').forEach(m => {
     m.style.display = 'none';
     m.classList.remove('show');
@@ -216,8 +219,11 @@ function toggleActionMenu(event, id) {
   if (!isShowing) {
     targetMenu.style.display = 'flex';
     targetMenu.classList.add('show');
+  } else {
+    targetMenu.style.display = 'none';
+    targetMenu.classList.remove('show');
   }
-}
+};
 
 document.addEventListener('click', () => {
   document.querySelectorAll('.dropdown-menu').forEach(m => {
@@ -235,7 +241,7 @@ function openStatusModal(event, id) {
 
   const modalContainer = document.getElementById('modal-container');
   const modalContent = document.getElementById('modal-content');
-  
+
   const formatDateForInput = (dStr) => {
     if (!dStr || dStr === '01-Jan-2001') return '';
     const parts = dStr.split('-');
@@ -245,75 +251,75 @@ function openStatusModal(event, id) {
   };
 
   modalContent.innerHTML = `
-    <div style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff;">
-      <h2 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #1e293b;">Update Payment Status</h2>
-      <button onclick="closeModal()" style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; transition: all 0.2s;">
-        <span class="material-icons-round" style="font-size: 18px;">close</span>
-      </button>
+    <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+      <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Update Payment Status</h2>
+      <button class="header-icon-btn" onclick="closeModal()"><span class="material-icons-round">close</span></button>
     </div>
     
     <div style="padding: 32px; background: #fff;">
-      <!-- Status Row -->
-      <div style="display: flex; align-items: center; gap: 32px; margin-bottom: 24px;">
-        <label style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; width: 60px;">Status</label>
-        <div style="display: flex; gap: 24px;">
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; font-size: 0.9rem;">
-            <input type="radio" name="status" value="Unpaid" ${inv.status === 'Unpaid' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;"> Unpaid
-          </label>
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; font-size: 0.9rem;">
-            <input type="radio" name="status" value="Paid" ${inv.status === 'Paid' ? 'checked' : ''} onchange="togglePaidFields(true)" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;"> Paid
-          </label>
-          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; font-size: 0.9rem;">
-            <input type="radio" name="status" value="Cancel" ${inv.status === 'Cancel' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;"> Cancel
-          </label>
+      <div style="display: flex; flex-direction: column; gap: 28px;">
+        <!-- Status Row -->
+        <div style="display: flex; align-items: center; gap: 24px;">
+          <label style="font-size: 0.72rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; width: 80px;">Status</label>
+          <div style="display: flex; gap: 20px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Unpaid" ${inv.status === 'Unpaid' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Unpaid
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Paid" ${inv.status === 'Paid' ? 'checked' : ''} onchange="togglePaidFields(true)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Paid
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="status" value="Cancel" ${inv.status === 'Cancel' ? 'checked' : ''} onchange="togglePaidFields(false)" style="width: 18px; height: 18px; accent-color: #2563eb;"> Cancel
+            </label>
+          </div>
         </div>
-      </div>
 
-      <div id="paid-fields" class="${inv.status === 'Paid' ? '' : 'hidden'}">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Date</label>
-            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
-              <input type="date" id="status-date" value="${formatDateForInput(inv.bankInfo?.date)}" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+        <div id="paid-fields" class="${inv.status === 'Paid' ? '' : 'hidden'}">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Date</label>
+              <div class="pm-field-modern">
+                <input type="date" id="status-date" value="${formatDateForInput(inv.bankInfo?.date)}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
             </div>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Mode</label>
-            <div style="position: relative; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
-              <select id="status-mode" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; appearance: none; cursor: pointer; font-family: 'Nunito Sans', sans-serif;">
-                <option value="Bank Transfer" ${inv.bankInfo?.mode === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
-                <option value="Cash" ${inv.bankInfo?.mode === 'Cash' ? 'selected' : ''}>Cash</option>
-                <option value="Check" ${inv.bankInfo?.mode === 'Check' ? 'selected' : ''}>Check</option>
-                <option value="UPI" ${inv.bankInfo?.mode === 'UPI' ? 'selected' : ''}>UPI / QR</option>
-              </select>
-              <span class="material-icons-round" style="position: absolute; right: 8px; pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Mode</label>
+              <div class="pm-field-modern" style="position: relative;">
+                <select id="status-mode" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b; appearance: none; cursor: pointer; padding-right: 24px;">
+                  <option value="Bank Transfer" ${inv.bankInfo?.mode === 'Bank Transfer' ? 'selected' : ''}>Bank Transfer</option>
+                  <option value="Cash" ${inv.bankInfo?.mode === 'Cash' ? 'selected' : ''}>Cash</option>
+                  <option value="Check" ${inv.bankInfo?.mode === 'Check' ? 'selected' : ''}>Check</option>
+                  <option value="UPI" ${inv.bankInfo?.mode === 'UPI' ? 'selected' : ''}>UPI / QR</option>
+                </select>
+                <span class="material-icons-round" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 20px;">expand_more</span>
+              </div>
             </div>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Reference Number</label>
-            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
-              <input type="text" id="status-ref" placeholder="TXN..." value="${inv.bankInfo?.refNo || ''}" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Reference Number</label>
+              <div class="pm-field-modern">
+                <input type="text" id="status-ref" placeholder="TXN..." value="${inv.bankInfo?.refNo || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
             </div>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Settlement Amount</label>
-            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
-              <input type="text" id="status-amount" placeholder="0.00" value="${inv.bankInfo?.amount || ''}" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Settlement Amount</label>
+              <div class="pm-field-modern">
+                <input type="text" id="status-amount" placeholder="0.00" value="${inv.bankInfo?.amount || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
             </div>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2;">
-            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Bank</label>
-            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
-              <input type="text" id="status-bank" placeholder="e.g. HDFC Bank" value="${inv.bankInfo?.bankName || ''}" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            <div style="display: flex; flex-direction: column; gap: 8px; grid-column: span 2;">
+              <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Bank</label>
+              <div class="pm-field-modern">
+                <input type="text" id="status-bank" placeholder="e.g. HDFC Bank" value="${inv.bankInfo?.bankName || ''}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div style="padding: 0 32px 32px 32px; background: #fff; display: flex; justify-content: flex-end; gap: 16px; border-radius: 0 0 16px 16px;">
-      <button class="btn-outline" onclick="closeModal()">Discard</button>
-      <button class="btn-primary" onclick="saveStatus()">Update Status</button>
+    <div style="padding: 16px 32px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem;">Discard</button>
+      <button class="btn-primary" onclick="saveStatus()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; background: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">Update Status</button>
     </div>
   `;
 
@@ -456,4 +462,94 @@ function updateRowsPerPage(val) {
   rowsPerPage = parseInt(val);
   currentPage = 1;
   renderTable();
+}
+
+// Additional Action Modals
+function openEmailModal(event, id) {
+  if (event) event.stopPropagation();
+  document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+  const inv = invoices.find(i => i.id === id);
+  if (!inv) return;
+
+  const modalContainer = document.getElementById('modal-container');
+  const modalContent = document.getElementById('modal-content');
+  
+  modalContent.innerHTML = `
+    <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff;">
+      <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Send Invoice Email</h2>
+      <button class="header-icon-btn" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div style="padding: 32px; background: #fff;">
+      <p style="margin-bottom: 24px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Confirm sending invoice <strong>${id}</strong> to client.</p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Email</label>
+        <div class="pm-field-modern">
+          <input type="email" value="${inv.clientEmail || 'client@example.com'}" style="width: 100%; border: none; background: transparent; outline: none; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+        </div>
+      </div>
+    </div>
+    <div style="padding: 16px 32px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
+      <button class="btn-primary" onclick="confirmAction('Email', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #2563eb;">Send Now</button>
+    </div>
+  `;
+  modalContainer.classList.remove('hidden');
+}
+
+function openPDFModal(event, id) {
+  if (event) event.stopPropagation();
+  document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+  const modalContainer = document.getElementById('modal-container');
+  const modalContent = document.getElementById('modal-content');
+  
+  modalContent.innerHTML = `
+    <div style="padding: 32px; background: #fff; text-align: center; border-radius: 16px;">
+      <div style="width: 64px; height: 64px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-icons-round" style="font-size: 32px; color: #16a34a;">picture_as_pdf</span>
+      </div>
+      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800; color: #1e293b;">Download PDF</h2>
+      <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Generate and download the PDF for invoice <strong>${id}</strong>?</p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
+        <button class="btn-primary" onclick="confirmAction('PDF', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #2563eb;">Download</button>
+      </div>
+    </div>
+  `;
+  modalContainer.classList.remove('hidden');
+}
+
+function openDeleteModal(event, id) {
+  if (event) event.stopPropagation();
+  document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
+  const modalContainer = document.getElementById('modal-container');
+  const modalContent = document.getElementById('modal-content');
+  
+  modalContent.innerHTML = `
+    <div style="padding: 32px; background: #fff; text-align: center; border-radius: 16px;">
+      <div style="width: 64px; height: 64px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-icons-round" style="font-size: 32px; color: #ef4444;">delete_outline</span>
+      </div>
+      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800; color: #1e293b;">Delete Invoice</h2>
+      <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Are you sure you want to delete invoice <strong>${id}</strong>? This cannot be undone.</p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-outline" onclick="closeModal()" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
+        <button class="btn-primary" onclick="confirmAction('Delete', '${id}')" style="height: 44px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #ef4444; border-color: #ef4444;">Delete</button>
+      </div>
+    </div>
+  `;
+  modalContainer.classList.remove('hidden');
+}
+
+function confirmAction(type, id) {
+  closeModal();
+  if (type === 'Delete') {
+    const idx = invoices.findIndex(i => i.id === id);
+    if (idx !== -1) invoices.splice(idx, 1);
+    renderTable();
+    showToast(`Invoice ${id} deleted`, 'success');
+  } else if (type === 'Email') {
+    showToast(`Invoice ${id} emailed successfully`, 'success');
+  } else if (type === 'PDF') {
+    showToast(`Downloading invoice ${id} PDF`, 'success');
+  }
 }

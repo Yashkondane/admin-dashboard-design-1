@@ -258,6 +258,7 @@ window.renderTimelineEvent = function (p) {
   `;
 }
 
+
 function toggleDropdown(id, btnEl) {
   const dropdown = document.getElementById(`dropdown-${id}`);
   const isShowing = dropdown.classList.contains('show');
@@ -266,12 +267,19 @@ function toggleDropdown(id, btnEl) {
     const rect = btnEl.getBoundingClientRect();
     dropdown.style.top = (rect.bottom + 4 + window.scrollY) + 'px';
     dropdown.style.left = (rect.right - 144 + window.scrollX) + 'px';
+    dropdown.style.display = 'flex';
     dropdown.classList.add('show');
+  } else {
+    dropdown.style.display = 'none';
+    dropdown.classList.remove('show');
   }
 }
 
 function closeAllDropdowns() {
-  document.querySelectorAll('.dropdown-menu').forEach(d => d.classList.remove('show'));
+  document.querySelectorAll('.dropdown-menu').forEach(d => {
+    d.classList.remove('show');
+    d.style.display = 'none';
+  });
 }
 
 document.addEventListener('click', closeAllDropdowns);
@@ -666,7 +674,7 @@ function renderProfileTab(m, tab) {
               <div class="employee-card" style="height: 100%; gap: 16px;">
                 <div style="position:absolute; top:16px; right:12px; z-index:10;">
                   <div class="action-btn-wrap">
-                    <button class="action-btn" onclick="event.stopPropagation()">
+                    <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}', this)">
                       <span class="material-icons-round">more_vert</span>
                     </button>
                     <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="right:0;top:100%;margin-top:4px">
@@ -793,7 +801,7 @@ function renderProfileTab(m, tab) {
                     </td>
                     <td style="text-align:right;">
                     <div class="action-btn-wrap">
-                      <button class="action-btn" onclick="event.stopPropagation()">
+                      <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-table-${m.id}-${ci}', this)">
                         <span class="material-icons-round">more_vert</span>
                       </button>
                       <div class="dropdown-menu" id="dropdown-contact-table-${m.id}-${ci}">
@@ -872,7 +880,7 @@ function renderProfileTab(m, tab) {
                     </td>
                     <td style="text-align:right;">
                       <div class="action-btn-wrap">
-                        <button class="action-btn" onclick="event.stopPropagation()" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
+                        <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
                           <span class="material-icons-round">more_vert</span>
                         </button>
                         <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}">
@@ -990,15 +998,16 @@ function renderProfileTab(m, tab) {
           </div>
 
           <div id="tl-table-view" class="plan-timeline-table-view" style="display:none; padding: 0 24px 24px;">
-            <div class="table-responsive" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+            <div class="table-responsive" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: visible;">
               <table class="plan-history-table">
-                <thead>
+                <thead style="background: #f8fafc;">
                   <tr>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 60px;">Sr</th>
-                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; cursor:pointer;">Plan Detail <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
-                    <th onclick="sortPlanHistory(${m.id}, 'date')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; cursor:pointer;">Timeline <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;">Invoice</th>
-                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 100px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 70px;">Sr No</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Plan & Validity <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice #</th>
+                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Amount</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 110px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #64748b; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1015,24 +1024,48 @@ function renderProfileTab(m, tab) {
                     
                     return `
                       <!-- Main Invoice Row -->
-                      <tr class="invoice-accordion-row" id="inv-row-${safeInvId}" onclick="window.toggleInvoiceAccordion('${safeInvId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: #64748b;">${p.sr}</td>
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
-                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
+                      <tr class="invoice-accordion-row" id="inv-row-${safeInvId}" onclick="window.toggleInvoiceAccordion('${safeInvId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#fcfcfc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 800; color: #475569;">${p.sr < 10 ? '0' + p.sr : p.sr}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+                           <div style="font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</div>
+                           <div style="font-size: 0.72rem; font-weight: 600; color: #94a3b8; margin-top: 2px;">${p.date}</div>
+                        </td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 800; color: #1e293b;">${p.invoice || '—'}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; color: #475569;">₹ 5,000</td>
                         <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
-                          <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
-                            <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusBorder}; padding: 4px 10px; border-radius: 4px;">
-                              ${p.status}
-                            </span>
-                            <span class="material-icons-round inv-chevron" style="font-size:18px; color:#94a3b8; transition: all 0.2s;">chevron_right</span>
+                          <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusBorder}; padding: 4px 12px; border-radius: 4px;">
+                            ${p.status}
+                          </span>
+                        </td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; position: relative; overflow: visible;">
+                          <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                            <span class="material-icons-round inv-chevron" style="font-size:20px; color:#94a3b8; transition: all 0.2s;">expand_more</span>
+                            <div style="position: relative;">
+                              <div onclick="window.toggleProfileActionMenu(event, '${safeInvId}')" style="width: 28px; height: 28px; border: 1px solid #e2e8f0; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fff; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#fff'">
+                                 <span class="material-icons-round" style="font-size: 16px; color: #64748b;">more_vert</span>
+                              </div>
+                              <div class="dropdown-menu profile-inv-menu" id="prof-menu-${safeInvId}" style="position: absolute; top: 32px; right: 0; background: white; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 180px; z-index: 1000; display: none; flex-direction: column; overflow: hidden;">
+                                <button onclick="window.openStatusModalProfile(event, '${safeInvId}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+                                  <span class="material-icons-round" style="font-size: 16px; color: #64748b;">edit</span> Update Status
+                                </button>
+                                <button onclick="window.openEmailModalProfile(event, '${safeInvId}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+                                  <span class="material-icons-round" style="font-size: 16px; color: #64748b;">mail</span> Send Email
+                                </button>
+                                <button onclick="window.openPDFModalProfile(event, '${safeInvId}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #1e293b; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%;">
+                                  <span class="material-icons-round" style="font-size: 16px; color: #64748b;">download</span> Download PDF
+                                </button>
+                                <button onclick="window.openDeleteModalProfile(event, '${safeInvId}')" style="padding: 10px 16px; text-align: left; background: none; border: none; font-size: 0.85rem; color: #ef4444; cursor: pointer; display: flex; align-items: center; gap: 8px; width: 100%; border-top: 1px solid #f1f5f9;">
+                                  <span class="material-icons-round" style="font-size: 16px; color: #ef4444;">delete</span> Delete
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </td>
                       </tr>
                       
                       <!-- Expansion (Dropdown) Row -->
                       <tr id="inv-expand-${safeInvId}" style="display:none;">
-                        <td colspan="5" style="padding: 0 24px 16px 24px; border-bottom: 1px solid var(--border);">
+                        <td colspan="6" style="padding: 0 24px 16px 24px; border-bottom: 1px solid var(--border);">
                           <div style="padding: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; animation: slideDown 0.2s ease;">
                             
                             <!-- Header -->
@@ -1040,12 +1073,6 @@ function renderProfileTab(m, tab) {
                               <div style="display:flex; align-items:center; gap:12px;">
                                 <span class="material-icons-round" style="font-size:22px; color:var(--blue);">receipt_long</span>
                                 <span style="font-size:1rem; font-weight:900; color:#1e293b;">${p.name} — Record #${p.sr}</span>
-                              </div>
-                              <div style="display:flex; gap:8px;">
-                                <button class="btn-outline" onclick="event.stopPropagation(); showToast('Editing record #${p.sr}', 'info')" style="padding:6px 16px; font-size:0.8rem; border-radius:8px; display:flex; align-items:center; gap:6px; font-weight:800;">
-                                  <span class="material-icons-round" style="font-size:16px;">edit</span> Edit
-                                </button>
-                                ${p.invoice ? '<button class="btn-outline" onclick="event.stopPropagation(); showToast(\\\'Downloading invoice\\\', \\\'info\\\')" style="padding:6px 16px; font-size:0.8rem; border-radius:8px; display:flex; align-items:center; gap:6px; font-weight:800;"><span class="material-icons-round" style="font-size:16px;">download</span> PDF</button>' : ''}
                               </div>
                             </div>
                             
@@ -2293,17 +2320,17 @@ window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = f
       </div>
       <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
         <button onclick="window.closeModal()" style="display:flex; align-items:center; gap:8px; border:1.5px solid #e2e8f0; border-radius:10px; background:#fff; color:#64748b; font-weight:700; font-size:0.9rem; cursor:pointer; padding:8px 16px;">Cancel</button>
-        <div style="display: flex; gap: 10px;">
-          <button onclick="handleBroadcastAction('Hide', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:6px; padding: 8px 16px; border: none; border-radius: 10px; background: #FFF7ED; color: #A34E0C; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
-            <span class="material-icons-round" style="font-size:16px;">visibility_off</span> Hide
+        <div style="display: flex; gap: 12px;">
+          <button onclick="handleBroadcastAction('Hide', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 10px 22px; border: 1.5px solid #e2e8f0; border-radius: 12px; background: #fff; color: #475569; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+            <span class="material-icons-round" style="font-size:20px;">visibility_off</span> Hide
           </button>
           ${(!memberId || memberId === 'null') ? `
-          <button onclick="handleBroadcastAction('Suspend', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:6px; padding: 8px 16px; border: none; border-radius: 10px; background: #FEF2F2; color: #991B1B; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
-            <span class="material-icons-round" style="font-size:16px;">block</span> Suspend
+          <button onclick="handleBroadcastAction('Suspend', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 10px 22px; border: 1.5px solid #fee2e2; border-radius: 12px; background: #fff; color: #ef4444; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;">
+            <span class="material-icons-round" style="font-size:20px;">cancel</span> Reject
           </button>
           ` : ''}
-          <button onclick="handleBroadcastAction('${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:6px; padding: 8px 16px; border: none; border-radius: 10px; background: #E8F5EC; color: #15803D; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
-            <span class="material-icons-round" style="font-size:16px;">check_circle</span> ${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}
+          <button onclick="handleBroadcastAction('${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:8px; padding: 10px 22px; border: none; border-radius: 12px; background: #059669; color: #fff; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
+            <span class="material-icons-round" style="font-size:20px;">check_circle</span> ${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}
           </button>
         </div>
       </div>
@@ -2366,7 +2393,7 @@ window.handleBroadcastAction = function(action, memberId, broadcastId) {
     openProfileDecisionModal(action.toLowerCase(), broadcastId, (reason) => {
       b.status = action === 'Hide' ? 'Hidden' : 'Suspended';
       b.actionReason = reason; // Store reason
-      showToast(`Broadcast ${action === 'Hide' ? 'hidden' : 'suspended'} successfully`, action === 'Hide' ? 'success' : 'error');
+      showToast(`Broadcast ${action === 'Hide' ? 'hidden' : 'rejected'} successfully`, action === 'Hide' ? 'success' : 'error');
       closeModal();
       
       // Remove from pending if in dashboard
@@ -2836,3 +2863,418 @@ window.toggleInvoiceAccordion = function(safeInvId, rowEl) {
 };
 
 
+// Profile Invoices 3-dots Dropdown Logic
+window.toggleProfileActionMenu = function(event, id) {
+  event.stopPropagation();
+  const targetMenu = document.getElementById('prof-menu-' + id);
+  if (!targetMenu) return;
+  
+  const isShowing = targetMenu.style.display === 'flex';
+
+  // Close all other dropdowns
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+  });
+
+  if (!isShowing) {
+    targetMenu.style.display = 'flex';
+  }
+};
+
+// Global click to close profile dropdowns
+document.addEventListener('click', () => {
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+  });
+});
+window.openStatusModalProfile = function(event, invId) {
+  event.stopPropagation();
+  
+  // Close all open dropdowns
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+  });
+  
+  // Create overlay
+  let overlay = document.getElementById('prof-status-modal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'prof-status-modal';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(15, 23, 42, 0.4)';
+    overlay.style.backdropFilter = 'blur(4px)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    document.body.appendChild(overlay);
+  }
+
+  // Find existing status from DOM to prepopulate (assuming default Unpaid if not found)
+  let currentStatus = 'Unpaid';
+  const row = document.getElementById('inv-row-' + invId);
+  if (row) {
+    const statusSpan = row.querySelector('td:nth-child(5) span');
+    if (statusSpan) currentStatus = statusSpan.textContent.trim();
+  }
+
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 540px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); animation: slideIn 0.2s ease-out;">
+      <div style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #1e293b;">Update Payment Status</h2>
+        <button onclick="document.getElementById('prof-status-modal').style.display='none'" style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; transition: all 0.2s;">
+          <span class="material-icons-round" style="font-size: 18px;">close</span>
+        </button>
+      </div>
+      
+      <div style="padding: 32px; background: #fff;">
+        <div style="display: flex; align-items: center; gap: 32px; margin-bottom: 24px;">
+          <label style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; width: 60px;">Status</label>
+          <div style="display: flex; gap: 24px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="prof_status" value="Unpaid" ${currentStatus === 'Unpaid' ? 'checked' : ''} onchange="document.getElementById('prof-paid-fields').style.display='none'" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;"> Unpaid
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="prof_status" value="Paid" ${currentStatus === 'Paid' ? 'checked' : ''} onchange="document.getElementById('prof-paid-fields').style.display='block'" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;"> Paid
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #475569; font-size: 0.9rem;">
+              <input type="radio" name="prof_status" value="N/A" ${currentStatus === 'N/A' || currentStatus === 'Cancel' ? 'checked' : ''} onchange="document.getElementById('prof-paid-fields').style.display='none'" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;"> Cancel
+            </label>
+          </div>
+        </div>
+
+        <div id="prof-paid-fields" style="display: ${currentStatus === 'Paid' ? 'block' : 'none'};">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Date</label>
+              <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+                <input type="date" id="prof-status-date" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Mode</label>
+              <div style="position: relative; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+                <select id="prof-status-mode" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; appearance: none; cursor: pointer; font-family: 'Nunito Sans', sans-serif;">
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Check">Check</option>
+                  <option value="UPI">UPI / QR</option>
+                </select>
+                <span class="material-icons-round" style="position: absolute; right: 8px; pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Reference Number</label>
+              <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+                <input type="text" id="prof-status-ref" placeholder="TXN..." style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Settlement Amount</label>
+              <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+                <input type="text" id="prof-status-amount" placeholder="0.00" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2;">
+              <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Bank</label>
+              <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+                <input type="text" id="prof-status-bank" placeholder="e.g. HDFC Bank" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 0 32px 32px 32px; background: #fff; display: flex; justify-content: flex-end; gap: 16px; border-radius: 0 0 16px 16px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'">Discard</button>
+        <button class="btn-primary" onclick="window.saveProfileStatus('${invId}')">Update Status</button>
+      </div>
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+};
+
+window.saveProfileStatus = function(invId) {
+  const selectedStatus = document.querySelector('input[name="prof_status"]:checked').value;
+  const row = document.getElementById('inv-row-' + invId);
+  
+  if (row) {
+    const statusSpan = row.querySelector('td:nth-child(5) span');
+    if (statusSpan) {
+      statusSpan.textContent = selectedStatus;
+      
+      // Update badge colors
+      if (selectedStatus === 'Paid') {
+        statusSpan.style.color = '#16a34a';
+        statusSpan.style.background = '#f0fdf4';
+        statusSpan.style.border = '1px solid #bbf7d0';
+      } else if (selectedStatus === 'Unpaid') {
+        statusSpan.style.color = '#f59e0b';
+        statusSpan.style.background = '#fffbeb';
+        statusSpan.style.border = '1px solid #fef3c7';
+      } else {
+        statusSpan.style.color = '#94a3b8';
+        statusSpan.style.background = '#f8fafc';
+        statusSpan.style.border = '1px solid #e2e8f0';
+      }
+    }
+  }
+
+  document.getElementById('prof-status-modal').style.display = 'none';
+  if (typeof showToast === 'function') {
+    showToast('Invoice status updated', 'success');
+  } else {
+    alert('Invoice status updated successfully!');
+  }
+};
+
+window.openEmailModalProfile = function(event, invId) {
+  event.stopPropagation();
+  document.querySelectorAll('.profile-inv-menu').forEach(m => m.style.display = 'none');
+  
+  let overlay = document.getElementById('prof-status-modal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'prof-status-modal';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(15, 23, 42, 0.4)';
+    overlay.style.backdropFilter = 'blur(4px)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    document.body.appendChild(overlay);
+  }
+
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+      <div style="padding: 24px 32px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #1e293b;">Send Invoice Email</h2>
+        <button onclick="document.getElementById('prof-status-modal').style.display='none'" style="width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b;">
+          <span class="material-icons-round" style="font-size: 18px;">close</span>
+        </button>
+      </div>
+      <div style="padding: 32px;">
+        <p style="margin-bottom: 20px; color: #64748b; font-size: 0.9rem;">Send invoice record <strong>#${invId}</strong>?</p>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Recipient Email</label>
+          <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+            <input type="email" placeholder="client@example.com" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b;">
+          </div>
+        </div>
+      </div>
+      <div style="padding: 0 32px 32px 32px; display: flex; justify-content: flex-end; gap: 16px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'">Cancel</button>
+        <button class="btn-primary" onclick="window.confirmSendEmailProfile('${invId}')">Send Email</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+};
+
+window.confirmSendEmailProfile = function(id) {
+  document.getElementById('prof-status-modal').style.display = 'none';
+  if (typeof showToast === 'function') showToast(`Email sent for record #${id}`, 'success');
+};
+
+window.openPDFModalProfile = function(event, invId) {
+  event.stopPropagation();
+  document.querySelectorAll('.profile-inv-menu').forEach(m => m.style.display = 'none');
+  
+  let overlay = document.getElementById('prof-status-modal');
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
+      <div style="width: 64px; height: 64px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-icons-round" style="font-size: 32px; color: #16a34a;">picture_as_pdf</span>
+      </div>
+      <h2 style="margin: 0 0 12px; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Download Invoice</h2>
+      <p style="margin: 0 0 24px; color: #64748b; font-size: 0.9rem;">Generate PDF for record <strong>#${invId}</strong>?</p>
+      <div style="display: flex; justify-content: center; gap: 16px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'">Cancel</button>
+        <button class="btn-primary" onclick="window.confirmDownloadPDFProfile('${invId}')">Download Now</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+};
+
+window.confirmDownloadPDFProfile = function(id) {
+  document.getElementById('prof-status-modal').style.display = 'none';
+  if (typeof showToast === 'function') showToast(`Downloading PDF #${id}`, 'success');
+};
+
+window.openDeleteModalProfile = function(event, invId) {
+  event.stopPropagation();
+  document.querySelectorAll('.profile-inv-menu').forEach(m => m.style.display = 'none');
+  
+  let overlay = document.getElementById('prof-status-modal');
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
+      <div style="width: 64px; height: 64px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-icons-round" style="font-size: 32px; color: #ef4444;">delete_outline</span>
+      </div>
+      <h2 style="margin: 0 0 12px; font-size: 1.25rem; font-weight: 700; color: #1e293b;">Delete Record</h2>
+      <p style="margin: 0 0 24px; color: #64748b; font-size: 0.9rem;">Are you sure you want to delete invoice record <strong>#${invId}</strong>?</p>
+      <div style="display: flex; justify-content: center; gap: 16px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'">Cancel</button>
+        <button class="btn-primary" style="background: #ef4444; border-color: #ef4444;" onclick="window.confirmDeleteProfile('${invId}')">Delete Permanently</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+};
+
+window.confirmDeleteProfile = function(id) {
+  document.getElementById('prof-status-modal').style.display = 'none';
+  const row = document.getElementById('inv-row-' + id);
+  const expand = document.getElementById('inv-expand-' + id);
+  if (row) row.remove();
+  if (expand) expand.remove();
+  if (typeof showToast === 'function') showToast(`Record #${id} deleted`, 'success');
+};
+
+window.toggleProfileActionMenu = function(event, id) {
+  if (event) event.stopPropagation();
+  const targetMenu = document.getElementById(`prof-menu-${id}`);
+  if (!targetMenu) return;
+  
+  const isShowing = targetMenu.style.display === 'flex';
+
+  // Close all other profile menus
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    if (m.id !== `prof-menu-${id}`) {
+      m.style.display = 'none';
+    }
+  });
+
+  if (!isShowing) {
+    targetMenu.style.display = 'flex';
+    targetMenu.classList.add('show');
+  } else {
+    targetMenu.style.display = 'none';
+    targetMenu.classList.remove('show');
+  }
+};
+
+// Global click listener to close dropdowns
+document.addEventListener('click', () => {
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+    m.classList.remove('show');
+  });
+});
+window.openEmailModalProfile = function(event, invId) {
+  if (event) event.stopPropagation();
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+    m.classList.remove('show');
+  });
+  
+  let overlay = document.getElementById('prof-status-modal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'prof-status-modal';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0'; overlay.style.left = '0';
+    overlay.style.width = '100vw'; overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(15, 23, 42, 0.4)';
+    overlay.style.backdropFilter = 'blur(4px)';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex'; overlay.style.alignItems = 'center'; overlay.style.justifyContent = 'center';
+    document.body.appendChild(overlay);
+  }
+
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+      <div style="padding: 24px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #1e293b;">Send Invoice Email</h2>
+        <button onclick="document.getElementById('prof-status-modal').style.display='none'" style="width: 32px; height: 32px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-round">close</span></button>
+      </div>
+      <div style="padding: 32px;">
+        <p style="margin-bottom: 24px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Confirm sending invoice record <strong>#${invId}</strong>?</p>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-size: 0.7rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Recipient Email</label>
+          <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+            <input type="email" placeholder="client@example.com" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 700; font-size: 0.9rem; color: #1e293b;">
+          </div>
+        </div>
+      </div>
+      <div style="padding: 16px 32px; background: #f8fafc; display: flex; justify-content: flex-end; gap: 12px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'" style="border-radius: 10px; font-weight: 700;">Cancel</button>
+        <button class="btn-primary" onclick="window.confirmActionProfile('Email', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #2563eb;">Send Now</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+};
+
+window.openPDFModalProfile = function(event, invId) {
+  if (event) event.stopPropagation();
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+    m.classList.remove('show');
+  });
+  
+  let overlay = document.getElementById('prof-status-modal');
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
+      <div style="width: 64px; height: 64px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-icons-round" style="font-size: 32px; color: #16a34a;">picture_as_pdf</span>
+      </div>
+      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800; color: #1e293b;">Download Invoice</h2>
+      <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Download the PDF for record <strong>#${invId}</strong>?</p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'" style="border-radius: 10px; font-weight: 700;">Cancel</button>
+        <button class="btn-primary" onclick="window.confirmActionProfile('PDF', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #2563eb;">Download</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+};
+
+window.openDeleteModalProfile = function(event, invId) {
+  if (event) event.stopPropagation();
+  document.querySelectorAll('.profile-inv-menu').forEach(m => {
+    m.style.display = 'none';
+    m.classList.remove('show');
+  });
+  
+  let overlay = document.getElementById('prof-status-modal');
+  overlay.innerHTML = `
+    <div style="background: #fff; width: 440px; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 32px; text-align: center;">
+      <div style="width: 64px; height: 64px; background: #fef2f2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+        <span class="material-icons-round" style="font-size: 32px; color: #ef4444;">delete_outline</span>
+      </div>
+      <h2 style="margin: 0 0 12px; font-size: 1.2rem; font-weight: 800; color: #1e293b;">Delete Record</h2>
+      <p style="margin: 0 0 28px; color: #64748b; font-size: 0.9rem; font-weight: 600;">Are you sure you want to delete record <strong>#${invId}</strong>?</p>
+      <div style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-outline" onclick="document.getElementById('prof-status-modal').style.display='none'" style="border-radius: 10px; font-weight: 700;">Cancel</button>
+        <button class="btn-primary" onclick="window.confirmActionProfile('Delete', '${invId}')" style="border-radius: 10px; font-weight: 700; background: #ef4444; border-color: #ef4444;">Delete</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+};
+
+window.confirmActionProfile = function(type, id) {
+  document.getElementById('prof-status-modal').style.display = 'none';
+  if (type === 'Delete') {
+    const row = document.getElementById('inv-row-' + id);
+    const expand = document.getElementById('inv-expand-' + id);
+    if (row) row.remove(); if (expand) expand.remove();
+    showToast(`Record #${id} deleted`, 'success');
+  } else if (type === 'Email') {
+    showToast(`Email sent for record #${id}`, 'success');
+  } else if (type === 'PDF') {
+    showToast(`Downloading PDF #${id}`, 'success');
+  }
+};
