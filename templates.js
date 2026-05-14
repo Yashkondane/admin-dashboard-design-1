@@ -1,9 +1,9 @@
 // Mock Data
 let categories = [
-    { id: 1, name: 'Welcome Emails', type: 'email', count: 2 },
-    { id: 2, name: 'Billing Updates', type: 'email', count: 1 },
-    { id: 3, name: 'Service Alerts', type: 'notification', count: 2 },
-    { id: 4, name: 'Marketing', type: 'email', count: 0 }
+    { id: 1, name: 'Welcome Emails', type: 'email', count: 2, status: 'Active' },
+    { id: 2, name: 'Billing Updates', type: 'email', count: 1, status: 'Active' },
+    { id: 3, name: 'Service Alerts', type: 'notification', count: 2, status: 'Active' },
+    { id: 4, name: 'Marketing', type: 'email', count: 0, status: 'Active' }
 ];
 
 let templates = [
@@ -45,8 +45,20 @@ function renderCategories() {
 
     container.innerHTML = filtered.map(cat => `
         <div class="category-item ${selectedCatId === cat.id ? 'active' : ''}" onclick="selectCategory(${cat.id})">
-            <span class="cat-name">${cat.name}</span>
-            <span class="cat-count">${cat.count}</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <span class="cat-name">${cat.name}</span>
+                    <span style="font-size: 0.68rem; font-weight: 800; color: ${cat.status === 'Active' ? '#10b981' : '#94a3b8'}; text-transform: uppercase; letter-spacing: 0.02em;">
+                        ${cat.status || 'Active'}
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="cat-count">${cat.count}</span>
+                    <button class="header-icon-btn" style="width: 24px; height: 24px; background: transparent; border: none;" onclick="event.stopPropagation(); openEditCategoryModal(${cat.id})">
+                        <span class="material-icons-round" style="font-size: 16px;">edit</span>
+                    </button>
+                </div>
+            </div>
         </div>
     `).join('');
 }
@@ -112,33 +124,51 @@ function renderTemplates() {
     }
 
     container.innerHTML = `
-        <div class="templates-container">
-            ${filtered.map(t => `
-                <div class="template-card" onclick="openTemplateModal(${t.id})">
-                    <div class="template-card-header">
-                        <span class="template-badge badge-${t.type}">${t.type}</span>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="header-icon-btn" style="width: 32px; height: 32px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;" onclick="event.stopPropagation(); openTemplateModal(${t.id})">
-                                <span class="material-icons-round" style="font-size: 18px; color: var(--blue);">edit</span>
-                            </button>
-                            <button class="header-icon-btn" style="width: 32px; height: 32px; background: #fff; border: 1px solid #fecaca; border-radius: 6px;" onclick="event.stopPropagation(); deleteTemplate(${t.id})">
-                                <span class="material-icons-round" style="font-size: 18px; color: #dc2626;">delete_outline</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="template-name">${t.name}</div>
-                    <div class="template-subject">${t.subject || 'No subject set'}</div>
-                    <div class="template-card-footer">
-                        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; color: #94a3b8;">
-                            <span class="material-icons-round" style="font-size: 14px;">schedule</span>
-                            Last updated: 2 days ago
-                        </div>
-                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #f8fafc; display: grid; place-items: center; color: #2563eb;">
-                            <span class="material-icons-round" style="font-size: 18px;">chevron_right</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('')}
+        <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                    <tr>
+                        <th style="padding: 16px 24px; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; width: 60px; text-align: center;">S.No</th>
+                        <th style="padding: 16px 24px; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Template Name</th>
+                        <th style="padding: 16px 24px; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase;">Subject</th>
+                        <th style="padding: 16px 24px; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; width: 120px;">Type</th>
+                        <th style="padding: 16px 24px; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; width: 80px; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filtered.map((t, i) => `
+                        <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <td style="padding: 16px 24px; text-align: center;"><span style="font-weight: 700; color: #475569; font-size: 0.85rem;">${String(i + 1).padStart(2, '0')}</span></td>
+                            <td style="padding: 16px 24px;">
+                                <div style="font-weight: 700; color: #1e293b; font-size: 0.9rem;">${t.name}</div>
+                            </td>
+                            <td style="padding: 16px 24px;">
+                                <div style="color: #64748b; font-size: 0.85rem; font-weight: 500; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.subject || '—'}</div>
+                            </td>
+                            <td style="padding: 16px 24px;">
+                                <span style="display: inline-flex; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; background: ${t.type === 'email' ? '#eff6ff' : '#f3f4f6'}; color: ${t.type === 'email' ? '#4880FF' : '#64748b'};">
+                                    ${t.type}
+                                </span>
+                            </td>
+                            <td style="padding: 16px 24px; text-align: center;">
+                                <div class="action-menu-wrap" style="position: relative; display: inline-block;">
+                                    <button class="header-icon-btn" onclick="event.stopPropagation(); const m = this.nextElementSibling; document.querySelectorAll('.action-menu-dropdown').forEach(d => d !== m && (d.style.display='none')); m.style.display = m.style.display === 'flex' ? 'none' : 'flex';" style="width: 32px; height: 32px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer;">
+                                        <span class="material-icons-round" style="font-size: 18px; color: #64748b;">more_vert</span>
+                                    </button>
+                                    <div class="action-menu-dropdown" style="display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; padding: 4px; min-width: 130px; flex-direction: column; gap: 2px;">
+                                        <button style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: none; border: none; width: 100%; text-align: left; cursor: pointer; border-radius: 4px; font-size: 0.8rem; font-weight: 700; color: #475569;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'" onclick="openTemplateModal(${t.id})">
+                                            <span class="material-icons-round" style="font-size: 16px; color: #4880FF;">edit</span> Edit
+                                        </button>
+                                        <button style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: none; border: none; width: 100%; text-align: left; cursor: pointer; border-radius: 4px; font-size: 0.8rem; font-weight: 700; color: #ef4444;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'" onclick="deleteTemplate(${t.id})">
+                                            <span class="material-icons-round" style="font-size: 16px;">delete</span> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
         </div>
     `;
 }
@@ -166,16 +196,68 @@ function openCategoryModal() {
     modal.classList.remove('hidden');
 }
 
-function saveCategory() {
-    const name = document.getElementById('new-cat-name').value;
-    const type = currentType; // Inherit from current active tab
+function openEditCategoryModal(id) {
+    const cat = categories.find(c => c.id === id);
+    if (!cat) return;
+
+    const modal = document.getElementById('modal-container');
+    const content = document.getElementById('modal-content');
+    
+    content.innerHTML = `
+        <div style="padding: 32px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="font-size: 1.25rem; font-weight: 900; color: #1e293b;">Edit Category</h2>
+                <span class="material-icons-round" style="cursor: pointer; color: #94a3b8;" onclick="closeModal()">close</span>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px;">Category Name</label>
+                <input type="text" id="edit-cat-name" value="${cat.name}" style="width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 600; outline: none;">
+            </div>
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 12px;">Category Status</label>
+                <div style="display: flex; gap: 24px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: #475569; cursor: pointer;">
+                        <input type="radio" name="cat-status" value="Active" ${cat.status === 'Active' ? 'checked' : ''} style="width: 18px; height: 18px; accent-color: #4880FF;"> Active
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 700; color: #475569; cursor: pointer;">
+                        <input type="radio" name="cat-status" value="Inactive" ${cat.status === 'Inactive' ? 'checked' : ''} style="width: 18px; height: 18px; accent-color: #4880FF;"> Inactive
+                    </label>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn-outline" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="saveCategory(${id})">Save Changes</button>
+            </div>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+
+function saveCategory(id = null) {
+    const nameInput = id ? document.getElementById('edit-cat-name') : document.getElementById('new-cat-name');
+    const name = nameInput.value;
+    
     if (!name) return showToast('Please enter a name', 'error');
     
-    const id = categories.length + 1;
-    categories.push({ id, name, type, count: 0 });
-    showToast('Category created successfully', 'success');
+    if (id) {
+        const cat = categories.find(c => c.id === id);
+        const status = document.querySelector('input[name="cat-status"]:checked').value;
+        cat.name = name;
+        cat.status = status;
+        showToast('Category updated successfully', 'success');
+    } else {
+        const type = currentType;
+        const newId = categories.length + 1;
+        categories.push({ id: newId, name, type, count: 0, status: 'Active' });
+        showToast('Category created successfully', 'success');
+    }
+    
     closeModal();
     renderCategories();
+    if (id === selectedCatId) {
+        const label = document.getElementById('selected-cat-label');
+        if (label) label.textContent = name;
+    }
 }
 
 function openTemplateModal(id = null) {
@@ -316,3 +398,9 @@ function setupEventListeners() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.action-menu-wrap')) {
+        document.querySelectorAll('.action-menu-dropdown').forEach(d => d.style.display = 'none');
+    }
+});

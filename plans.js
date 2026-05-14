@@ -72,7 +72,7 @@ function renderPlansTable(customList = null) {
         </td>
         <td>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <button class="features-toggle-btn" onclick="toggleFeatures(event, ${p.id})" style="width: 28px; height: 28px; background: #fff; color: #2563eb; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <button class="features-toggle-btn" onclick="toggleFeatures(event, ${p.id})" style="width: 28px; height: 28px; background: #fff; color: #4880FF; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
               <span class="material-icons-round" style="font-size: 18px;">expand_more</span>
             </button>
             <span style="font-size: 0.85rem; color: #475569; font-weight: 700;">${p.broadcast} Broadcasts</span>
@@ -259,6 +259,7 @@ function openPlanModal(id) {
             <input class="modal-input" id="pf-email" type="email" placeholder="Enter E-mail" value="${p.email}">
           </div>
 
+          ${id ? `
           <div style="display:flex; flex-direction:column;">
             <label class="modal-label">Status</label>
             <select class="modal-input" id="pf-status">
@@ -266,6 +267,7 @@ function openPlanModal(id) {
               <option value="Inactive" ${p.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
             </select>
           </div>
+          ` : ''}
         </div>
 
         <!-- RIGHT COLUMN: PERMISSIONS -->
@@ -288,7 +290,7 @@ function openPlanModal(id) {
 
     <div class="modal-footer" style="padding: 18px 28px; background: #f8fafc; border-top: 1px solid var(--border); border-radius: 0 0 16px 16px; display: flex; gap: 12px; justify-content: flex-end;">
       <button class="btn-outline" style="min-width: 110px; height: 42px; background: #fff; border: 1px solid #e2e8f0; color: #475569; font-weight:700; border-radius:10px; font-size:0.85rem; cursor:pointer;" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" style="min-width: 110px; height: 42px; background: var(--blue); border:none; color:#fff; border-radius:10px; font-weight:700; font-size:0.85rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); cursor:pointer;" onclick="savePlan()">Save Plan</button>
+      <button class="btn-primary" onclick="savePlan()">Save Plan</button>
     </div>
   `;
   modal.classList.remove('hidden');
@@ -312,7 +314,7 @@ function savePlan() {
     validity: document.getElementById('pf-validity').value,
     broadcast: parseInt(document.getElementById('pf-broadcast').value) || 0,
     email: document.getElementById('pf-email').value.trim(),
-    status: document.getElementById('pf-status').value,
+    status: document.getElementById('pf-status') ? document.getElementById('pf-status').value : 'Active',
     flags: {
       sendall:  document.getElementById('pf-sendall').checked,
       state:    document.getElementById('pf-state').checked,
@@ -338,13 +340,13 @@ function savePlan() {
   }
 
   closeModal();
-  renderTable();
+  renderPlansTable();
 }
 
 function deletePlan(id) {
   if (!confirm('Are you sure you want to delete this plan?')) return;
   plans = plans.filter(p => p.id !== id);
-  renderTable();
+  renderPlansTable();
   showToast('Plan deleted', 'error');
 }
 
@@ -374,7 +376,7 @@ function toggleNavGroup(btn) {
 function deletePlan(id) {
   if (confirm('Are you sure you want to delete this plan?')) {
     plans = plans.filter(p => p.id !== id);
-    renderTable();
+    renderPlansTable();
     showToast('Plan deleted!', 'success');
   }
 }
@@ -399,10 +401,32 @@ function showToast(message, type = 'success') {
   }, 3000);
 }
 
+function setupSidebarToggles() {
+  const menuToggle = document.getElementById('menu-toggle');
+  if (menuToggle) {
+    menuToggle.onclick = () => {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    };
+  }
+  
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  if (sidebarToggle) {
+    sidebarToggle.onclick = () => {
+      const sidebar = document.getElementById('sidebar');
+      const icon = document.getElementById('sidebar-toggle-icon');
+      sidebar.classList.toggle('collapsed');
+      if (icon) {
+        icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+      }
+    };
+  }
+}
+
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('plans-tbody')) {
     renderPlansTable();
+    setupSidebarToggles();
     const searchInput = document.getElementById('top-search-input');
     if (searchInput) {
       searchInput.addEventListener('input', e => {
@@ -412,3 +436,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+

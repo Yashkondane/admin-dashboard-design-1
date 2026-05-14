@@ -1,6 +1,6 @@
 // ===== DATA =====
 const labels = [
-  { id: 4, labelName: "TK lite", hexColor: "#2563eb", planName: "Tk-Lite", planRate: "Free Trial", planValidity: "15 Days", status: "Active" },
+  { id: 4, labelName: "TK lite", hexColor: "#4880FF", planName: "Tk-Lite", planRate: "Free Trial", planValidity: "15 Days", status: "Active" },
   { id: 3, labelName: "TK Standard", hexColor: "#10b981", planName: "Standard", planRate: "1000", planValidity: "3 months", status: "Active" },
   { id: 2, labelName: "TK Premium", hexColor: "#f59e0b", planName: "Premium", planRate: "2000", planValidity: "6 Months", status: "Active" },
   { id: 1, labelName: "TK-FREE", hexColor: "#8b5cf6", planName: "PLAN", planRate: "Free", planValidity: "15 Days", status: "Active" },
@@ -113,7 +113,7 @@ function getLabelFormHTML(label = {}) {
         <div style="display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 16px;">
           <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Hex Color Code</label>
           <div style="display: flex; align-items: center; gap: 12px;">
-            <input type="text" class="pf-input" value="${label.hexColor || ''}" oninput="updateLabelColorPreview(this)" style="background: #fff; border: 1px solid #2563eb; border-radius: 6px; padding: 10px 14px; outline: none; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08); flex: 1;">
+            <input type="text" class="pf-input" value="${label.hexColor || ''}" oninput="updateLabelColorPreview(this)" style="background: #fff; border: 1px solid #4880FF; border-radius: 6px; padding: 10px 14px; outline: none; box-shadow: 0 0 0 2px rgba(72, 128, 255, 0.08); flex: 1;">
             <div id="color-preview-circle" style="width: 32px; height: 32px; border-radius: 50%; background: ${label.hexColor || '#e2e8f0'}; border: 2px solid #fff; box-shadow: 0 0 0 1px #e2e8f0; flex-shrink: 0;"></div>
           </div>
         </div>
@@ -121,10 +121,10 @@ function getLabelFormHTML(label = {}) {
           <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Status</label>
           <div style="display: flex; gap: 24px; align-items: center;">
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; cursor: pointer;">
-              <input type="radio" name="status" value="Active" ${label.status !== 'Inactive' ? 'checked' : ''} style="accent-color: #2563eb; transform: scale(1.2);"> Active
+              <input type="radio" name="status" value="Active" ${label.status !== 'Inactive' ? 'checked' : ''} style="accent-color: #4880FF; transform: scale(1.2);"> Active
             </label>
             <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; cursor: pointer;">
-              <input type="radio" name="status" value="Inactive" ${label.status === 'Inactive' ? 'checked' : ''} style="accent-color: #2563eb; transform: scale(1.2);"> Inactive
+              <input type="radio" name="status" value="Inactive" ${label.status === 'Inactive' ? 'checked' : ''} style="accent-color: #4880FF; transform: scale(1.2);"> Inactive
             </label>
           </div>
         </div>
@@ -134,7 +134,7 @@ function getLabelFormHTML(label = {}) {
       <div style="display: grid; grid-template-columns: 1fr 1fr 120px; gap: 24px; margin-bottom: 32px;">
         <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 600; background: #f8fafc;">Features</div>
         <div style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 600; background: #f8fafc;">Included</div>
-        <button class="btn-primary" style="height: 100%; border-radius: 6px; padding: 0; background: #2563eb; width: 100%;">Add New</button>
+        <button class="btn-primary" style="width: 100%;">Add New</button>
       </div>
 
       <div id="labels-features-list" style="display: flex; flex-direction: column; gap: 16px;">
@@ -175,8 +175,8 @@ function getLabelFormHTML(label = {}) {
       </div>
     </div>
     <div style="padding: 16px 32px; background: #fff; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
-      <button class="btn-outline" onclick="closeModal()" style="height: 40px; padding: 0 24px; border-radius: 10px; font-weight: 700;">Cancel</button>
-      <button class="btn-primary" onclick="saveLabel()" style="height: 40px; padding: 0 24px; border-radius: 10px; font-weight: 700; background: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">Save Changes</button>
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveLabel()">Save Changes</button>
     </div>
   `;
 }
@@ -194,7 +194,7 @@ window.toggleLabelValueType = function(select) {
     select.style.borderColor = '#e2e8f0';
   } else {
     valueWrap.innerHTML = '<input type="text" class="pf-input" placeholder="Value..." style="background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; text-align: center; width: 100%; font-size: 0.9rem; font-weight: 600;">';
-    select.style.borderColor = '#2563eb';
+    select.style.borderColor = '#4880FF';
   }
 };
 

@@ -118,10 +118,11 @@ let sortDir = 'desc';
 let currentPage = 1;
 let rowsPerPage = 10;
 
-const tbody = document.getElementById('members-tbody');
-const directoryView = document.getElementById('directory-view');
-const profileView = document.getElementById('profile-view');
-const paginationControls = document.getElementById('pagination-controls');
+// Getters for DOM elements to avoid null errors on different pages
+const getTbody = () => document.getElementById('members-tbody');
+const getDirectoryView = () => document.getElementById('directory-view');
+const getProfileView = () => document.getElementById('profile-view');
+const getPaginationControls = () => document.getElementById('pagination-controls');
 
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -363,7 +364,7 @@ function renderTable() {
   const end = start + rowsPerPage;
   const pageItems = filtered.slice(start, end);
 
-  const tbodyEl = document.getElementById('members-tbody');
+  const tbodyEl = getTbody();
   if (!tbodyEl) return;
 
   if (total === 0) {
@@ -449,7 +450,8 @@ function renderPagination(total) {
 
   html += `<button class="page-btn" id="next-page" style="width: 32px; height: 32px; border: none; background: transparent;" ${currentPage === tp ? 'disabled style="opacity:0.4;cursor:default;"' : `onclick="goToPage(${currentPage + 1})"`}><span class="material-icons-round" style="color:var(--text-mid); font-size: 18px;">chevron_right</span></button>`;
 
-  paginationControls.innerHTML = html;
+  const pc = getPaginationControls();
+  if (pc) pc.innerHTML = html;
 
   const showingText = document.getElementById('showing-text');
   if (showingText) {
@@ -481,12 +483,15 @@ function openProfile(id, tab = 'company', pushState = true) {
     window.history.pushState({}, '', url);
   }
 
-  directoryView.classList.add('hidden');
-  profileView.classList.remove('hidden');
+  const dv = getDirectoryView();
+  const pv = getProfileView();
+  if (dv) dv.classList.add('hidden');
+  if (pv) pv.classList.remove('hidden');
+  if (!pv) return;
   document.querySelector('.top-bar-search').style.display = 'none';
   document.querySelector('.top-bar').style.marginBottom = '8px';
 
-  profileView.innerHTML = `
+  pv.innerHTML = `
     <div class="breadcrumbs" style="margin-bottom: 24px;">
       <span style="color:var(--blue); font-weight:700;">Directory</span>
       <span class="material-icons-round" style="font-size:16px; color:#cbd5e1;">chevron_right</span>
@@ -660,12 +665,14 @@ function renderProfileTab(m, tab) {
       return `
               <div class="employee-card" style="height: 100%; gap: 16px;">
                 <div style="position:absolute; top:16px; right:12px; z-index:10;">
-                  <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-${m.id}-${ci}', this)">
-                    <span class="material-icons-round">more_vert</span>
-                  </button>
-                  <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="right:0;top:100%;margin-top:4px">
+                  <div class="action-btn-wrap">
+                    <button class="action-btn" onclick="event.stopPropagation()">
+                      <span class="material-icons-round">more_vert</span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-contact-${m.id}-${ci}" style="right:0;top:100%;margin-top:4px">
                     <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
                     <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Contact removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
+                    </div>
                   </div>
                 </div>
 
@@ -785,14 +792,16 @@ function renderProfileTab(m, tab) {
                       </div>
                     </td>
                     <td style="text-align:right;">
-                      <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('contact-table-${m.id}-${ci}', this)">
+                    <div class="action-btn-wrap">
+                      <button class="action-btn" onclick="event.stopPropagation()">
                         <span class="material-icons-round">more_vert</span>
                       </button>
                       <div class="dropdown-menu" id="dropdown-contact-table-${m.id}-${ci}">
                         <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('contact', ${m.id}, ${ci}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
                         <button class="dropdown-item delete" onclick="event.stopPropagation(); showToast('Contact removed', 'error'); closeAllDropdowns();"><span class="material-icons-round">delete</span> Delete</button>
                       </div>
-                    </td>
+                    </div>
+                  </td>
                   </tr>
                 `;
     }).join('') : `
@@ -862,14 +871,16 @@ function renderProfileTab(m, tab) {
                       <span style="color: var(--text-mid); font-weight: 600; font-size: 0.88rem;">${a.pincode || '-'}</span>
                     </td>
                     <td style="text-align:right;">
-                      <button class="action-btn" onclick="event.stopPropagation(); toggleDropdown('addr-${m.id}-${ai}', this)" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
-                        <span class="material-icons-round">more_vert</span>
-                      </button>
-                      <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}">
+                      <div class="action-btn-wrap">
+                        <button class="action-btn" onclick="event.stopPropagation()" style="background:transparent; border:none; color:#94a3b8; cursor:pointer;">
+                          <span class="material-icons-round">more_vert</span>
+                        </button>
+                        <div class="dropdown-menu" id="dropdown-addr-${m.id}-${ai}">
                         <button class="dropdown-item" onclick="event.stopPropagation(); openEditModal('address', ${m.id}, ${ai}); closeAllDropdowns();"><span class="material-icons-round">edit</span> Edit</button>
                         <button class="dropdown-item delete" onclick="event.stopPropagation(); m.addresses.splice(${ai}, 1); showToast('Address removed', 'error'); closeAllDropdowns(); switchTab(${m.id}, 'addresses');"><span class="material-icons-round">delete</span> Delete</button>
                       </div>
-                    </td>
+                    </div>
+                  </td>
                   </tr>
                 `;
     }).join('') : `
@@ -930,20 +941,14 @@ function renderProfileTab(m, tab) {
 
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 0; padding-bottom: 24px;">
-          <div style="display:flex; gap:16px; align-items:center;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center; color: #1e293b;">
-              <span class="material-icons-round">assignment</span>
-            </div>
-            <div>
-              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:800; color:#1e293b;">Assign Plan</h3>
-            </div>
+        <div class="profile-section-header" style="justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 0; padding: 24px 0;">
+          <div>
+            <h3 class="profile-section-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#1e293b;">Subscription Management</h3>
+            <p style="margin: 4px 0 0; font-size: 0.8rem; font-weight: 600; color: #64748b;">Manage member plans and billing history</p>
           </div>
-          <div style="display:flex; align-items:center; gap:16px;">
-             <button class="btn-primary" onclick="openManagePlanModal(${m.id})" style="padding: 10px 24px; border-radius:10px; display: flex; align-items: center; gap: 8px;">
-               <span class="material-icons-round" style="font-size: 18px;">settings</span> Manage Plan
-             </button>
-          </div>
+          <button class="btn-primary" onclick="window.openManagePlanModal(${m.id})" style="height: 40px; padding: 0 20px; border-radius:10px; font-weight: 800;">
+            Manage Plan
+          </button>
         </div>
 
         <!-- Timeline / Invoices — Dual Mode -->
@@ -960,7 +965,7 @@ function renderProfileTab(m, tab) {
             </div>
             <div class="plan-timeline-header-right" style="display:flex; align-items:center; gap:12px;">
               <div id="tl-filter-container" class="pm-field-modern compact" style="width: 140px; margin: 0; height: 34px; border-radius: 6px; background: #fff;">
-                <select id="tl-activity-filter" onchange="filterTimeline(${m.id}, this.value)" style="font-size: 0.78rem; font-weight: 700; color: #475569;">
+                <select id="tl-activity-filter" onchange="filterTimeline(${m.id}, this.value)" style="font-size: 0.78rem; font-weight: 700; color: #475569; padding-right: 12px;">
                   <option value="all">All Events</option>
                   <option value="assign">Assignments</option>
                   <option value="extend">Extensions</option>
@@ -968,14 +973,13 @@ function renderProfileTab(m, tab) {
                   <option value="suspend">Suspensions</option>
                   <option value="reactivate">Reactivations</option>
                 </select>
-                <span class="material-icons-round" style="color:#94a3b8; font-size: 16px;">filter_list</span>
               </div>
               <div class="timeline-view-toggle">
                 <button class="tl-toggle-btn active" data-view="activity" onclick="switchTimelineView('activity', this, ${m.id})">
-                  <span class="material-icons-round">timeline</span> Activity
+                  Activity
                 </button>
                 <button class="tl-toggle-btn" data-view="table" onclick="switchTimelineView('table', this, ${m.id})">
-                  <span class="material-icons-round">table_chart</span> Invoices
+                  Invoices
                 </button>
               </div>
             </div>
@@ -990,11 +994,11 @@ function renderProfileTab(m, tab) {
               <table class="plan-history-table">
                 <thead>
                   <tr>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 60px;">Sr</th>
-                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Plan Detail <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
-                    <th onclick="sortPlanHistory(${m.id}, 'date')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor:pointer;">Timeline <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
-                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">Invoice</th>
-                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; width: 100px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 60px;">Sr</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'name')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; cursor:pointer;">Plan Detail <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th onclick="sortPlanHistory(${m.id}, 'date')" style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; cursor:pointer;">Timeline <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
+                    <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;">Invoice</th>
+                    <th onclick="sortPlanHistory(${m.id}, 'status')" style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 100px; cursor:pointer;">Status <span class="material-icons-round" style="font-size:14px; vertical-align:middle; opacity:0.3;">unfold_more</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1122,71 +1126,49 @@ function renderProfileTab(m, tab) {
       { id: 'BRD-003', date: '30-04-2026 05:20:35 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 15 Pcs | Call', sendTo: 'SendToAll', status: 'Live' }
     ];
 
-    const totalCreations = broadcasts.length;
-
-    let html = `
-
-      <!-- History Table -->
+    return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding-bottom:24px;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div class="profile-section-icon" style="width: 44px; height: 44px; flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#1e293b;">
-              <span class="material-icons-round">campaign</span>
-            </div>
-            <div>
-              <h3 class="profile-section-title" style="margin:0;">Broadcast History</h3>
-            </div>
+        <div class="profile-section-header" style="justify-content: space-between; align-items:center; border-bottom:1px solid var(--border); margin-bottom:0; padding: 24px 0;">
+          <div>
+            <h3 class="profile-section-title" style="margin:0; font-size:1.1rem; font-weight:800; color:#1e293b;">Broadcast History</h3>
+            <p style="margin: 4px 0 0; font-size: 0.8rem; font-weight: 600; color: #64748b;">Member activity logs for all broadcasted messages</p>
           </div>
-          <div style="display:flex; align-items:center; gap:16px;">
+          <div style="display:flex; align-items:center; gap:12px;">
             <div style="display:flex; align-items:center; gap:10px; padding:8px 14px; background:#f8fafc; border:1px solid var(--border); border-radius:10px;">
               <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid);">Approval Required</span>
               <input type="checkbox" style="width: 18px; height: 18px; accent-color:var(--blue); cursor:pointer;">
             </div>
-            <button class="btn-primary" onclick="showToast('Initiating new broadcast...', 'success')">
-              <span class="material-icons-round">add</span> Add
-            </button>
           </div>
         </div>
         
         <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px;">
-          <table class="data-table" style="width: 100%; border-collapse: collapse;">
+          <table class="plan-history-table" style="width: 100%;">
             <thead>
               <tr>
-                <th style="padding: 12px 16px 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Date & Time</th>
-                <th style="padding: 12px 16px 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Message Detail</th>
-                <th style="padding: 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Recipient</th>
-                <th style="padding: 12px 16px !important; text-align: left; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Status</th>
-                <th style="padding: 12px 16px !important; text-align: right; border-bottom: 1px solid var(--border); background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Actions</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 140px;">Date & Time</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;">Message Detail</th>
+                <th style="padding: 16px 24px; text-align: left; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 130px;">Recipient</th>
+                <th style="padding: 16px 24px; text-align: center; border-bottom: 1px solid var(--border); color: #94a3b8; font-size: 0.68rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; width: 100px;">Status</th>
               </tr>
             </thead>
             <tbody>
               ${broadcasts.map(b => `
-                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 12px 16px !important; border-bottom: 1px solid var(--border);">
-                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 800;">${b.date.split(' ')[0]}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">${b.date.split(' ').slice(1).join(' ')}</div>
+                <tr style="transition: all 0.1s; cursor:pointer;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'" onclick="openBroadcastHistoryModal('${m.id}', '${b.id}')">
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 0.82rem; color: #1e293b; font-weight: 800;">${b.date.split(' ')[0]}</div>
+                    <div style="font-size: 0.72rem; color: #64748b; font-weight: 600; margin-top:2px;">${b.date.split(' ').slice(1).join(' ')}</div>
                   </td>
-                  <td style="padding: 12px 16px !important; border-bottom: 1px solid var(--border); max-width:300px;">
-                    <div style="font-size: 0.88rem; color: var(--text); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 700; margin-top:2px;">Sent by ${b.broadcaster}</div>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+                    <div style="font-size: 0.88rem; color: #1e293b; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${b.broadcast}">${b.broadcast}</div>
+                    <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; margin-top:2px;">Sent by ${b.broadcaster}</div>
                   </td>
-                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
-                    <span style="font-size: 0.82rem; font-weight: 800; color: var(--text-mid); background:#f1f5f9; padding:4px 10px; border-radius:6px;">${b.sendTo}</span>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+                    <span style="font-size: 0.78rem; font-weight: 800; color: #64748b; background:#f1f5f9; padding:4px 10px; border-radius:6px;">${b.sendTo}</span>
                   </td>
-                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border);">
-                    <div style="display:inline-flex; align-items:center; gap:6px; padding: 5px 12px; border-radius: 6px; 
-                      background: ${b.status === 'Live' || b.status === 'Active' ? '#E8F5EC' : (b.status === 'Pending' ? '#FFF7ED' : (b.status === 'Incomplete' ? '#F3E8FF' : '#F3F4F6'))}; 
-                      color: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#A34E0C' : (b.status === 'Incomplete' ? '#6D28D9' : '#4B5563'))}; 
-                      border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#22C55E' : (b.status === 'Pending' ? '#FB923C' : (b.status === 'Incomplete' ? '#A855F7' : '#D1D5DB'))}; 
-                      font-weight: 700;">
-                      ${b.status === 'Pending' ? '' : `<span style="width:6px; height:6px; border-radius:50%; background: ${b.status === 'Live' || b.status === 'Active' ? '#15803D' : (b.status === 'Pending' ? '#A34E0C' : (b.status === 'Incomplete' ? '#1D4ED8' : '#4B5563'))};"></span>`}
-                      <span style="font-size:0.8rem; text-transform:capitalize;">${b.status}</span>
-                    </div>
-                  </td>
-                  <td style="padding: 12px 16px; border-bottom: 1px solid var(--border); text-align:right;">
-                    <button class="action-btn" onclick="showToast('Viewing broadcast detail...', 'success')" style="width:36px; height:36px; border-radius:10px; background:white; border:1px solid var(--border); color:var(--text-mid); display:inline-flex; align-items:center; justify-content:center; transition: all 0.2s;">
-                      <span class="material-icons-round" style="font-size:18px;">visibility</span>
-                    </button>
+                  <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
+                    <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${b.status === 'Live' || b.status === 'Active' ? '#16a34a' : (b.status === 'Pending' ? '#f59e0b' : '#94a3b8')}; background: ${b.status === 'Live' || b.status === 'Active' ? '#f0fdf4' : (b.status === 'Pending' ? '#fffbeb' : '#f8fafc')}; border: 1px solid ${b.status === 'Live' || b.status === 'Active' ? '#bbf7d0' : (b.status === 'Pending' ? '#fef3c7' : '#e2e8f0')}; padding: 4px 10px; border-radius: 4px;">
+                      ${b.status}
+                    </span>
                   </td>
                 </tr>
               `).join('')}
@@ -1195,7 +1177,6 @@ function renderProfileTab(m, tab) {
         </div>
       </div>
     `;
-    return html;
 
   } else if (tab === 'broadcast-settings') {
     const settings = [
@@ -1209,33 +1190,94 @@ function renderProfileTab(m, tab) {
     ];
     return `
       <div class="content-card">
-        <div class="profile-section-header" style="justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <div style="display:flex; gap:16px; align-items:center;">
-            <div class="profile-section-icon" style="background:var(--white); border:1px solid var(--border); border-radius:8px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; color:var(--text);"><span class="material-icons-round">settings_input_antenna</span></div>
-            <div>
-              <h3 class="profile-section-title" style="margin:0; font-size:1.15rem;">Broadcast Settings</h3>
-            </div>
+        <div class="profile-section-header" style="justify-content: flex-start; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 0; padding: 24px 32px;">
+          <div>
+            <h3 class="profile-section-title" style="margin:0; font-size:1.15rem; font-weight:900; color:#1e293b;">Broadcast Settings</h3>
+            <p style="margin: 4px 0 0; font-size: 0.85rem; font-weight: 600; color: #64748b;">Select the subcategories to include in this broadcast.</p>
           </div>
-          <button class="btn-primary" onclick="openEditModal('broadcast-settings', ${m.id})" style="border-radius:10px; padding:10px 24px;">
-            <span class="material-icons-round" style="font-size:18px;">edit</span> Edit
-          </button>
         </div>
         
-        <div class="table-scroll-wrap" style="margin: 0 -24px -24px -24px; border-top:1px solid var(--border);">
-          <table class="data-table">
+        <div class="table-scroll-wrap" style="margin: 0;">
+          <table class="plan-history-table" style="width: 100%; border-collapse: separate; border-spacing: 0 8px; padding: 16px 32px;">
             <thead>
               <tr>
-                <th style="padding: 16px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Category</th>
-                <th style="padding: 16px 24px; text-align: left; background: #f8fafc; color: #64748b; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing:0.5px;">Subcategory</th>
+                <th style="padding: 12px 16px; text-align: left; color: #94a3b8; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;">Category</th>
+                <th style="padding: 12px 16px; text-align: left; color: #94a3b8; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em;">Selected Subcategories</th>
+                <th style="width:50px;"></th>
               </tr>
             </thead>
             <tbody>
-              ${settings.map(s => `
-                <tr style="transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 16px 24px; font-weight:800; color:var(--text); font-size:0.88rem;">${s.category}</td>
-                  <td style="padding: 16px 24px; font-weight:600; color:var(--text-mid); font-size:0.88rem;">${s.sub}</td>
-                </tr>
-              `).join('')}
+              ${settings.map((s, idx) => {
+                const iconsMap = {
+                  'Stainless Steel': 'shield',
+                  'Mobile': 'phone_iphone',
+                  'Components': 'layers',
+                  'Aluminium': 'architecture',
+                  'Server': 'storage',
+                  'PC': 'desktop_windows',
+                  'Laptop': 'laptop'
+                };
+                const icon = iconsMap[s.category] || 'settings';
+                const safeId = s.category.replace(/\s+/g, '-');
+                
+                const subcategories = {
+                  'Stainless Steel': ['Circle', 'Plate', 'Pipe', 'Sheet', 'Coil', 'Strip'],
+                  'Mobile': ['Iphone', 'Samsung', 'Google Pixel', 'OnePlus', 'Xiaomi', 'Oppo'],
+                  'Components': ['Motherboard', 'Memory', 'Processor', 'Graphic Card', 'SSD', 'PSU'],
+                  'Aluminium': ['Sheet', 'Extrusion', 'Ingot', 'Foil', 'Plate', 'Rod'],
+                  'Server': ['Hard Drive', 'Rack', 'CPU', 'Power Supply', 'RAM', 'Chassis'],
+                  'PC': ['Monitor', 'Keyboard', 'Mouse', 'UPS', 'Speaker', 'Webcam'],
+                  'Laptop': ['Display', 'Battery', 'Keyboard', 'Touchpad', 'Charger', 'RAM']
+                }[s.category] || [];
+
+                return `
+                  <!-- Main Row -->
+                  <tr class="broadcast-settings-row" id="row-${safeId}" onclick="window.toggleBroadcastAccordion('${safeId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
+                    <td style="padding: 18px 16px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; border-left: 1px solid #f1f5f9; border-radius: 12px 0 0 12px; font-size: 0.95rem; font-weight: 800; color: #1e293b;">
+                      <div style="display:flex; align-items:center; gap:16px;">
+                        <span class="material-icons-round category-icon" style="font-size:24px; color:#64748b; transition: color 0.2s;">${icon}</span>
+                        <span class="category-name-label">${s.category}</span>
+                      </div>
+                    </td>
+                    <td style="padding: 18px 16px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; font-weight: 600; color: #64748b;">${s.sub}</td>
+                    <td style="padding: 18px 16px; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; border-radius: 0 12px 12px 0; text-align: right;">
+                      <span class="material-icons-round chevron-icon" style="font-size:20px; color:#94a3b8;">chevron_right</span>
+                    </td>
+                  </tr>
+                  
+                  <!-- Expansion (Dropdown) Row -->
+                  <tr id="expand-${safeId}" style="display:none; background: #fff;">
+                    <td colspan="3" style="padding: 0 32px 16px 32px;">
+                      <div style="padding: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; animation: slideDown 0.2s ease;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                          <div style="display:flex; align-items:center; gap:12px;">
+                            <span class="material-icons-round" style="font-size:24px; color:var(--blue);">${icon}</span>
+                            <span style="font-size:1rem; font-weight:900; color:#1e293b;">${s.category} Configuration</span>
+                          </div>
+                          <div style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="event.stopPropagation()">
+                             <span style="font-size:0.85rem; font-weight:800; color:#64748b;">Select All</span>
+                             <input type="checkbox" checked style="width:18px; height:18px; accent-color:var(--blue);">
+                          </div>
+                        </div>
+                        
+                        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:16px; margin-bottom:24px;">
+                          ${subcategories.map(sub => `
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="event.stopPropagation()">
+                              <input type="checkbox" checked style="width:18px; height:18px; accent-color:var(--blue);">
+                              <span style="font-size:0.9rem; font-weight:700; color:#334155;">${sub}</span>
+                            </label>
+                          `).join('')}
+                        </div>
+                        
+                        <div style="display:flex; gap:12px;">
+                          <button class="btn-primary" onclick="window.saveAccordionEdit('${s.category}', event)" style="padding:8px 24px; font-size:0.85rem; border-radius:8px;">Done</button>
+                          <button class="btn-outline" onclick="window.toggleBroadcastAccordion('${safeId}', document.getElementById('row-${safeId}'))" style="padding:8px 20px; font-size:0.85rem; border-radius:8px; background:transparent;">Cancel</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         </div>
@@ -1430,17 +1472,14 @@ function openEditModal(type, memberId, index) {
             </div>
           </div>
         </div>
-        <div style="display:flex; gap:12px;">
-          <button class="btn-outline" onclick="showToast('Settings Reset', 'info')" style="padding:10px 20px; font-weight:800; display:flex; align-items:center; gap:8px; border-radius:10px; border-color:#cbd5e1; color:#64748b;">
-            <span class="material-icons-round" style="font-size:20px;">refresh</span> Reset
-          </button>
-          <button class="btn-primary" onclick="showToast('Broadcast Settings Updated', 'success'); closeModal();" style="padding:10px 28px; font-weight:800; display:flex; align-items:center; gap:10px; background:${themeColor}; border-radius:10px; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
-            <span class="material-icons-round" style="font-size:20px;">save</span> Save Changes
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button class="modal-close" onclick="closeModal()" style="background:#f8fafc; border:1px solid #e2e8f0; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#94a3b8; transition:all 0.2s;">
+            <span class="material-icons-round" style="font-size:18px;">close</span>
           </button>
         </div>
       </div>
 
-      <div class="modal-body" style="padding: 20px 32px 32px 32px; background: #f8fafc; min-height: 500px;">
+      <div class="modal-body" style="padding: 24px 32px; background: #f8fafc; overflow-y:auto; max-height:calc(100vh - 200px);">
         <div style="margin-bottom: 24px;">
           <div style="display:flex; align-items:center; margin-bottom:8px; padding:0 4px;">
             <h4 style="margin:0; font-size:12px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.06em;">Category</h4>
@@ -1499,78 +1538,96 @@ function openEditModal(type, memberId, index) {
                     `).join('')}
                   </div>
                 </div>
+                </div>
               </div>
             `).join('')}
           </div>
         </div>
       </div>
+      <div class="modal-footer" style="padding: 16px 32px; background: #fff; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 16px 16px;">
+        <button class="btn-outline" onclick="closeModal()" style="padding: 10px 24px; font-weight: 800; border-radius: 10px;">Cancel</button>
+        <button class="btn-primary" onclick="showToast('Broadcast Settings Updated', 'success'); closeModal();" style="padding: 10px 28px; font-weight: 800; border-radius: 10px; background: ${themeColor}; box-shadow: 0 4px 12px rgba(37,99,235,0.2);">
+          Save Changes
+        </button>
+      </div>
     `;
   } else if (type === 'contact') {
     const c = m.contacts[index];
-    const nameParts = c.name.split(' ');
+    const nameParts = (c.name || '').split(' ');
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
     const status = c.status || 'Active';
-    content.className = 'modal-content modal-wide';
+    const role = c.role || 'CEO';
+
+    content.className = 'modal-content';
+    content.style.maxWidth = '680px';
 
     html = `
-      <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-            <span class="material-icons-round">edit</span>
+      <div class="bem-wrap">
+        <div class="bem-header">
+          <div class="bem-header-left">
+            <div class="bem-title-row">
+              <h2 class="bem-title">Edit Contact</h2>
+              <span class="bem-badge"><span class="material-icons-round">edit</span>EDITING</span>
+            </div>
+            <div class="bem-meta">
+              <span>${m.company}</span><span>•</span>
+              <span class="material-icons-round" style="color:#2563eb;">account_circle</span>
+              <span>${c.name}</span>
+            </div>
           </div>
-          <h3>Edit Contact</h3>
+          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
         </div>
-        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-      </div>
-      <div class="modal-body" style="padding: 32px;">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
-              <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:64px; height:64px; border-radius:50%; flex-shrink:0;">
+
+        <div class="bem-body">
+          <div class="bem-grid">
+            <div class="bem-field" style="grid-column: span 2; margin-bottom: 8px;">
+              <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&background=e2e8f0&color=64748b" style="width:56px; height:56px; border-radius:50%;">
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-              <div style="display:flex; flex-direction:column; gap:4px;">
-                <label class="modal-label">First Name</label>
-                <input class="modal-input" type="text" value="${firstName}" id="edit-c-fname" placeholder="First name">
+
+            <div class="bem-field">
+              <label class="bem-label">First Name</label>
+              <input class="bcast-edit-input" type="text" value="${firstName}" id="edit-c-fname" data-orig="${firstName}" oninput="checkProfileDirty()">
+            </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Last Name</label>
+              <input class="bcast-edit-input" type="text" value="${lastName}" id="edit-c-lname" data-orig="${lastName}" oninput="checkProfileDirty()">
+            </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Designation</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-c-role" data-orig="${role}" onchange="checkProfileDirty()">
+                  <option value="CEO" ${role === 'CEO' ? 'selected' : ''}>CEO</option>
+                  <option value="Proprietor" ${role === 'Proprietor' ? 'selected' : ''}>Proprietor</option>
+                  <option value="Director" ${role === 'Director' ? 'selected' : ''}>Director</option>
+                  <option value="Manager" ${role === 'Manager' ? 'selected' : ''}>Manager</option>
+                  <option value="Partner" ${role === 'Partner' ? 'selected' : ''}>Partner</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
               </div>
-              <div style="display:flex; flex-direction:column; gap:4px;">
-                <label class="modal-label">Last Name</label>
-                <input class="modal-input" type="text" value="${lastName}" id="edit-c-lname" placeholder="Last name">
-              </div>
             </div>
-            <div style="display:flex; flex-direction:column; gap:4px;">
-              <label class="modal-label">Designation</label>
-              ${renderCustomSelect('edit-c-role', [
-                { value: 'CEO', label: 'CEO' },
-                { value: 'Proprietor', label: 'Proprietor' },
-                { value: 'Director', label: 'Director' },
-                { value: 'Manager', label: 'Manager' },
-                { value: 'Partner', label: 'Partner' }
-              ], c.role, (val) => { document.getElementById('edit-c-role-hidden').value = val; })}
-              <input type="hidden" id="edit-c-role-hidden" value="${c.role}">
-            </div>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:24px;">
-            <div style="padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:16px;">
-              <label class="modal-label" style="display:block; margin-bottom:16px; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Status & Permissions</label>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                <div style="display:flex; gap: 20px;">
-                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
-                    <input type="radio" name="edit-status" value="Active" ${status === 'Active' ? 'checked' : ''} style="accent-color: var(--blue);"> Active
-                  </label>
-                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
-                    <input type="radio" name="edit-status" value="Inactive" ${status === 'Inactive' ? 'checked' : ''} style="accent-color: var(--blue);"> Inactive
-                  </label>
-                </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Status</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-c-status" data-orig="${status}" onchange="checkProfileDirty()">
+                  <option value="Active" ${status === 'Active' ? 'selected' : ''}>Active</option>
+                  <option value="Inactive" ${status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveContact(${memberId}, ${index})">Save</button>
+
+        <div class="bem-footer">
+          <button class="bem-btn-cancel" onclick="window.closeModal()">Cancel</button>
+          <button class="bem-btn-update" id="profile-update-btn" onclick="saveContactChanges(${memberId}, ${index})">
+            <span class="material-icons-round">save</span> Update
+          </button>
+        </div>
       </div>
     `;
   } else if (type === 'plan') {
@@ -1725,86 +1782,100 @@ function openEditModal(type, memberId, index) {
       </div>
     `;
   } else if (type === 'company') {
-    content.className = 'modal-content modal-wide';
+    content.className = 'modal-content';
+    content.style.maxWidth = '750px';
+
+    const bType = m.companyType || 'Wholesaler';
+
     html = `
-      <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-            <span class="material-icons-round">business</span>
+      <div class="bem-wrap">
+        <div class="bem-header">
+          <div class="bem-header-left">
+            <div class="bem-title-row">
+              <h2 class="bem-title">Company Information</h2>
+              <span class="bem-badge"><span class="material-icons-round">edit</span>EDITING</span>
+            </div>
+            <div class="bem-meta">
+              <span>${m.id}</span><span>•</span>
+              <span class="material-icons-round" style="color:#2563eb;">business</span>
+              <span>${m.company}</span>
+            </div>
           </div>
-          <h3>Company Information</h3>
+          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
         </div>
-        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-      </div>
-      <div class="modal-body" style="padding: 32px;">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
-          
-          <!-- Column 1 -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
-              <div style="width:64px; height:64px; background:#475569; border-radius:50%; color:#fff; display:grid; place-items:center; flex-shrink:0;">
-                <span class="material-icons-round" style="font-size:32px;">person</span>
-              </div>
-              <div style="display:flex; flex-direction:column; gap:6px;">
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700; border-radius: 4px;">Choose File</button>
-                <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
+        
+        <div class="bem-body">
+          <div class="bem-grid">
+            <div class="bem-field" style="grid-column: span 2;">
+              <div style="display:flex; align-items:center; gap:16px; margin-bottom:4px;">
+                <div style="width:64px; height:64px; background:#475569; border-radius:50%; color:#fff; display:grid; place-items:center; flex-shrink:0;">
+                  <span class="material-icons-round" style="font-size:32px;">person</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <button class="bem-btn-cancel" style="padding: 6px 14px; font-size: 0.75rem;">Choose File</button>
+                  <span style="color:#94a3b8; font-size:0.7rem; font-weight:600;">No file chosen</span>
+                </div>
               </div>
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">GST / VAT</label>
-              <input class="modal-input" type="text" value="${m.gst || '29ABCDE1234F1Z5'}" id="edit-co-gst" style="background:#f8fafc;">
+            <div class="bem-field">
+              <label class="bem-label">GST / VAT</label>
+              <input class="bcast-edit-input" type="text" value="${m.gst || '29ABCDE1234F1Z5'}" id="edit-co-gst" data-orig="${m.gst || '29ABCDE1234F1Z5'}" oninput="checkProfileDirty()">
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Company Name</label>
-              <input class="modal-input" type="text" value="${m.company}" id="edit-co-name" style="background:#f8fafc;">
+            <div class="bem-field">
+              <label class="bem-label">Company Name</label>
+              <input class="bcast-edit-input" type="text" value="${m.company}" id="edit-co-name" data-orig="${m.company}" oninput="checkProfileDirty()">
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Address</label>
-              <input class="modal-input" type="email" value="${m.email}" id="edit-co-email" style="background:#f8fafc;">
+            <div class="bem-field">
+              <label class="bem-label">Email Address</label>
+              <input class="bcast-edit-input" type="email" value="${m.email}" id="edit-co-email" data-orig="${m.email}" oninput="checkProfileDirty()">
             </div>
 
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Business Type</label>
-              <select class="modal-input" id="edit-co-type" style="background:#f8fafc;">
-                <option value="Wholesaler" ${m.companyType === 'Wholesaler' ? 'selected' : ''}>Wholesaler</option>
-                <option value="Retailer" ${m.companyType === 'Retailer' ? 'selected' : ''}>Retailer</option>
-                <option value="Manufacturer" ${m.companyType === 'Manufacturer' ? 'selected' : ''}>Manufacturer</option>
-                ${!['Wholesaler', 'Retailer', 'Manufacturer'].includes(m.companyType) ? `<option value="${m.companyType}" selected>${m.companyType}</option>` : ''}
-              </select>
+            <div class="bem-field">
+              <label class="bem-label">Business Type</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-co-type" data-orig="${bType}" onchange="checkProfileDirty()">
+                  <option value="Wholesaler" ${bType === 'Wholesaler' ? 'selected' : ''}>Wholesaler</option>
+                  <option value="Retailer" ${bType === 'Retailer' ? 'selected' : ''}>Retailer</option>
+                  <option value="Manufacturer" ${bType === 'Manufacturer' ? 'selected' : ''}>Manufacturer</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Website</label>
+              <input class="bcast-edit-input" type="text" value="www.${m.company.toLowerCase().replace(/ /g, '')}.com" id="edit-co-website" data-orig="www.${m.company.toLowerCase().replace(/ /g, '')}.com" oninput="checkProfileDirty()">
+            </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Phone 1</label>
+              <input class="bcast-edit-input" type="text" value="${m.mobile}" id="edit-co-phone1" data-orig="${m.mobile}" oninput="checkProfileDirty()">
+            </div>
+
+            <div class="bem-field">
+              <label class="bem-label">Phone 2</label>
+              <input class="bcast-edit-input" type="text" value="${m.phone2 || ''}" id="edit-co-phone2" data-orig="${m.phone2 || ''}" oninput="checkProfileDirty()">
+            </div>
+
+            <div class="bem-field bem-field--full">
+              <label class="bem-label">About Us</label>
+              <div class="bem-textarea-wrap">
+                <textarea class="bem-textarea" id="edit-co-about" maxlength="500" data-orig="${m.about || ''}" oninput="checkProfileDirty(); updateBroadcastCharCount(this)">${m.about || ''}</textarea>
+                <span class="bem-char-count" id="bcast-char-count">${(m.about || '').length}/500</span>
+              </div>
             </div>
           </div>
-
-          <!-- Column 2 -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Website</label>
-              <input class="modal-input" type="text" value="www.${m.company.toLowerCase().replace(/ /g, '')}.com" id="edit-co-website" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Phone 1</label>
-              <input class="modal-input" type="text" value="${m.mobile}" id="edit-co-phone1" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Phone 2</label>
-              <input class="modal-input" type="text" value="${m.phone2 || ''}" id="edit-co-phone2" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">About Us</label>
-              <textarea class="modal-input" id="edit-co-about" rows="4" style="background:#f8fafc; resize:none;">${m.about || ''}</textarea>
-            </div>
-          </div>
-
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveCompany(${memberId})">Save</button>
+
+        <div class="bem-footer">
+          <button class="bem-btn-cancel" onclick="window.closeModal()">Cancel</button>
+          <button class="bem-btn-update" id="profile-update-btn" onclick="saveProfileChanges(${memberId})">
+            <span class="material-icons-round">save</span> Update
+          </button>
+        </div>
       </div>
     `;
   }
@@ -1814,157 +1885,52 @@ function openEditModal(type, memberId, index) {
 }
 
 function openAddModal(type, memberId) {
+  const m = members.find(x => x.id === memberId);
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
-  const m = members.find(x => x.id === memberId);
   let html = '';
+
   if (type === 'contact') {
-    content.className = 'modal-content modal-wide';
+    content.className = 'modal-content';
+    content.style.maxWidth = '680px';
     html = `
-      <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-            <span class="material-icons-round">person_add</span>
+      <div class="bem-wrap">
+        <div class="bem-header">
+          <div class="bem-header-left">
+            <h2 class="bem-title">Add New Contact</h2>
+            <div class="bem-meta"><span>${m.company}</span></div>
           </div>
-          <h3>Add New Contact</h3>
+          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
         </div>
-        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-      </div>
-      <div class="modal-body" style="padding: 32px;">
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
-          
-          <!-- Column 1: Info -->
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div style="display:flex; align-items:center; gap:16px; margin-bottom:12px;">
-              <div style="width:64px; height:64px; background:#475569; border-radius:50%; color:#fff; display:grid; place-items:center; flex-shrink:0;">
-                <span class="material-icons-round" style="font-size:36px;">person</span>
-              </div>
-              <div style="display:flex; flex-direction:column; gap:6px;">
-                <button class="btn-outline" style="padding: 6px 14px; font-size: 0.85rem; background:#f1f5f9; border-color:#cbd5e1; color:var(--text-mid); font-weight:700; border-radius: 4px;">Choose File</button>
-                <span style="color:var(--text-soft); font-size:0.75rem; font-weight:600;">No file chosen</span>
-              </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">First Name</label>
-                <input class="modal-input" type="text" id="add-c-fname" placeholder="First name" style="background:#f8fafc;">
-              </div>
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Last Name</label>
-                <input class="modal-input" type="text" id="add-c-lname" placeholder="Last name" style="background:#f8fafc;">
-              </div>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Designation</label>
-              <select class="modal-input" id="add-c-role" style="background:#f8fafc;">
-                <option value="" disabled selected>Choose Designation</option>
-                <option value="CEO">CEO</option>
-                <option value="Proprietor">Proprietor</option>
-                <option value="Director">Director</option>
-                <option value="Manager">Manager</option>
-                <option value="Partner">Partner</option>
-              </select>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Mobile</label>
-              <input class="modal-input" type="text" id="add-c-phone" placeholder="+91 —" style="background:#f8fafc;">
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Address</label>
-              <input class="modal-input" type="email" id="add-c-email" placeholder="email@example.com" style="background:#f8fafc;">
-            </div>
+        <div class="bem-body">
+          <div class="bem-grid">
+            <div class="bem-field"><label class="bem-label">First Name</label><input class="bcast-edit-input" type="text" id="add-c-fname" placeholder="John"></div>
+            <div class="bem-field"><label class="bem-label">Last Name</label><input class="bcast-edit-input" type="text" id="add-c-lname" placeholder="Doe"></div>
+            <div class="bem-field"><label class="bem-label">Designation</label><input class="bcast-edit-input" type="text" id="add-c-role" placeholder="Manager"></div>
+            <div class="bem-field"><label class="bem-label">Phone</label><input class="bcast-edit-input" type="text" id="add-c-phone" placeholder="+91 0000000000"></div>
+            <div class="bem-field bem-field--full"><label class="bem-label">Email</label><input class="bcast-edit-input" type="email" id="add-c-email" placeholder="john.doe@example.com"></div>
           </div>
-
-          <!-- Column 2: Status & Settings -->
-          <div style="display:flex; flex-direction:column; gap:24px;">
-            <div style="padding:20px; background:#f8fafc; border:1px solid var(--border); border-radius:16px;">
-              <label class="modal-label" style="display:block; margin-bottom:16px; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Status & Permissions</label>
-              
-              <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
-                <input type="checkbox" id="add-c-main" style="width: 20px; height: 20px; accent-color: var(--blue); cursor: pointer;">
-                <label for="add-c-main" style="margin:0; font-size:0.85rem; font-weight:700; color:var(--text); cursor:pointer;">Mark as Main Contact</label>
-              </div>
-
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--text);">Account Status</div>
-                <div style="display:flex; gap: 20px;">
-                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
-                    <input type="radio" name="add-status" value="Active" checked style="accent-color: var(--blue);" onchange="document.getElementById('add-inactive-options').style.display='none';"> Active
-                  </label>
-                  <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">
-                    <input type="radio" name="add-status" value="Inactive" style="accent-color: var(--blue);" onchange="document.getElementById('add-inactive-options').style.display='block';"> Inactive
-                  </label>
-                </div>
-                <div id="add-inactive-options" style="display: none; margin-top: 4px;">
-                  <select class="modal-input" style="background:#fff;">
-                    <option value="" disabled selected>Select Inactive Reason</option>
-                    <option value="Block">Block</option>
-                    <option value="AllowedForNewRegistration">Allowed For New Registration</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
-              <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Reason / Internal Note</label>
-              <textarea class="modal-input" id="add-c-reason" style="flex:1; background:#f8fafc; resize:none; min-height:120px;" placeholder="Add internal notes about this contact..."></textarea>
-            </div>
-          </div>
-
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-outline" onclick="closeModal()">Cancel</button>
-        <button class="btn-primary" onclick="saveNewContact(${memberId})">Save</button>
+        <div class="bem-footer">
+          <button class="bem-btn-cancel" onclick="window.closeModal()">Cancel</button>
+          <button class="bem-btn-update" style="display:flex;" onclick="saveNewContact(${memberId})">Add Contact</button>
+        </div>
       </div>
     `;
   } else if (type === 'address') {
     content.className = 'modal-content';
     content.style.maxWidth = '580px';
     html = `
-      <div class="modal-header">
-        <h3>Add New Location</h3>
-        <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-      </div>
-      <div class="modal-body" style="padding: 40px 32px;">
-        <div class="modal-form-row">
-          <label>Address Title</label>
-          <select class="modal-input" id="add-addr-title">
-            <option value="" disabled selected>Choose Address Title</option>
-            <option value="Company Address">Company Address</option>
-            <option value="Work">Work</option>
-            <option value="Factory">Factory</option>
-            <option value="Warehouse">Warehouse</option>
-          </select>
-        </div>
-        <div class="modal-form-row">
-          <label>Address Line 1</label>
-          <input class="modal-input" type="text" id="add-addr-line1" placeholder="Building, Street">
-        </div>
-        <div class="modal-form-row">
-          <label>Address Line 2</label>
-          <input class="modal-input" type="text" id="add-addr-line2" placeholder="Enter Address Line">
-        </div>
-        <div class="modal-form-row">
-          <label>City</label>
-          <input class="modal-input" type="text" id="add-addr-city" placeholder="Ahmedabad Gujarat">
-        </div>
-        <div class="modal-form-row">
-          <label>Pincode</label>
-          <input class="modal-input" type="text" id="add-addr-pincode" placeholder="125558">
-        </div>
-        <div class="modal-form-row" style="margin-top: 24px;">
-          <label>Set as default</label>
-          <input type="checkbox" id="add-addr-default">
-        </div>
+      <div class="modal-header"><h3>Add Address</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
+      <div class="modal-body" style="padding:32px;">
+        <div class="modal-form-row"><label class="modal-label">Title</label><input class="modal-input" type="text" id="add-addr-title" placeholder="e.g. Warehouse"></div>
+        <div class="modal-form-row"><label class="modal-label">Address Line 1</label><input class="modal-input" type="text" id="add-addr-line1"></div>
+        <div class="modal-form-row"><label class="modal-label">City</label><input class="modal-input" type="text" id="add-addr-city"></div>
+        <div class="modal-form-row"><label class="modal-label">Pincode</label><input class="modal-input" type="text" id="add-addr-pincode"></div>
       </div>
       <div class="modal-footer">
-        <button class="btn-outline" style="background:#f1f5f9; border:none; color:var(--text-mid);" onclick="closeModal()">Close</button>
-        <button class="btn-primary" style="padding: 10px 32px;" onclick="saveNewAddress(${memberId})">Save</button>
+        <button class="btn-outline" onclick="closeModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveNewAddress(${memberId})">Add Address</button>
       </div>
     `;
   }
@@ -1973,884 +1939,764 @@ function openAddModal(type, memberId) {
   modal.classList.remove('hidden');
 }
 
-function saveNewContact(memberId) {
-  const m = members.find(x => x.id === memberId);
-  const fName = document.getElementById('add-c-fname').value.trim();
-  const lName = document.getElementById('add-c-lname').value.trim();
-  if (!fName) { showToast('First name is required', 'error'); return; }
-  if (!m.contacts) m.contacts = [];
-  m.contacts.push({
-    name: `${fName} ${lName}`.trim(),
-    role: document.getElementById('add-c-role').value || 'Contact',
-    phone: document.getElementById('add-c-phone').value || '',
-    email: document.getElementById('add-c-email').value || '',
-    status: document.querySelector('input[name="add-status"]:checked')?.value || 'Active',
-    reason: document.getElementById('add-c-reason')?.value || '',
-    photo: `https://ui-avatars.com/api/?name=${encodeURIComponent(fName)}&background=eef3ff&color=4880ff`
-  });
-  closeModal();
-  showToast('Contact added successfully', 'success');
-  switchTab(memberId, 'contact-table');
-}
-
-function saveNewAddress(memberId) {
-  const m = members.find(x => x.id === memberId);
-  const title = document.getElementById('add-addr-title').value;
-  const line1 = document.getElementById('add-addr-line1').value.trim();
-  const line2 = document.getElementById('add-addr-line2').value.trim();
-  const pincode = document.getElementById('add-addr-pincode').value.trim();
-  const city = document.getElementById('add-addr-city').value.trim();
-  const isDefault = document.getElementById('add-addr-default').checked;
-
-  if (!title || (!line1 && !city)) { showToast('Please fill required fields', 'error'); return; }
-
-  if (!m.addresses) m.addresses = [];
-
-  if (isDefault) m.addresses.forEach(a => a.isDefault = false);
-
-  m.addresses.push({ title, line1, line2, pincode, city, isDefault });
-
-  closeModal();
-  showToast('Address added successfully', 'success');
-  switchTab(memberId, 'addresses');
-}
-
-function closeModal() {
-  document.getElementById('modal-container').classList.add('hidden');
-  document.getElementById('modal-content').innerHTML = '';
-}
-
-function saveContact(memberId, index) {
-  const m = members.find(x => x.id === memberId);
-  const fName = document.getElementById('edit-c-fname').value.trim();
-  const lName = document.getElementById('edit-c-lname').value.trim();
-  m.contacts[index].name = `${fName} ${lName}`.trim();
-  m.contacts[index].role = document.getElementById('edit-c-role').value;
-  m.contacts[index].phone = document.getElementById('edit-c-phone').value;
-  m.contacts[index].email = document.getElementById('edit-c-email').value;
-  m.contacts[index].status = document.querySelector('input[name="edit-status"]:checked')?.value || 'Active';
-  m.contacts[index].reason = document.getElementById('edit-c-reason')?.value || '';
-  closeModal();
-  showToast('Contact updated successfully.', 'success');
-  openProfile(memberId, 'contact-table');
-}
-
-function saveAddress(memberId, index) {
-  const m = members.find(x => x.id === memberId);
-  const title = document.getElementById('edit-addr-title').value;
-  const line1 = document.getElementById('edit-addr-line1').value.trim();
-  const line2 = document.getElementById('edit-addr-line2').value.trim();
-  const pincode = document.getElementById('edit-addr-pincode').value.trim();
-  const city = document.getElementById('edit-addr-city').value.trim();
-  const isDefault = document.getElementById('edit-addr-default').checked;
-
-  if (isDefault) m.addresses.forEach((a, i) => { if (i !== index) a.isDefault = false; });
-
-  m.addresses[index] = { ...m.addresses[index], title, line1, line2, pincode, city, isDefault };
-
-  closeModal();
-  showToast('Address updated successfully.', 'success');
-  switchTab(memberId, 'addresses');
-}
-
-function saveCompany(memberId) {
-  const m = members.find(x => x.id === memberId);
-  m.company = document.getElementById('edit-co-name').value;
-  m.companyType = document.getElementById('edit-co-type').value;
-  m.email = document.getElementById('edit-co-email').value;
-  m.gst = document.getElementById('edit-co-gst').value;
-  m.mobile = document.getElementById('edit-co-phone1').value;
-  m.phone2 = document.getElementById('edit-co-phone2').value;
-  m.about = document.getElementById('edit-co-about').value;
-  closeModal();
-  showToast('Company profile updated.', 'success');
-  switchTab(memberId, 'company');
-}
-
-// Close modal on overlay click
-document.getElementById('modal-container').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
-
-function toggleNavGroup(btn) {
-  const group = btn.closest('.nav-group');
-  const sub = group.querySelector('.nav-sub');
-  const isOpen = group.classList.contains('open');
-  document.querySelectorAll('.nav-group.open').forEach(g => {
-    if (g !== group) { g.classList.remove('open'); g.querySelector('.nav-sub').style.height = '0px'; }
-  });
-  if (isOpen) { group.classList.remove('open'); sub.style.height = '0px'; }
-  else { group.classList.add('open'); sub.style.height = sub.scrollHeight + 'px'; }
-}
-
-// ===== ASSIGN PLAN =====
-function assignPlan(memberId, plan) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-  m.plan = plan.toLowerCase();
-  showToast(`Plan changed to ${plan}`, 'success');
-  switchTab(memberId, 'plan');
-}
-
-function markLatestPaid(memberId) {
-  const m = members.find(x => x.id === memberId);
-  if (!m || !m.assignedPlans) return;
-  const unpaid = m.assignedPlans.find(p => p.status === 'UnPaid');
-  if (unpaid) { unpaid.status = 'Paid'; showToast('Marked as paid!', 'success'); switchTab(memberId, 'plan'); }
-  else { showToast('No unpaid entries found', 'warning'); }
-}
-
-function applyPlanAction(memberId, action) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-  if (!m.assignedPlans) m.assignedPlans = [];
-
-  if (action === 'suspend' && m.status === 'suspended') { showToast('Member is already suspended', 'error'); return; }
-  if (action === 'reactivate' && m.status === 'active') { showToast('Member is already active', 'error'); return; }
-
-  const actualPlan = m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {};
-  const currentPlanName = actualPlan.name || 'None';
-
-  const fmtDate = (d) => d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  const today = new Date();
-  const newSr = m.assignedPlans.length > 0 ? Math.max(...m.assignedPlans.map(p => p.sr)) + 1 : 1;
-  const invNo = 'ISPL/' + (1000 + newSr) + '/' + today.getFullYear() + '-' + String(today.getFullYear() + 1).slice(-2);
-
-  if (action === 'assign' || action === 'upgrade') {
-    const sel = document.getElementById('plan-select-field');
-    if (!sel) { showToast('Select a plan', 'error'); return; }
-    const planName = sel.value;
-    const startVal = document.getElementById('plan-start-date');
-    const startDate = startVal ? new Date(startVal.value) : today;
-    const planData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === planName) || {};
-    
-    // Invoice Independence Logic
-    const isFree = planData.price === 0;
-    const invOpt = document.getElementById('plan-generate-invoice') ? document.getElementById('plan-generate-invoice').value : 'generate_unpaid';
-    const shouldGenerateInvoice = (invOpt !== 'skip') && !isFree;
-    const assignedInvNo = shouldGenerateInvoice ? invNo : '';
-    const assignedStatus = shouldGenerateInvoice ? (invOpt === 'generate_paid' ? 'Paid' : 'UnPaid') : 'N/A';
-    
-    const days = planData.validity ? ({ monthly: 30, quarterly: 90, halfyearly: 180, yearly: 365, '15days': 15 }[planData.validity] || 30) : 30;
-    const endDate = new Date(startDate); endDate.setDate(endDate.getDate() + days);
-    
-    m.plan = planName.toLowerCase().replace('tk-', '');
-    if (m.status === 'suspended') m.status = 'active';
-    m.assignedPlans.unshift({ sr: newSr, name: planName, date: fmtDate(startDate) + ' to ' + fmtDate(endDate), remark: action === 'upgrade' ? 'Upgraded' : 'Assigned', invoice: assignedInvNo, status: assignedStatus });
-    showToast(planName + ' ' + (action === 'upgrade' ? 'upgraded' : 'assigned') + ' successfully!', 'success');
-  } else if (action === 'extend') {
-    if (currentPlanName === 'None') { showToast('No active plan to extend', 'error'); return; }
-    const extSel = document.getElementById('plan-extend-days');
-    const extDays = extSel ? parseInt(extSel.value) : 30;
-    const extEnd = new Date(today); extEnd.setDate(extEnd.getDate() + extDays);
-    const currentPlanData = (typeof plans !== 'undefined' ? plans : []).find(p => p.name === currentPlanName) || {};
-    
-    const isFree = currentPlanData.price === 0;
-    const invOpt = document.getElementById('plan-generate-invoice') ? document.getElementById('plan-generate-invoice').value : 'generate_unpaid';
-    const shouldGenerateInvoice = (invOpt !== 'skip') && !isFree;
-    const assignedInvNo = shouldGenerateInvoice ? invNo : '';
-    const assignedStatus = shouldGenerateInvoice ? (invOpt === 'generate_paid' ? 'Paid' : 'UnPaid') : 'N/A';
-
-    m.assignedPlans.unshift({ sr: newSr, name: currentPlanName, date: fmtDate(today) + ' to ' + fmtDate(extEnd), remark: 'Extended by ' + extDays + ' days', invoice: assignedInvNo, status: assignedStatus });
-    showToast('Plan extended by ' + extDays + ' days!', 'success');
-  } else if (action === 'suspend') {
-    const reason = document.getElementById('plan-suspend-reason');
-    m.status = 'suspended';
-    m.assignedPlans.unshift({ sr: newSr, name: 'Suspended', date: fmtDate(today), remark: reason ? reason.value || 'No reason' : 'No reason', invoice: '', status: 'N/A' });
-    showToast('Member suspended', 'warning');
-  } else if (action === 'reactivate') {
-    m.status = 'active';
-    const note = document.getElementById('plan-reactivate-note');
-    m.assignedPlans.unshift({ sr: newSr, name: 'Reactivated', date: fmtDate(today), remark: note ? note.value || 'Access restored' : 'Access restored', invoice: '', status: 'N/A' });
-    showToast('Member reactivated!', 'success');
-  }
-  switchTab(memberId, 'plan');
-}
-
-window.setPlanActionMode = function(memberId, action) {
-  const container = document.getElementById('plan-action-container');
-  if (!container) return;
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-  
-  const todayISO = new Date().toISOString().split('T')[0];
-  const po = (typeof plans !== 'undefined' ? plans : []).map(p => {
-    const vl = typeof VALIDITY_LABELS !== 'undefined' ? (VALIDITY_LABELS[p.validity] || p.validity) : p.validity;
-    return '<option value="' + p.name + '">' + p.name + ' \u00A0\u00A0 ' + (p.price === 0 ? 'FREE' : '\u20B9' + Number(p.price).toLocaleString() + ' / ' + vl) + '</option>';
-  }).join('');
-  
-  const lbl = (t, icon) => `<div style="font-size:0.7rem;font-weight:900;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">${icon ? `<span class="material-icons-round" style="font-size:14px;">${icon}</span>` : ''} ${t}</div>`;
-  
-  const selWrap = (id, opts, hint) => `
-    <div style="position:relative;">
-      <select id="${id}" style="width:100%;appearance:none;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:0.9rem;color:#1e293b;cursor:pointer;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='#e2e8f0'">
-        ${opts}
-      </select>
-      <span class="material-icons-round" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#94a3b8;font-size:20px;">expand_more</span>
-    </div>
-    ${hint ? `<span style="font-size:0.72rem;color:#94a3b8;font-weight:600;margin-top:8px;display:block;padding-left:4px;">${hint}</span>` : ''}
-  `;
-
-  const inputWrap = (id, type, val, placeholder) => `
-    <input type="${type}" id="${id}" value="${val || ''}" placeholder="${placeholder || ''}" 
-      style="width:100%;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:0.9rem;color:#1e293b;outline:none;transition:border-color 0.2s;" 
-      onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='#e2e8f0'">
-  `;
-
-  const invoiceOpts = `
-    <option value="generate_unpaid">Generate Invoice (Unpaid)</option>
-    <option value="generate_paid">Generate Invoice (Paid)</option>
-    <option value="skip">Do Not Generate (Skip)</option>
-  `;
-
-  let desc, fields, btn, note, icon;
-  if (action === 'assign') {
-    desc = 'Assign New Plan'; btn = 'Assign Plan'; note = "Initiates a new billing cycle for the member."; icon = "add_moderator";
-    fields = `
-      <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:24px;margin-bottom:24px;">
-        <div>${lbl('Select Plan', 'layers')} ${selWrap('plan-select-field', po)}</div>
-        <div>${lbl('Start Date', 'calendar_today')} ${inputWrap('plan-start-date', 'date', todayISO)}</div>
-        <div>${lbl('Invoicing', 'receipt_long')} ${selWrap('plan-generate-invoice', invoiceOpts, 'Free plans auto-skip invoices.')}</div>
-      </div>
-    `;
-  } else if (action === 'extend') {
-    desc = 'Extend Plan'; btn = 'Extend Now'; note = "Add more time to the current subscription."; icon = "more_time";
-    fields = `
-      <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:24px;margin-bottom:24px;">
-        <div>${lbl('Extension Period', 'timer')} ${selWrap('plan-extend-days', '<option value="30">30 Days (1 Month)</option><option value="90">90 Days (Quarter)</option><option value="180">180 Days (Half Year)</option><option value="365">365 Days (1 Year)</option>')}</div>
-        <div>${lbl('Effective From', 'info')} <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;font-weight:800;font-size:0.9rem;color:#94a3b8;">${todayISO}</div></div>
-        <div>${lbl('Billing', 'payments')} ${selWrap('plan-generate-invoice', invoiceOpts)}</div>
-      </div>
-    `;
-  } else if (action === 'upgrade') {
-    desc = 'Upgrade Member'; btn = 'Confirm Upgrade'; note = "Proration logic will be applied to the new tier."; icon = "upgrade";
-    fields = `
-      <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:24px;margin-bottom:24px;">
-        <div>${lbl('New Tier', 'stars')} ${selWrap('plan-select-field', po)}</div>
-        <div>${lbl('Upgrade Date', 'event_available')} ${inputWrap('plan-start-date', 'date', todayISO)}</div>
-        <div>${lbl('Invoice Control', 'settings')} ${selWrap('plan-generate-invoice', invoiceOpts)}</div>
-      </div>
-    `;
-  } else if (action === 'suspend') {
-    desc = 'Suspend Membership'; btn = 'Suspend Access'; note = "Member will be blocked from the application."; icon = "block";
-    fields = `
-      <div style="margin-bottom:24px;">
-        ${lbl('Reason for Suspension', 'gavel')}
-        ${inputWrap('plan-suspend-reason', 'text', '', 'e.g. Non-payment, violation of terms...')}
-      </div>
-    `;
-  } else if (action === 'reactivate') {
-    desc = 'Reactivate Member'; btn = 'Restore Access'; note = "Restores all member privileges immediately."; icon = "verified_user";
-    fields = `
-      <div style="margin-bottom:24px;">
-        ${lbl('Reactivation Notes', 'edit_note')}
-        ${inputWrap('plan-reactivate-note', 'text', '', 'Optional: e.g. Payment verified...')}
-      </div>
-    `;
-  }
-
-  container.innerHTML = `
-    <div class="content-card" style="padding: 32px; position: relative; border: 2px solid var(--blue); box-shadow: 0 10px 25px rgba(59,130,246,0.08); background: linear-gradient(to bottom right, #ffffff, #fdfdff);">
-      <button onclick="document.getElementById('plan-action-container').style.display='none'" style="position:absolute; top: 20px; right: 20px; background: #f1f5f9; border: none; cursor: pointer; color: #64748b; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#1e293b'" onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b'">
-        <span class="material-icons-round" style="font-size: 18px;">close</span>
-      </button>
-      
-      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 28px;">
-        <div style="width: 44px; height: 44px; background: #eff6ff; color: var(--blue); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-          <span class="material-icons-round" style="font-size: 24px;">${icon}</span>
-        </div>
-        <div>
-          <h2 style="margin: 0; font-size: 1.25rem; font-weight: 900; color: #1e293b; letter-spacing: -0.5px;">${desc}</h2>
-          <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Member ID: #${m.id} \u2022 ${m.member}</p>
-        </div>
-      </div>
-
-      <div style="background: #fff; border: 1px solid #f1f5f9; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
-        ${fields}
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 20px;">
-          <div style="display: flex; align-items: center; gap: 8px; color: #64748b;">
-            <span class="material-icons-round" style="font-size: 16px; color: #94a3b8;">tips_and_updates</span>
-            <span style="font-size: 0.8rem; font-weight: 600;">${note}</span>
-          </div>
-          <button onclick="applyPlanAction(${m.id}, '${action}')" style="background: var(--blue); color: #fff; border: none; border-radius: 10px; padding: 14px 28px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(59,130,246,0.2);" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 12px rgba(59,130,246,0.3)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 10px rgba(59,130,246,0.2)'">
-            ${btn} <span class="material-icons-round" style="font-size: 18px;">arrow_forward</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-  container.style.display = 'block';
-  container.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-
-// ===== STAMP MODAL =====
-function openStampModal(memberId) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-
-  const modalContainer = document.getElementById('modal-container');
-  const modalContent = document.getElementById('modal-content');
-
-  const badgeConfig = [
-    { key: 'identity', label: 'Identity Verified', icon: 'badge', color: '#1e293b', bg: '#f1f5f9', desc: 'User identity has been verified' },
-    { key: 'email', label: 'Email Verified', icon: 'mark_email_read', color: '#16a34a', bg: '#dcfce7', desc: 'Email address has been verified' },
-    { key: 'docs', label: 'Documents Verified', icon: 'verified_user', color: '#7c3aed', bg: '#ede9fe', desc: 'Official documents have been verified' },
-    { key: 'account', label: 'Account Verified', icon: 'account_circle', color: '#d97706', bg: '#fef3c7', desc: 'Account has been verified' },
-  ];
-
-  modalContent.className = 'modal-content modal-stamp';
-  modalContent.style.maxWidth = '1000px';
-  modalContent.innerHTML = `
-    <div class="modal-header" style="background:#fff; border-bottom:1px solid var(--border); padding:20px 24px;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div style="width:36px; height:36px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-          <span class="material-icons-round" style="font-size:20px;">verified</span>
-        </div>
-        <h3 style="margin:0; font-size:1.25rem; font-weight:900;">Add Verification Stamp</h3>
-      </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body" style="padding:32px; background:#fff;">
-      
-      <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px;">
-        <!-- Left Column: Date & Badges -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <div>
-            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">DATE <span style="color:var(--red);">*</span></label>
-            <div style="position:relative;">
-              <span class="material-icons-round" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-soft); font-size:20px;">calendar_today</span>
-              <input type="date" id="stamp-date" class="modal-input" style="padding-left:44px; background:#f8fafc;" value="${new Date().toISOString().split('T')[0]}">
-            </div>
-          </div>
-
-          <div>
-            <label class="modal-label" style="display:block; margin-bottom:12px; color:var(--text); font-weight:800; font-size:0.8rem;">VERIFICATION BADGES <span style="color:var(--red);">*</span></label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-              ${badgeConfig.map(b => `
-                <label class="badge-select-item" style="display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s;">
-                  <input type="checkbox" id="badge-${b.key}" value="${b.key}" style="width:18px; height:18px; accent-color:var(--blue); cursor:pointer;">
-                  <div style="width:30px; height:30px; border-radius:50%; background:${b.bg}; color:${b.color}; display:grid; place-items:center; flex-shrink:0;">
-                    <span class="material-icons-round" style="font-size:16px;">${b.icon}</span>
-                  </div>
-                  <div>
-                    <div style="font-size:0.8rem; font-weight:800; color:var(--text); line-height:1.2;">${b.label}</div>
-                    <div style="font-size:0.7rem; color:var(--text-soft); font-weight:600; line-height:1.2;">${b.desc}</div>
-                  </div>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Remark -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <div style="flex:1; display:flex; flex-direction:column;">
-            <label class="modal-label" style="display:block; margin-bottom:8px; color:var(--text); font-weight:800; font-size:0.8rem;">REMARK <span style="color:var(--text-soft); font-weight:600; text-transform:none;">(Optional)</span></label>
-            <div style="position:relative; flex:1;">
-              <span class="material-icons-round" style="position:absolute; left:14px; top:14px; color:var(--text-soft); font-size:20px;">chat_bubble_outline</span>
-              <textarea id="stamp-remark" class="modal-input" style="width:100%; height:100%; min-height:200px; padding:12px 16px 12px 44px; background:#f8fafc; resize:none;" placeholder="Enter remark (optional)"></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-outline" onclick="closeModal()">Close</button>
-      <button class="btn-primary" onclick="saveStamp(${m.id})">
-        <span class="material-icons-round">save</span> Save Stamp
-      </button>
-    </div>
-  `;
-  modalContainer.classList.remove('hidden');
-}
-
-function saveStamp(memberId) {
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-
-  const dateRaw = document.getElementById('stamp-date').value;
-  const remark = document.getElementById('stamp-remark').value.trim();
-  const badges = ['identity', 'email', 'docs', 'account'].filter(k => {
-    const el = document.getElementById('badge-' + k);
-    return el && el.checked;
-  });
-
-  if (!dateRaw) { showToast('Please select a verification date', 'error'); return; }
-  if (badges.length < 3) { showToast('Please select at least 3 verification badges', 'error'); return; }
-
-  const d = new Date(dateRaw);
-  const dateFormatted = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-
-  if (!m.stamps) m.stamps = [];
-  m.stamps.unshift({
-    date: dateFormatted,
-    badges,
-    remark: remark || 'Verified and badges assigned.',
-    admin: 'Admin User'
-  });
-
-  closeModal();
-  showToast('Verification stamp applied successfully!', 'success');
-  switchTab(memberId, 'stamp');
-}
-
-// ===== EMAIL / COMMUNICATION FUNCTIONS =====
-function toggleEmailRow(index) {
-  const body = document.getElementById(`email-body-${index}`);
-  const icon = document.getElementById(`email-icon-${index}`);
-  if (!body || !icon) return;
-
-  const isHidden = body.style.display === 'none';
-  body.style.display = isHidden ? 'table-row' : 'none';
-  icon.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
-}
-
-function openComposeModal(memberId) {
+window.openComposeModal = function(id) {
+  const m = members.find(x => x.id === id);
   const modal = document.getElementById('modal-container');
   const content = document.getElementById('modal-content');
-  const m = members.find(x => x.id === memberId);
-  if (!m) return;
-
-  content.className = 'modal-content modal-wide';
-  content.style.maxWidth = '750px';
-
+  content.className = 'modal-content';
+  content.style.maxWidth = '600px';
   content.innerHTML = `
-    <div class="modal-header">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div style="width:40px; height:40px; border-radius:10px; background:var(--blue-light); color:var(--blue); display:grid; place-items:center;">
-          <span class="material-icons-round">send</span>
-        </div>
-        <h3>Compose Email to ${m.member}</h3>
-      </div>
-      <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-    </div>
-    <div class="modal-body" style="padding: 0; display: flex !important; flex-direction: row !important; min-height: 400px; max-height: 70vh;">
-      <!-- Left Sidebar: Templates -->
-      <div style="width: 220px; border-right: 1px solid var(--border); background: #f8fafc; display: flex; flex-direction: column; flex-shrink: 0;">
-        <div style="padding: 20px; border-bottom: 1px solid var(--border); background: #fff;">
-          <div style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Categories</div>
-          <div style="position: relative;">
-            <select id="compose-cat-select" onchange="renderComposeTemplates(${m.id}, this.value)" style="width: 100%; padding: 10px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-weight: 800; font-size: 0.85rem; appearance: none; background: #fff; cursor: pointer; outline: none;">
-              <option value="all">All Categories</option>
-              <option value="1">Welcome Emails</option>
-              <option value="2">Billing Updates</option>
-              <option value="3">System Announcements</option>
-            </select>
-            <span class="material-icons-round" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
-          </div>
-        </div>
-        <div id="compose-template-list" style="flex: 1; overflow-y: auto; padding: 16px;">
-          <!-- Loaded dynamically -->
-        </div>
-      </div>
-
-      <!-- Right Side: Compose Form -->
-      <div style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 16px; background: #fff;">
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Recipient</label>
-          <div style="padding: 12px 16px; background: #f1f5f9; border-radius: 8px; font-weight: 700; color: var(--text-mid); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);">
-            <span class="material-icons-round" style="font-size: 16px;">mail_outline</span> ${m.email}
-          </div>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Subject</label>
-          <input class="modal-input" type="text" id="compose-subject" placeholder="Enter email subject" style="background:#f8fafc;">
-        </div>
-        <div style="display:flex; flex-direction:column; gap:6px; flex: 1;">
-          <label class="modal-label" style="margin:0; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-soft);">Email Editor</label>
-          ${getRichTextEditorHTML("Type your message here...")}
-        </div>
-      </div>
+    <div class="modal-header"><h3>Compose Email</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
+    <div class="modal-body" style="padding:32px;">
+      <div class="modal-form-row"><label class="modal-label">To</label><input class="modal-input" type="text" value="${m.email}" readonly></div>
+      <div class="modal-form-row"><label class="modal-label">Subject</label><input class="modal-input" type="text" id="email-subject"></div>
+      <div class="modal-form-row"><label class="modal-label">Message</label><textarea class="modal-input" style="height:150px;" id="email-body"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="sendProfileEmail(${m.id})" style="padding: 10px 32px;">
-        Send
-      </button>
+      <button class="btn-primary" onclick="showToast('Email sent', 'success'); closeModal();">Send Email</button>
     </div>
   `;
   modal.classList.remove('hidden');
-  initRichTextEditor('.email-editor-container');
-  renderComposeTemplates(memberId);
-}
+};
 
-function renderComposeTemplates(memberId, catId = 'all') {
-  const container = document.getElementById('compose-template-list');
-  const tpls = [
-    { id: 1, catId: 1, name: "Welcome Email", desc: "Official welcome message for new members." },
-    { id: 2, catId: 2, name: "Plan Expiry", desc: "Friendly reminder about upcoming plan expiration." },
-    { id: 3, catId: 2, name: "Monthly Invoice", desc: "Notification about newly generated invoice." },
-    { id: 4, catId: 3, name: "System Maintenance", desc: "Scheduled downtime announcement." }
-  ];
-
-  const filtered = catId === 'all' ? tpls : tpls.filter(t => t.catId == catId);
-
-  container.innerHTML = filtered.map(t => `
-    <div class="template-item" onclick="loadEmailTemplate(${t.id}, ${memberId})" style="padding: 14px; border-radius: 10px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; background: #fff; border: 1px solid var(--border);">
-      <div style="font-weight: 800; color: var(--blue); font-size: 0.9rem; margin-bottom: 4px;">${t.name}</div>
-      <div style="font-size: 0.75rem; color: var(--text-soft); font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${t.desc}</div>
+window.openStampModal = function(id) {
+  const modal = document.getElementById('modal-container');
+  const content = document.getElementById('modal-content');
+  content.className = 'modal-content';
+  content.style.maxWidth = '500px';
+  content.innerHTML = `
+    <div class="modal-header"><h3>Add Verification Stamp</h3><button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button></div>
+    <div class="modal-body" style="padding:32px;">
+      <div class="modal-form-row"><label class="modal-label">Remark</label><textarea class="modal-input" id="stamp-remark"></textarea></div>
     </div>
-  `).join('') || '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:0.8rem;">No templates in this category.</div>';
-}
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="showToast('Stamp added', 'success'); closeModal();">Apply Stamp</button>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+};
 
-function loadEmailTemplate(tplId, memberId) {
-  const m = members.find(x => x.id === memberId);
-  const subj = document.getElementById('compose-subject');
-  const msg = document.querySelector('.editor-content');
-  if (!subj || !msg || !m) return;
 
-  const templatesData = {
-    1: {
-      subject: 'Welcome to the Platform',
-      body: `Dear ${m.member},\n\nWe are excited to welcome you to our platform! Your account for ${m.company} has been successfully activated.\n\nBest regards,\nAdmin Team`
-    },
-    2: {
-      subject: 'Action Required: Your plan is about to expire',
-      body: `Hi ${m.member},\n\nThis is a friendly reminder that your current plan for ${m.company} is set to expire in 7 days.\n\nBest regards,\nAdmin Team`
-    },
-    3: {
-      subject: 'Your Monthly Invoice is Ready',
-      body: `Hello ${m.member},\n\nYour monthly invoice for ${m.company} has been generated and is now available in your dashboard.\n\nBest regards,\nBilling Team`
-    },
-    4: {
-      subject: 'System Maintenance Notice',
-      body: `Hello,\n\nPlease be advised that we have scheduled system maintenance tomorrow at 2:00 AM UTC. Expect minor service interruptions.\n\nRegards,\nIT Support`
+window.openBroadcastHistoryModal = function(memberId, broadcastId, isEditing = false, options = {}) {
+  const canEdit = options.canEdit !== undefined ? options.canEdit : true;
+
+  let b = null;
+  const m = (typeof members !== 'undefined') ? members.find(x => x.id == memberId) : null;
+
+  if (m) {
+    if (!m.broadcasts) {
+      m.broadcasts = [
+        { id: 'BRD-001', date: '02-05-2026 04:04:28 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Mobile Iphone | Qty : 5 Pcs | Price', sendTo: 'SendToAll', status: 'Live' },
+        { id: 'BRD-002', date: '01-05-2026 06:34:49 PM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 10 Pcs | Call', sendTo: 'SendToAll', status: 'Live' },
+        { id: 'BRD-003', date: '30-04-2026 05:20:35 AM', broadcaster: 'Jayesh Jain', company: 'Speedtech Systems', broadcast: 'WTS Laptop Laptop | Qty : 15 Pcs | Call', sendTo: 'SendToAll', status: 'Live' }
+      ];
     }
-  };
-
-  const t = templatesData[tplId];
-  if (t) {
-    subj.value = t.subject;
-    msg.innerHTML = t.body.replace(/\n/g, '<br>');
-    showToast('Template loaded', 'success');
+    b = m.broadcasts.find(x => x.id === broadcastId) || m.broadcasts[0];
+  } else {
+    // Global search (from broadcast.js data)
+    if (window.broadcasts) {
+      b = window.broadcasts.find(x => x.id === broadcastId);
+      // Map global fields to the modal's expected fields
+      if (b && !b.broadcast) b.broadcast = b.message;
+      if (b && !b.broadcaster) b.broadcaster = b.broadcaster;
+    }
   }
-}
 
-function sendProfileEmail(memberId) {
-  const subj = document.getElementById('compose-subject').value.trim();
-  const msg = document.querySelector('.editor-content').innerHTML.trim();
-  if (!subj || msg === "" || msg === "<br>") { showToast('Subject and message are required', 'error'); return; }
+  if (!b) return;
 
-  const m = members.find(x => x.id === memberId);
-  if (!m.emails) m.emails = [];
+  const bType = (b.broadcast || b.message || "").startsWith('WTS') ? 'Want to sell' : 'Want to buy';
+  const mainCat = (b.broadcast || b.message || "").includes('Mobile') ? 'Accessories' : 'Electronics';
+  const subCat = (b.broadcast || b.message || "").includes('Iphone') ? 'Chargers' : 'Laptops';
+  const qtyMatch = (b.broadcast || b.message || "").match(/Qty : (\d+) (Pcs|Kg)/) || (b.message || "").match(/Qty: (\d+) (Pcs|Kg)/);
+  const qty = qtyMatch ? qtyMatch[1] : (b.quantity || '500');
+  const unit = qtyMatch ? qtyMatch[2] : (b.unit || 'Pcs');
+  const price = (b.broadcast || b.message || "").includes('Price') ? 'Fixed' : 'Quote';
 
-  const now = new Date();
-  const d = String(now.getDate()).padStart(2, '0');
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const year = now.getFullYear();
-  const hh = String(now.getHours()).padStart(2, '0');
-  const mm = String(now.getMinutes()).padStart(2, '0');
-  const formattedDate = `${d}-${month}-${year} ${hh} : ${mm}`;
+  let content = '';
 
-  m.emails.unshift({
-    id: Date.now(),
-    subject: subj,
-    sender: 'admin@example.com',
-    date: formattedDate,
-    body: msg
+  if (isEditing) {
+    content = `
+      <div class="bem-wrap">
+        <div class="bem-header">
+          <div class="bem-header-left">
+            <div class="bem-title-row">
+              <h2 class="bem-title">Broadcast Details</h2>
+              <span class="bem-badge"><span class="material-icons-round">edit</span>EDITING</span>
+            </div>
+            <div class="bem-meta">
+              <span>${b.id}</span><span>•</span>
+              <span class="material-icons-round">person</span>
+              <span>${b.broadcaster} · ${b.company}</span>
+            </div>
+          </div>
+          <button class="bem-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
+        </div>
+        <div class="bem-body">
+          <div class="bem-grid">
+            <div class="bem-field">
+              <label class="bem-label">Broadcast Type</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-broadcast-type" data-orig="${bType}" onchange="checkBroadcastDirty()">
+                  <option value="Want to buy" ${bType==='Want to buy'?'selected':''}>Want to buy</option>
+                  <option value="Want to sell" ${bType==='Want to sell'?'selected':''}>Want to sell</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Product Condition</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-condition" data-orig="New" onchange="checkBroadcastDirty()">
+                  <option value="New" selected>New</option>
+                  <option value="Used">Used</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Main Category</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-main-cat" data-orig="${mainCat}" onchange="checkBroadcastDirty()">
+                  <option value="Accessories" ${mainCat==='Accessories'?'selected':''}>Accessories</option>
+                  <option value="Electronics" ${mainCat==='Electronics'?'selected':''}>Electronics</option>
+                  <option value="Mobile" ${mainCat==='Mobile'?'selected':''}>Mobile</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Sub Category</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-sub-cat" data-orig="${subCat}" onchange="checkBroadcastDirty()">
+                  <option value="Chargers" ${subCat==='Chargers'?'selected':''}>Chargers</option>
+                  <option value="Laptops" ${subCat==='Laptops'?'selected':''}>Laptops</option>
+                  <option value="iPhone" ${subCat==='iPhone'?'selected':''}>iPhone</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+            <div class="bem-field bem-field--full">
+              <label class="bem-label">Message</label>
+              <div class="bem-textarea-wrap">
+                <textarea class="bem-textarea" id="edit-message" maxlength="500" data-orig="${b.broadcast || b.message}" oninput="checkBroadcastDirty(); updateBroadcastCharCount(this)">${b.broadcast || b.message}</textarea>
+                <span class="bem-char-count" id="bcast-char-count">${(b.broadcast || b.message).length}/500</span>
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Quantity</label>
+              <div class="bem-inline">
+                <input type="text" class="bcast-edit-input" id="edit-qty" value="${qty}" data-orig="${qty}" oninput="checkBroadcastDirty()" style="flex:2;min-width:0;">
+                <div class="bem-select-wrap" style="flex:1;">
+                  <select class="bcast-edit-select" id="edit-unit" data-orig="${unit}" onchange="checkBroadcastDirty()">
+                    <option value="Pcs" ${unit==='Pcs'?'selected':''}>Pcs</option>
+                    <option value="Kg" ${unit==='Kg'?'selected':''}>Kg</option>
+                    <option value="MT" ${unit==='MT'?'selected':''}>MT</option>
+                  </select>
+                  <span class="material-icons-round bem-chevron">expand_more</span>
+                </div>
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Price Option</label>
+              <div class="bem-inline">
+                <div class="bem-select-wrap" style="flex:1;">
+                  <select class="bcast-edit-select" id="edit-price-opt" data-orig="${price}" onchange="checkBroadcastDirty()">
+                    <option value="Quote" ${price==='Quote'?'selected':''}>Quote</option>
+                    <option value="Fixed" ${price==='Fixed'?'selected':''}>Fixed</option>
+                  </select>
+                  <span class="material-icons-round bem-chevron">expand_more</span>
+                </div>
+                <input type="text" class="bcast-edit-input" id="edit-price-val" value="0" data-orig="0" oninput="checkBroadcastDirty()" placeholder="Amount" style="flex:1;min-width:0;">
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Sending Option</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-send-opt" data-orig="${b.sendTo || b.sendingOption}" onchange="checkBroadcastDirty()">
+                  <option value="${b.sendTo || b.sendingOption}" selected>${b.sendTo || b.sendingOption}</option>
+                  <option value="Send to All">Send to All</option>
+                  <option value="Send to group">Send to group</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+            <div class="bem-field">
+              <label class="bem-label">Audience</label>
+              <div class="bem-select-wrap">
+                <select class="bcast-edit-select" id="edit-audience" data-orig="${b.audience || 'All Members'}" onchange="checkBroadcastDirty()">
+                  <option value="${b.audience || 'All Members'}" selected>${b.audience || 'All Members'}</option>
+                  <option value="Charger suppliers">Charger suppliers</option>
+                  <option value="All Members">All Members</option>
+                </select>
+                <span class="material-icons-round bem-chevron">expand_more</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bem-footer">
+          <button class="bem-btn-cancel" onclick="window.openBroadcastHistoryModal('${memberId}', '${b.id}', false)">Cancel</button>
+          <button class="bem-btn-update" id="bcast-update-btn" onclick="saveBroadcastChanges('${memberId}', '${b.id}')" style="display:none;">
+            <span class="material-icons-round">save</span> Update
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    content = `
+      <div class="modal-header-modern" style="padding: 20px 24px; border-bottom: 1px solid #f1f5f9;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <h2 style="font-family:'Outfit',sans-serif; font-size: 1.25rem; font-weight: 800; color: #1e293b; margin:0;">Broadcast Details</h2>
+            <div class="modal-header-meta" style="display:flex; align-items:center; gap:8px; margin-top:8px; font-size:0.85rem; color:#64748b; font-weight:600;">
+              <span>${b.id}</span>
+              <span style="font-size:18px;">•</span>
+              <span class="material-icons-round" style="color: #2563eb; font-size:16px;">person</span>
+              <span>${b.broadcaster} · ${b.company}</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            ${canEdit ? `
+            <button onclick="openBroadcastHistoryModal('${memberId}', '${b.id}', true)" style="display:flex; align-items:center; gap:6px; border:1.5px solid #dbeafe; border-radius:8px; background:#fff; color:#2563eb; font-weight:800; font-size:0.9rem; cursor:pointer; padding:7px 14px;">
+              <span class="material-icons-round" style="font-size:17px;">edit</span> Edit
+            </button>
+            ` : ''}
+            <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="details-grid-modern" style="padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Broadcast Type</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${bType}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Product Condition</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">New</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Main Category</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${mainCat}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Sub Category</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${subCat}</span>
+        </div>
+        <div class="detail-box" style="grid-column: span 2;">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Message</span>
+          <div style="padding:12px 14px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; font-size:0.9rem; color:#475569; line-height:1.6;">${b.broadcast || b.message}</div>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Quantity</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${qty} <span style="color:#94a3b8; font-weight:600;">${unit}</span></span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Price</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#94a3b8;">${price}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Sending Option</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${b.sendTo || b.sendingOption}</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-label" style="display:block; font-size:0.75rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;">Audience</span>
+          <span style="font-size:0.95rem; font-weight:700; color:#1e293b;">${b.audience || 'All Members'}</span>
+        </div>
+      </div>
+      <div style="padding: 0 24px 16px 24px; display:flex; align-items:center; gap:6px; font-size:0.78rem; color:#94a3b8; font-weight:600;">
+        <span class="material-icons-round" style="font-size:14px;">schedule</span> Submitted ${b.submittedAt || '28 mins ago'}
+      </div>
+      <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 0 0 20px 20px;">
+        <button onclick="window.closeModal()" style="display:flex; align-items:center; gap:8px; border:1.5px solid #e2e8f0; border-radius:10px; background:#fff; color:#64748b; font-weight:700; font-size:0.9rem; cursor:pointer; padding:8px 16px;">Cancel</button>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="handleBroadcastAction('Hide', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:6px; padding: 8px 16px; border: none; border-radius: 10px; background: #FFF7ED; color: #A34E0C; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
+            <span class="material-icons-round" style="font-size:16px;">visibility_off</span> Hide
+          </button>
+          ${(!memberId || memberId === 'null') ? `
+          <button onclick="handleBroadcastAction('Suspend', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:6px; padding: 8px 16px; border: none; border-radius: 10px; background: #FEF2F2; color: #991B1B; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
+            <span class="material-icons-round" style="font-size:16px;">block</span> Suspend
+          </button>
+          ` : ''}
+          <button onclick="handleBroadcastAction('${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}', '${memberId}', '${b.id}')" style="display:flex; align-items:center; gap:6px; padding: 8px 16px; border: none; border-radius: 10px; background: #E8F5EC; color: #15803D; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
+            <span class="material-icons-round" style="font-size:16px;">check_circle</span> ${(!memberId || memberId === 'null') ? 'Approve' : 'Live'}
+          </button>
+        </div>
+      </div>
+
+    `;
+  }
+
+  const modal = document.getElementById('modal-container');
+  const contentEl = document.getElementById('modal-content');
+  if (!modal || !contentEl) return;
+  contentEl.className = 'modal-content modal-stamp';
+  contentEl.style.maxWidth = '800px';
+  contentEl.innerHTML = content;
+  modal.classList.remove('hidden');
+
+  window.currentBroadcastInitialStatus = b.status === 'Active' ? 'Live' : b.status;
+};
+
+window.saveBroadcastChanges = function(memberId, broadcastId) {
+  let b = null;
+  if (memberId && memberId !== 'null') {
+    const m = members.find(x => x.id == memberId);
+    if (m && m.broadcasts) b = m.broadcasts.find(x => x.id === broadcastId);
+  } else {
+    if (window.broadcasts) b = window.broadcasts.find(x => x.id === broadcastId);
+  }
+  
+  if (!b) return;
+
+  const newMsg = document.getElementById('edit-message').value;
+  const newQty = document.getElementById('edit-qty').value;
+  const newUnit = document.getElementById('edit-unit').value;
+  
+  if (b.broadcast) b.broadcast = newMsg;
+  if (b.message) b.message = newMsg;
+  if (b.quantity) b.quantity = newQty;
+  if (b.unit) b.unit = newUnit;
+
+  showToast('Broadcast updated successfully', 'success');
+  openBroadcastHistoryModal(memberId, broadcastId, false);
+  
+  // Refresh the main table
+  if (window.renderBroadcastTable) window.renderBroadcastTable();
+  if (memberId && memberId !== 'null' && typeof switchTab === 'function') switchTab(memberId, 'broadcasts');
+};
+
+window.handleBroadcastAction = function(action, memberId, broadcastId) {
+  let b = null;
+  if (memberId && memberId !== 'null') {
+    const m = (typeof members !== 'undefined') ? members.find(x => x.id == memberId) : null;
+    if (m && m.broadcasts) b = m.broadcasts.find(x => x.id === broadcastId);
+  } else {
+    if (window.broadcasts) b = window.broadcasts.find(x => x.id === broadcastId);
+    if (!b && window.pendingBroadcasts) b = window.pendingBroadcasts.find(x => x.id === broadcastId);
+  }
+  
+  if (!b) return;
+
+  if (action === 'Hide' || action === 'Suspend') {
+    openProfileDecisionModal(action.toLowerCase(), broadcastId, (reason) => {
+      b.status = action === 'Hide' ? 'Hidden' : 'Suspended';
+      b.actionReason = reason; // Store reason
+      showToast(`Broadcast ${action === 'Hide' ? 'hidden' : 'suspended'} successfully`, action === 'Hide' ? 'success' : 'error');
+      closeModal();
+      
+      // Remove from pending if in dashboard
+      if (window.pendingBroadcasts) {
+        const idx = window.pendingBroadcasts.findIndex(pb => pb.id === broadcastId);
+        if (idx !== -1) window.pendingBroadcasts.splice(idx, 1);
+      }
+
+      if (window.renderBroadcastTable) window.renderBroadcastTable();
+      if (window.renderDashBroadcastTable) window.renderDashBroadcastTable();
+      if (memberId && memberId !== 'null' && typeof switchTab === 'function') switchTab(memberId, 'broadcasts');
+    });
+  } else {
+    // Approve or Live
+    b.status = 'Approved';
+    showToast(`Broadcast is now ${action === 'Approve' ? 'Approved' : 'Live'}`, 'success');
+    closeModal();
+    
+    // Remove from pending if in dashboard
+    if (window.pendingBroadcasts) {
+      const idx = window.pendingBroadcasts.findIndex(pb => pb.id === broadcastId);
+      if (idx !== -1) window.pendingBroadcasts.splice(idx, 1);
+    }
+
+    if (window.renderBroadcastTable) window.renderBroadcastTable();
+    if (window.renderDashBroadcastTable) window.renderDashBroadcastTable();
+    if (memberId && memberId !== 'null' && typeof switchTab === 'function') switchTab(memberId, 'broadcasts');
+  }
+};
+
+
+
+window.openProfileDecisionModal = function(type, id, onConfirm) {
+    const isSuspend = type === 'suspend';
+    const overlay = document.createElement('div');
+    overlay.className = 'decision-modal-overlay';
+    overlay.id = 'decision-modal';
+    const title = isSuspend ? 'Suspend broadcast' : 'Hide broadcast';
+    const btnText = isSuspend ? 'Confirm Suspend' : 'Confirm Hide';
+    const icon = isSuspend ? 'block' : 'visibility_off';
+    const iconColor = isSuspend ? '#dc2626' : '#f59e0b';
+
+    overlay.innerHTML = `
+        <div class="decision-modal-content" style="max-width: 480px;">
+            <button onclick="closeProfileDecisionModal()" style="position:absolute; top:24px; right:24px; background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
+            <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+                <div style="width:40px; height:40px; border-radius:10px; background:${iconColor}15; color:${iconColor}; display:grid; place-items:center;">
+                    <span class="material-icons-round">${icon}</span>
+                </div>
+                <h3 style="margin:0; font-family:'Outfit',sans-serif; font-weight:800; color:#1e293b;">${title}</h3>
+            </div>
+            <p style="margin:0 0 16px 0; color:#64748b; font-size:0.92rem; line-height:1.6;">
+                Are you sure you want to ${type} this broadcast? Please provide a reason for this action.
+            </p>
+            <div style="margin-bottom: 24px;">
+                <textarea id="decision-reason" placeholder="Type reason here..." style="width:100%; height:80px; padding:12px; border:1.5px solid #e2e8f0; border-radius:10px; font-family:inherit; font-size:0.9rem; resize:none; outline:none;" oninput="this.style.borderColor = this.value ? '#4880FF' : '#e2e8f0'"></textarea>
+            </div>
+            <div style="display:flex; gap:12px; justify-content:flex-end;">
+                <button onclick="closeProfileDecisionModal()" style="padding:10px 20px; border-radius:10px; border:1.5px solid #e2e8f0; background:#fff; color:#64748b; font-weight:700; cursor:pointer;">Cancel</button>
+                <button id="confirm-decision-btn" style="padding:10px 20px; border-radius:10px; border:none; background:${iconColor}; color:#fff; font-weight:800; cursor:pointer;">${btnText}</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('confirm-decision-btn').onclick = () => {
+      const reason = document.getElementById('decision-reason').value;
+      if (!reason) {
+          document.getElementById('decision-reason').style.borderColor = '#dc2626';
+          return;
+      }
+      if (onConfirm) onConfirm(reason);
+      closeProfileDecisionModal();
+    };
+};
+
+
+window.closeProfileDecisionModal = function() {
+    const modal = document.getElementById('decision-modal');
+    if (modal) modal.remove();
+};
+
+window.checkBroadcastDirty = function() {
+  const btn = document.getElementById('bcast-update-btn');
+  if (!btn) return;
+  
+  let isDirty = false;
+  const selects = document.querySelectorAll('.bcast-edit-select');
+  selects.forEach(s => {
+    if (s.value !== s.getAttribute('data-orig')) isDirty = true;
   });
+  
+  const inputs = document.querySelectorAll('.bcast-edit-input');
+  inputs.forEach(i => {
+    if (i.value !== i.getAttribute('data-orig')) isDirty = true;
+  });
+  
+  const msg = document.getElementById('edit-message');
+  if (msg && msg.value !== msg.getAttribute('data-orig')) isDirty = true;
+  
+  btn.style.display = isDirty ? 'flex' : 'none';
+};
 
+window.updateBroadcastCharCount = function(textarea) {
+  const count = document.getElementById('bcast-char-count');
+  if (count) count.textContent = `${textarea.value.length}/500`;
+};
+
+window.checkProfileDirty = function() {
+  const btn = document.getElementById('profile-update-btn');
+  if (!btn) return;
+  
+  let isDirty = false;
+  const selects = document.querySelectorAll('.bcast-edit-select');
+  selects.forEach(s => {
+    if (s.value !== s.getAttribute('data-orig')) isDirty = true;
+  });
+  
+  const inputs = document.querySelectorAll('.bcast-edit-input');
+  inputs.forEach(i => {
+    if (i.value !== i.getAttribute('data-orig')) isDirty = true;
+  });
+  
+  const textarea = document.querySelector('.bem-textarea');
+  if (textarea && textarea.value !== textarea.getAttribute('data-orig')) isDirty = true;
+  
+  btn.style.display = isDirty ? 'flex' : 'none';
+};
+
+window.saveProfileChanges = function(id) {
+  const m = members.find(x => x.id === id);
+  if (!m) return;
+  
+  m.gst = document.getElementById('edit-co-gst').value;
+  m.company = document.getElementById('edit-co-name').value;
+  m.email = document.getElementById('edit-co-email').value;
+  m.companyType = document.getElementById('edit-co-type').value;
+  m.mobile = document.getElementById('edit-co-phone1').value;
+  m.phone2 = document.getElementById('edit-co-phone2').value;
+  const about = document.getElementById('edit-co-about');
+  if (about) m.about = about.value;
+  
+  showToast('Profile updated successfully', 'success');
   closeModal();
-  showToast('Email sent successfully', 'success');
-  switchTab(memberId, 'email');
-}
+  switchTab(id, 'company');
+};
 
-// ===== DELETE STAMP =====
-function deleteStamp(memberId, index) {
-  if (confirm('Are you sure you want to remove this verification stamp?')) {
-    const m = members.find(x => x.id === memberId);
-    if (m && m.stamps) {
-      m.stamps.splice(index, 1);
-      showToast('Verification stamp removed', 'info');
-      switchTab(memberId, 'stamp');
-    }
+window.saveContactChanges = function(memberId, index) {
+  const m = members.find(x => x.id === memberId);
+  if (!m || !m.contacts[index]) return;
+  
+  const c = m.contacts[index];
+  const fname = document.getElementById('edit-c-fname').value;
+  const lname = document.getElementById('edit-c-lname').value;
+  c.name = `${fname} ${lname}`.trim();
+  c.role = document.getElementById('edit-c-role').value;
+  c.status = document.getElementById('edit-c-status').value;
+  
+  showToast('Contact updated successfully', 'success');
+  closeModal();
+  switchTab(memberId, 'contact-table');
+};
+
+window.saveAddress = function(memberId, index) {
+  const m = members.find(x => x.id === memberId);
+  if (!m || !m.addresses[index]) return;
+  
+  const a = m.addresses[index];
+  a.title = document.getElementById('edit-addr-title').value;
+  a.line1 = document.getElementById('edit-addr-line1').value;
+  a.line2 = document.getElementById('edit-addr-line2').value;
+  a.city = document.getElementById('edit-addr-city').value;
+  a.pincode = document.getElementById('edit-addr-pincode').value;
+  a.isDefault = document.getElementById('edit-addr-default').checked;
+  
+  if (a.isDefault) {
+    m.addresses.forEach((addr, i) => { if (i !== index) addr.isDefault = false; });
   }
+  
+  showToast('Address updated', 'success');
+  closeModal();
+  switchTab(memberId, 'addresses');
+};
+
+window.saveNewContact = function(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+  
+  const fname = document.getElementById('add-c-fname').value;
+  const lname = document.getElementById('add-c-lname').value;
+  const role = document.getElementById('add-c-role').value;
+  const phone = document.getElementById('add-c-phone').value;
+  const email = document.getElementById('add-c-email').value;
+  
+  m.contacts.push({
+    name: `${fname} ${lname}`.trim(),
+    role: role,
+    mobile: phone,
+    email: email,
+    status: 'Active'
+  });
+  
+  showToast('Contact added', 'success');
+  closeModal();
+  switchTab(memberId, 'contact-table');
+};
+
+window.saveNewAddress = function(memberId) {
+  const m = members.find(x => x.id === memberId);
+  if (!m) return;
+  
+  const title = document.getElementById('add-addr-title').value;
+  const line1 = document.getElementById('add-addr-line1').value;
+  const city = document.getElementById('add-addr-city').value;
+  const pincode = document.getElementById('add-addr-pincode').value;
+  
+  m.addresses.push({
+    title: title,
+    line1: line1,
+    city: city,
+    pincode: pincode,
+    isDefault: false
+  });
+  
+  showToast('Address added', 'success');
+  closeModal();
+  switchTab(memberId, 'addresses');
+};
+
+window.deleteStamp = function(memberId, stampId) {
+  const m = members.find(x => x.id === memberId);
+  if (m && m.stamps) {
+    m.stamps = m.stamps.filter(s => s.id !== stampId);
+    showToast('Stamp removed', 'error');
+    switchTab(memberId, 'stamps');
+  }
+};
+
+window.toggleEmailRow = function(id) {
+  const content = document.getElementById(`email-content-${id}`);
+  const icon = document.getElementById(`email-icon-${id}`);
+  if (content) {
+    const isHidden = content.style.display === 'none' || !content.style.display;
+    content.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+  }
+};
+
+window.renderCustomSelect = function(id, options, selectedValue, onchange, config = {}) {
+  const compact = config.compact || false;
+  
+  return `
+    <div class="bem-select-wrap ${compact ? 'bem-select-wrap--compact' : ''}">
+      <select class="bcast-edit-select" id="${id}" data-orig="${selectedValue}" onchange="${onchange ? (onchange.includes('(') ? onchange : onchange + '(this.value)') : ''}">
+        ${options.map(o => `<option value="${o.value}" ${o.value === selectedValue ? 'selected' : ''}>${o.label}</option>`).join('')}
+      </select>
+      <span class="material-icons-round bem-chevron">expand_more</span>
+    </div>
+  `;
+};
+
+// ===== SIDEBAR & MENU TOGGLES =====
+window.toggleNavGroup = function(btn) {
+    const group = btn.closest('.nav-group');
+    const sub = group.querySelector('.nav-sub');
+    const isOpen = group.classList.contains('open');
+    
+    document.querySelectorAll('.nav-group.open').forEach(g => {
+        if (g !== group) {
+            g.classList.remove('open');
+            if (g.querySelector('.nav-sub')) g.querySelector('.nav-sub').style.height = '0px';
+        }
+    });
+
+    if (isOpen) {
+        group.classList.remove('open');
+        if (sub) sub.style.height = '0px';
+    } else {
+        group.classList.add('open');
+        if (sub) sub.style.height = sub.scrollHeight + 'px';
+    }
+};
+
+function setupSidebarToggles() {
+    const menuToggle = document.getElementById('menu-toggle');
+    if (menuToggle) {
+        menuToggle.onclick = () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        };
+    }
+    
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+        sidebarToggle.onclick = () => {
+            const sidebar = document.getElementById('sidebar');
+            const icon = document.getElementById('sidebar-toggle-icon');
+            sidebar.classList.toggle('collapsed');
+            if (icon) {
+                icon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+            }
+        };
+    }
 }
 
 // ===== INITIALIZATION =====
-function initApp() {
-  // Render the members table immediately
-  renderTable();
+document.addEventListener('DOMContentLoaded', () => {
+    // Initial render
+    if (getTbody()) {
+        renderTable();
+    }
+    
+    // Check for deep links (Profile view, etc.)
+    checkUrlParams();
+    
+    // Setup sidebar and menu toggles
+    setupSidebarToggles();
 
-  // Sidebar collapse/expand toggle
-  const sidebarToggle = document.getElementById('sidebar-toggle');
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.querySelector('.main-content');
-  const toggleIcon = document.getElementById('sidebar-toggle-icon');
-
-  if (sidebarToggle && sidebar) {
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      if (mainContent) mainContent.classList.toggle('expanded');
-      if (toggleIcon) {
-        toggleIcon.textContent = sidebar.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
-      }
-    });
-  }
-
-  // Search input listener
-  const searchInput = document.getElementById('top-search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      searchQuery = e.target.value;
-      currentPage = 1;
-      renderTable();
-    });
-  }
-
-  // Handle URL on load
-  handleNavigation();
-  window.addEventListener('popstate', handleNavigation);
-}
-
-function handleNavigation() {
-  const params = new URLSearchParams(window.location.search);
-  const profileId = params.get('p');
-  const tab = params.get('t') || 'company';
-
-  // Only handle navigation if we are on a page with profile-view (e.g. index.html)
-  if (!document.getElementById('profile-view')) return;
-
-  if (profileId !== null) {
-    openProfile(parseInt(profileId), tab, false);
-  } else {
-    closeProfile(false);
-  }
-}
-
-// Robust initialization — works whether DOM is already ready or still loading
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
-
-function showAssignPlanModal(memberId) {
-  const modal = document.getElementById('modal-container');
-  const content = document.getElementById('modal-content');
-  if (!modal || !content) return;
-
-  content.className = 'modal-content';
-  content.style.maxWidth = '600px';
-
-  content.innerHTML = `
-        <div class="modal-header" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-            <h3 style="font-size: 1.25rem; font-weight: 800; color: #1e293b;">Plan Activation</h3>
-            <button class="modal-close" onclick="closeModal()"><span class="material-icons-round">close</span></button>
-        </div>
-        <div class="modal-body" style="padding: 40px 32px;">
-            <div style="display:flex; flex-direction:column; gap:28px;">
-                
-                <!-- Active Row -->
-                <div style="display:flex; align-items:center; gap:24px;">
-                    <label style="display:flex; align-items:center; gap:10px; font-weight:700; width:100px; cursor:pointer; color: #1e293b; font-size: 0.95rem;">
-                        <input type="radio" name="plan-status" value="Active" checked style="width: 18px; height: 18px; accent-color:var(--blue);"> Active
-                    </label>
-                    <div style="flex:1; position:relative;">
-                        <select class="modal-input" style="width: 100%; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600; color: #334155; appearance: none;">
-                            <option>Choose any one</option>
-                            <option>TK-Premium</option>
-                            <option>TK-Lite</option>
-                        </select>
-                        <span class="material-icons-round" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#64748b; font-size:20px;">expand_more</span>
-                    </div>
-                </div>
-
-                <!-- Inactive Row -->
-                <div style="display:flex; align-items:center; gap:24px;">
-                    <label style="display:flex; align-items:center; gap:10px; font-weight:700; width:100px; cursor:pointer; color: #1e293b; font-size: 0.95rem;">
-                        <input type="radio" name="plan-status" value="Inactive" style="width: 18px; height: 18px; accent-color:var(--blue);"> Inactive
-                    </label>
-                    <div style="flex:1; position:relative;">
-                        <select class="modal-input" style="width: 100%; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600; color: #334155; appearance: none;">
-                            <option>Choose Inactive Status</option>
-                            <option>Cancel (Failed to pay)</option>
-                            <option>Inactive</option>
-                        </select>
-                        <span class="material-icons-round" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#64748b; font-size:20px;">expand_more</span>
-                    </div>
-                </div>
-
-                <!-- Dates Row -->
-                <div style="display:flex; align-items:center; gap:24px;">
-                    <div style="width:100px; font-weight:700; color: #1e293b; font-size: 0.95rem;">Start Date</div>
-                    <div style="display:flex; align-items:center; gap:16px; flex:1;">
-                        <input type="text" class="modal-input" placeholder="05/07/2026" style="flex:1; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600;">
-                        <div style="font-weight:700; color: #1e293b; font-size: 0.95rem;">End Date</div>
-                        <input type="text" class="modal-input" placeholder="05/07/2027" style="flex:1; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 10px; font-weight: 600;">
-                    </div>
-                </div>
-
-                <!-- Remark -->
-                <div style="display:flex; gap:24px;">
-                    <div style="width:100px; font-weight:700; color: #1e293b; font-size: 0.95rem; padding-top: 12px;">Remark</div>
-                    <textarea class="modal-input" rows="4" style="flex:1; background: #f8fafc; border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; font-weight: 600; resize: none;" placeholder="Enter internal notes..."></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer" style="border-top: 1px solid var(--border); padding: 24px 32px; display:flex; justify-content: flex-end; gap: 12px;">
-            <button class="btn-outline" onclick="closeModal()" style="background: #cbd5e1; border: none; color: #475569; font-weight: 800; padding: 10px 28px;">Close</button>
-            <button class="btn-primary" onclick="closeModal(); showToast('Plan updated successfully', 'success')" style="padding: 10px 32px; font-weight: 800; background: var(--blue);">Save</button>
-        </div>
-    `;
-
-  modal.classList.remove('hidden');
-}
-
-// ===== RICH TEXT EDITOR UTILITIES =====
-function getRichTextEditorHTML(placeholder = "Insert text here ...") {
-    return `
-        <div class="email-editor-container">
-            <div class="editor-toolbar">
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="bold" title="Bold"><span class="material-icons-round">format_bold</span></button>
-                    <button class="toolbar-btn" data-command="italic" title="Italic"><span class="material-icons-round">format_italic</span></button>
-                    <button class="toolbar-btn" data-command="underline" title="Underline"><span class="material-icons-round">format_underlined</span></button>
-                    <button class="toolbar-btn" data-command="strikethrough" title="Strike"><span class="material-icons-round">strikethrough_s</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="formatBlock" data-value="blockquote" title="Quote"><span class="material-icons-round">format_quote</span></button>
-                    <button class="toolbar-btn" data-command="formatBlock" data-value="pre" title="Code"><span class="material-icons-round">code</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="formatBlock" data-value="h1" title="H1"><span class="material-icons-round">filter_1</span></button>
-                    <button class="toolbar-btn" data-command="formatBlock" data-value="h2" title="H2"><span class="material-icons-round">filter_2</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List"><span class="material-icons-round">format_list_bulleted</span></button>
-                    <button class="toolbar-btn" data-command="insertOrderedList" title="Number List"><span class="material-icons-round">format_list_numbered</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="superscript" title="Superscript"><span class="material-icons-round">superscript</span></button>
-                    <button class="toolbar-btn" data-command="subscript" title="Subscript"><span class="material-icons-round">subscript</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="justifyLeft" title="Align Left"><span class="material-icons-round">format_align_left</span></button>
-                    <button class="toolbar-btn" data-command="justifyCenter" title="Align Center"><span class="material-icons-round">format_align_center</span></button>
-                    <button class="toolbar-btn" data-command="justifyRight" title="Align Right"><span class="material-icons-round">format_align_right</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="createLink" title="Link"><span class="material-icons-round">link</span></button>
-                    <button class="toolbar-btn" data-command="insertImage" title="Image"><span class="material-icons-round">image</span></button>
-                    <button class="toolbar-btn" data-command="insertVideo" title="Video"><span class="material-icons-round">videocam</span></button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="toolbar-btn" data-command="removeFormat" title="Clear Formatting"><span class="material-icons-round">format_clear</span></button>
-                </div>
-            </div>
-            <div class="editor-content" contenteditable="true" data-placeholder="${placeholder}"></div>
-        </div>
-    `;
-}
-
-function initRichTextEditor(containerSelector) {
-    const container = document.querySelector(containerSelector);
-    if (!container) return;
-
-    const toolbar = container.querySelector('.editor-toolbar');
-    const content = container.querySelector('.editor-content');
-
-    toolbar.addEventListener('click', (e) => {
-        const btn = e.target.closest('.toolbar-btn');
-        if (!btn) return;
-
-        const cmd = btn.getAttribute('data-command');
-        const val = btn.getAttribute('data-value') || null;
-
-        if (cmd === 'createLink') {
-            const url = prompt('Enter URL:', 'https://');
-            if (url) document.execCommand(cmd, false, url);
-        } else if (cmd === 'insertImage') {
-            const url = prompt('Enter Image URL:');
-            if (url) document.execCommand(cmd, false, url);
-        } else if (cmd === 'insertVideo') {
-            const url = prompt('Enter Video URL (Embed):');
-            if (url) {
-                const videoHtml = `<iframe width="560" height="315" src="${url}" frameborder="0" allowfullscreen></iframe>`;
-                document.execCommand('insertHTML', false, videoHtml);
-            }
-        } else {
-            document.execCommand(cmd, false, val);
-        }
-        
-        content.focus();
-    });
-}
-
-// ===== CUSTOM SELECT SYSTEM =====
-window.csCallbacks = {};
-
-window.renderCustomSelect = function(id, options, selectedValue, onchange, config = {}) {
-  const selectedOption = options.find(o => o.value == selectedValue) || options[0];
-  const isCompact = config.compact ? 'compact' : '';
-  
-  // Register callback
-  window.csCallbacks[id] = onchange;
-  
-  return `
-    <div class="custom-select-wrap ${isCompact}" id="cs-wrap-${id}">
-      <input type="hidden" id="${id}" value="${selectedValue}">
-      <div class="cs-trigger" onclick="toggleCustomSelect('${id}')">
-        <span class="cs-selected-label">${selectedOption.label}</span>
-        <span class="material-icons-round cs-chevron">expand_more</span>
-      </div>
-      <div class="cs-options">
-        ${options.map(opt => `
-          <div class="cs-option ${opt.value == selectedValue ? 'active' : ''}" 
-               data-value="${opt.value}"
-               onclick="selectCustomOption('${id}', '${opt.value}', '${opt.label.replace(/'/g, "\\'")}')">
-            <span>${opt.label}</span>
-            <span class="material-icons-round cs-check">done</span>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-};
-
-window.toggleCustomSelect = function(id) {
-  const wrap = document.getElementById(`cs-wrap-${id}`);
-  if (!wrap) return;
-  
-  // Close others
-  document.querySelectorAll('.custom-select-wrap').forEach(w => {
-    if (w.id !== `cs-wrap-${id}`) w.classList.remove('open');
-  });
-  
-  wrap.classList.toggle('open');
-};
-
-window.selectCustomOption = function(id, value, label) {
-  const wrap = document.getElementById(`cs-wrap-${id}`);
-  if (!wrap) return;
-  
-  // Update hidden input value
-  const hiddenInput = document.getElementById(id);
-  if (hiddenInput) hiddenInput.value = value;
-  
-  // Update trigger label
-  wrap.querySelector('.cs-selected-label').textContent = label;
-  
-  // Update active state in options
-  wrap.querySelectorAll('.cs-option').forEach(opt => {
-    const optValue = opt.getAttribute('data-value');
-    opt.classList.toggle('active', optValue == value);
-  });
-  
-  // Close menu
-  wrap.classList.remove('open');
-  
-  // Trigger callback
-  const callback = window.csCallbacks[id];
-  if (typeof callback === 'function') {
-    callback(value);
-  }
-};
-
-// Close custom selects on click outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.custom-select-wrap')) {
-    document.querySelectorAll('.custom-select-wrap').forEach(w => w.classList.remove('open'));
-  }
+    // Global Search Listener
+    const searchInput = document.getElementById('top-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            currentPage = 1;
+            renderTable();
+        });
+    }
 });
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', checkUrlParams);
+
+window.closeModal = function() {
+  const modal = document.getElementById('modal-container');
+  if (modal) {
+    modal.classList.add('hidden');
+    // Also clear any decision modal if open
+    const decisionModal = document.getElementById('decision-modal');
+    if (decisionModal) decisionModal.remove();
+  }
+};
+
+window.closeProfileDecisionModal = function() {
+    const modal = document.getElementById('decision-modal');
+    if (modal) modal.remove();
+};
+
+// ===== BROADCAST SETTINGS ACCORDION (DROPDOWN) =====
+window.toggleBroadcastAccordion = function(safeId, rowEl) {
+  const expandRow = document.getElementById(`expand-${safeId}`);
+  if (!expandRow) return;
+
+  const isOpening = expandRow.style.display === 'none';
+
+  // 1. Close all other accordions first
+  document.querySelectorAll('[id^="expand-"]').forEach(row => {
+    if (row.id !== `expand-${safeId}`) {
+      row.style.display = 'none';
+      const parentId = row.id.replace('expand-', 'row-');
+      const parent = document.getElementById(parentId);
+      if (parent) {
+        parent.classList.remove('active-edit');
+        parent.style.background = 'transparent';
+        const icon = parent.querySelector('.category-icon');
+        if (icon) icon.style.color = '#64748b';
+        const label = parent.querySelector('.category-name-label');
+        if (label) label.style.color = '#1e293b';
+        const chevron = parent.querySelector('.chevron-icon');
+        if (chevron) {
+          chevron.textContent = 'chevron_right';
+          chevron.style.color = '#94a3b8';
+        }
+      }
+    }
+  });
+
+  // 2. Toggle current accordion
+  if (isOpening) {
+    expandRow.style.display = 'table-row';
+    rowEl.classList.add('active-edit');
+    rowEl.style.background = 'var(--blue-light)';
+    
+    const icon = rowEl.querySelector('.category-icon');
+    if (icon) icon.style.color = 'var(--blue)';
+    const label = rowEl.querySelector('.category-name-label');
+    if (label) label.style.color = 'var(--blue)';
+    const chevron = rowEl.querySelector('.chevron-icon');
+    if (chevron) {
+      chevron.textContent = 'expand_more';
+      chevron.style.color = 'var(--blue)';
+    }
+    
+    // Smooth scroll if needed
+    expandRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    expandRow.style.display = 'none';
+    rowEl.classList.remove('active-edit');
+    rowEl.style.background = 'transparent';
+    
+    const icon = rowEl.querySelector('.category-icon');
+    if (icon) icon.style.color = '#64748b';
+    const label = rowEl.querySelector('.category-name-label');
+    if (label) label.style.color = '#1e293b';
+    const chevron = rowEl.querySelector('.chevron-icon');
+    if (chevron) {
+      chevron.textContent = 'chevron_right';
+      chevron.style.color = '#94a3b8';
+    }
+  }
+};
+
+window.saveAccordionEdit = function(cat, event) {
+  if (event) event.stopPropagation();
+  showToast(`${cat} Configuration Updated`, 'success');
+  const safeId = cat.replace(/\s+/g, '-');
+  window.toggleBroadcastAccordion(safeId, document.getElementById(`row-${safeId}`));
+};
+
+

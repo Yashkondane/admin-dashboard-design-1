@@ -20,76 +20,73 @@ const formatPremiumDate = (dateStr) => {
   return `${day} ${mName} ${year}`;
 };
 
+const fmtDate = (d) => {
+  if (!(d instanceof Date)) d = new Date(d);
+  return formatPremiumDate(d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'));
+};
+
+// Invoice section builder (reusable)
 // Invoice section builder (reusable)
 function buildInvoiceSection(m) {
   return `
-    <div class="plan-invoice-section">
-      <div class="pm-invoice-check-row" onclick="toggleInvoiceSection()">
-        <div class="pm-invoice-checkbox" id="pm-inv-check">
-          <span class="material-icons-round" style="font-size:16px;">done</span>
-        </div>
-        <div class="pm-invoice-check-text">
-          <h4>Generate invoice?</h4>
-          <p>Create a billing record alongside this action.</p>
-        </div>
-        <input type="checkbox" id="pm-gen-invoice" style="display:none;">
+    <div class="pm-invoice-toggle-card" id="pm-invoice-card" onclick="window.toggleInvoiceSelection()">
+      <div class="pm-invoice-check-circle" id="pm-invoice-circle">
+        <span class="material-icons-round">check</span>
       </div>
-
-      <div id="pm-invoice-type-area" style="display:none; margin-top: 16px; animation: pm-fade-in 0.3s ease;">
-        <label class="pm-form-label-modern">INVOICE TYPE</label>
-        <div class="pm-invoice-type-list" style="gap: 8px;">
-          <div class="pm-invoice-type-item" onclick="selectInvoiceType('proforma')" style="padding: 12px 16px; border-radius: 10px;">
-            <div>
-              <div class="pm-it-label">Proforma Invoice</div>
-              <div class="pm-it-desc">Preliminary, not payable</div>
-            </div>
-            <div class="pm-it-radio"><span class="material-icons-round" style="color:#e2e8f0; font-size: 20px;">radio_button_unchecked</span></div>
-          </div>
-          <div class="pm-invoice-type-item selected" onclick="selectInvoiceType('final')" style="padding: 12px 16px; border-radius: 10px;">
-            <div>
-              <div class="pm-it-label">Final Invoice</div>
-              <div class="pm-it-desc">Real, payable invoice</div>
-            </div>
-            <div class="pm-it-radio"><span class="material-icons-round" style="color:var(--blue); font-size: 20px;">check_circle</span></div>
-          </div>
+      <div class="pm-invoice-toggle-text" style="flex:1;">
+        <h4 class="pm-invoice-toggle-title" style="margin-bottom: 0;">Generate Invoice?</h4>
+        
+        <div id="pm-invoice-options" style="display:none; margin-top: 8px;">
+           <div style="display: flex; gap: 8px;">
+              <div class="pm-inv-type-chip active" id="type-proforma" onclick="window.selectInvoiceType('proforma', this, event)">
+                Proforma
+              </div>
+              <div class="pm-inv-type-chip" id="type-final" onclick="window.selectInvoiceType('final', this, event)">
+                Final Invoice
+              </div>
+           </div>
         </div>
-        <input type="hidden" id="pm-invoice-type" value="final">
       </div>
+      <input type="checkbox" id="pm-gen-invoice" style="display:none;">
+      <input type="hidden" id="pm-invoice-type" value="proforma">
     </div>
   `;
 }
 
-window.toggleInvoiceSection = function () {
-  const check = document.getElementById('pm-inv-check');
-  const input = document.getElementById('pm-gen-invoice');
-  const area = document.getElementById('pm-invoice-type-area');
-
-  input.checked = !input.checked;
-  if (input.checked) {
-    check.classList.add('checked');
-    area.style.display = 'block';
+window.toggleInvoiceSelection = function() {
+  const card = document.getElementById('pm-invoice-card');
+  const check = document.getElementById('pm-gen-invoice');
+  const options = document.getElementById('pm-invoice-options');
+  
+  if (!card || !check) return;
+  
+  check.checked = !check.checked;
+  if (check.checked) {
+    card.classList.add('selected');
+    if (options) options.style.display = 'block';
   } else {
-    check.classList.remove('checked');
-    area.style.display = 'none';
+    card.classList.remove('selected');
+    if (options) options.style.display = 'none';
   }
 };
 
-window.selectInvoiceType = function (val) {
-  const list = document.querySelectorAll('.pm-invoice-type-item');
-  list.forEach(item => {
-    item.classList.remove('selected');
-    item.querySelector('.pm-it-radio .material-icons-round').textContent = 'radio_button_unchecked';
-    item.querySelector('.pm-it-radio .material-icons-round').style.color = '#e2e8f0';
+window.selectInvoiceType = function(val, el, e) {
+  if (e) e.stopPropagation(); // Prevent card toggle
+  const input = document.getElementById('pm-invoice-type');
+  if (input) input.value = val;
+  
+  // UI Update
+  document.querySelectorAll('.pm-inv-type-chip').forEach(opt => {
+    opt.classList.remove('active');
   });
-
-  const selected = Array.from(list).find(i => i.getAttribute('onclick').includes(val));
-  if (selected) {
-    selected.classList.add('selected');
-    selected.querySelector('.pm-it-radio .material-icons-round').textContent = 'check_circle';
-    selected.querySelector('.pm-it-radio .material-icons-round').style.color = 'var(--blue)';
-  }
-  document.getElementById('pm-invoice-type').value = val;
+  el.classList.add('active');
 };
+
+function updateInvoiceDesc() {
+  // Description removed as per user request
+}
+
+// Dropdown handlers removed in favor of toggle card
 
 // Plan options builder
 function getPlanOptions() {
@@ -162,7 +159,19 @@ window.openManagePlanModal = function (memberId) {
       <div class="pm-header-left" style="display: flex; flex-direction: column; gap: 6px;">
         <h3 class="plan-modal-title">Plan Actions</h3>
         <div class="pm-action-dropdown-wrap" style="width: 180px; margin-top: 4px;">
-          ${renderCustomSelect('pm-action-dropdown', actions.map(a => ({ value: a.key, label: a.name })), 'assign', (val) => selectManageAction(memberId, val), { compact: true })}
+          <div class="action-btn-wrap" style="width: 100%;">
+            <button class="pm-action-hover-trigger" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-weight: 700; color: #1e293b; cursor: pointer;">
+              <span id="pm-current-action-label">Assign Plan</span>
+              <span class="material-icons-round">expand_more</span>
+            </button>
+            <div class="dropdown-menu" style="width: 100%; left: 0; top: 100%; margin-top: 4px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
+              ${actions.map(a => `
+                <button class="dropdown-item" onclick="selectManageAction(${memberId}, '${a.key}')" style="padding: 12px 16px; font-weight: 600;">
+                  ${a.name}
+                </button>
+              `).join('')}
+            </div>
+          </div>
         </div>
       </div>
       <div class="pm-header-right">
@@ -175,7 +184,7 @@ window.openManagePlanModal = function (memberId) {
       <div id="pm-dynamic-form-area" style="display: flex; flex-direction: column;"></div>
     </div>
     <div class="pm-footer-modern" id="pm-footer" style="display:none; justify-content: flex-end; gap:12px; padding: 16px 32px; background: #fafbfc;">
-      <button class="btn-outline" onclick="closeModal()" style="height: 38px; padding: 0 20px; border-radius: 8px; font-weight: 600; border: 1px solid #e2e8f0; background: #fff; color: #64748b; cursor: pointer; font-size: 15px; transition: all 0.2s;">Cancel</button>
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
       <div id="pm-footer-actions"></div>
     </div>
   `;
@@ -200,51 +209,62 @@ window.selectManageAction = function (memberId, action) {
   
   if (!formArea || !modalContent || !modalBody) return;
 
-
+  // Update label
+  const label = document.getElementById('pm-current-action-label');
+  if (label) {
+    const actionNames = {
+      'assign': 'Assign Plan',
+      'extend': 'Extend Plan',
+      'upgrade': 'Upgrade Plan',
+      'suspend': 'Suspend Member',
+      'reactivate': 'Reactivate Member'
+    };
+    label.textContent = actionNames[action] || action;
+  }
 
   let html = '';
   let footerBtn = '';
 
   if (action === 'assign') {
     html = `
-      <div class="pm-form-grid" style="gap: 16px;">
+      <div class="pm-form-grid">
         <div class="pm-form-full">
-          <label class="pm-form-label-modern">TARGET PLAN</label>
+          <label class="pm-form-label-modern">Target Plan</label>
           ${renderCustomSelect('pm-plan-select', 
             (typeof plans !== 'undefined' ? plans : []).map(p => ({ 
               value: p.name, 
-              label: `${p.name} • ₹${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
+              label: `${p.name} • ₹${Number(p.price).toLocaleString()}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
             })), 
             '', 
-            (val) => { autoSetEndDate(); }
+            'autoSetEndDate'
           )}
         </div>
         <div>
-          <label class="pm-form-label-modern">START DATE</label>
+          <label class="pm-form-label-modern">Start Date</label>
           <div class="pm-field-modern">
             <input type="date" id="pm-start-date" value="${new Date().toISOString().split('T')[0]}" onchange="autoSetEndDate()">
           </div>
         </div>
         <div>
-          <label class="pm-form-label-modern">EXPIRY DATE</label>
+          <label class="pm-form-label-modern">Expiry Date</label>
           <div class="pm-field-modern">
             <input type="date" id="pm-end-date" onchange="updateAssignDuration()">
           </div>
         </div>
       </div>
 
-      <div id="assign-duration-preview" class="pm-period-card" style="display:none; margin-top: 8px;">
+      <div id="assign-duration-preview" class="pm-period-card" style="display:none; margin-top: 16px;">
         <div class="pm-period-info">
           <div class="pm-period-label">Subscription Period</div>
-          <div class="pm-period-range" id="ad-period" style="font-weight: 600; font-size: 0.88rem;"></div>
+          <div class="pm-period-range" id="ad-period"></div>
         </div>
-        <div class="pm-period-duration" id="ad-duration" style="font-weight: 600;"></div>
+        <div class="pm-period-duration" id="ad-duration"></div>
       </div>
 
       <div class="pm-divider-dashed" style="margin: 20px 0;"></div>
       ${buildInvoiceSection(m)}
     `;
-    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'assign')">Assign Plan <span class="material-icons-round">arrow_forward</span></button>`;
+    footerBtn = `<button class="pm-btn-apply" onclick="submitPlanAction(${m.id}, 'assign')">Assign Plan</button>`;
 
   } else if (action === 'extend') {
     const actualPlan = (m.assignedPlans && m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name))) || {};
@@ -261,7 +281,7 @@ window.selectManageAction = function (memberId, action) {
             { value: '60', label: '60 days' },
             { value: '90', label: '90 days' },
             { value: '365', label: '1 year' }
-          ], '30', (val) => updateExtendPreview(currentExpiryStr))}
+          ], '30', 'window.updateExtendPreviewFromSelect')}
         </div>
         <div>
           <label class="pm-form-label-modern">NEW EXPIRY</label>
@@ -286,7 +306,7 @@ window.selectManageAction = function (memberId, action) {
               label: `${p.name} • ₹${p.price}/${p.validity === 'monthly' ? 'mo' : (p.validity === 'yearly' ? 'yr' : 'fixed')}` 
             })), 
             '', 
-            (val) => { autoSetEndDate(); }
+            'autoSetEndDate'
           )}
         </div>
         <div>
@@ -362,7 +382,7 @@ function buildAssignModal(m, todayISO, po) {
   return `
     <div class="modal-header">
       <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#eff6ff;color:#2563eb;">
+        <div class="plan-modal-icon" style="background:#eff6ff;color:#4880FF;">
           <span class="material-icons-round">add_task</span>
         </div>
         <div>
@@ -422,7 +442,7 @@ function buildExtendModal(m, todayISO, activePlanExpiry, actualPlan) {
   return `
     <div class="modal-header">
       <div class="modal-header-left">
-        <div class="plan-modal-icon" style="background:#eff6ff;color:#2563eb;">
+        <div class="plan-modal-icon" style="background:#eff6ff;color:#4880FF;">
           <span class="material-icons-round">more_time</span>
         </div>
         <div>
@@ -763,11 +783,10 @@ window.confirmSuspend = function (memberId) {
 
 // ===== SUBMIT HANDLER =====
 window.submitPlanAction = function (memberId, action) {
-  const m = members.find(x => x.id === memberId);
+  const m = (typeof members !== 'undefined' ? members : []).find(x => x.id === memberId);
   if (!m) return;
   if (!m.assignedPlans) m.assignedPlans = [];
 
-  const fmtDate = (d) => formatPremiumDate(d.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-'));
   const today = new Date();
   const newSr = m.assignedPlans.length > 0 ? Math.max(...m.assignedPlans.map(p => p.sr)) + 1 : 1;
   const invNo = 'ISPL/' + (1000 + newSr) + '/' + today.getFullYear() + '-' + String(today.getFullYear() + 1).slice(-2);
@@ -805,12 +824,32 @@ window.submitPlanAction = function (memberId, action) {
     const prorationText = prorationVal === 'yes' ? ' (Prorated)' : ' (Full Charge)';
     const remarkText = action === 'upgrade' ? `Upgraded from ${(m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {}).name || 'None'} to ${planName}${prorationText}` : 'Plan assigned by Admin';
 
-    m.plan = planName.toLowerCase().replace('tk-', '');
-    if (m.status === 'suspended') m.status = 'active';
-    m.assignedPlans.unshift({ sr: newSr, name: planName, date: fmtDate(startDate) + ' to ' + fmtDate(endDate), remark: remarkText, invoice: assignedInvNo, status: assignedStatus, invoiceType: shouldGenerate && !isFree ? (invType === 'proforma' ? 'Proforma' : 'Final') : '', type: action, admin: 'Admin User', timestamp });
-    closeModal();
-    showToast(planName + ' ' + (action === 'upgrade' ? 'upgraded' : 'assigned') + ' successfully!', 'success');
+    // NEW LOGIC: If Final Invoice, show the "Mark as Paid" popup first
+    if (shouldGenerate && invType === 'final' && !isFree) {
+      openPaymentStatusModal(m, {
+        planName,
+        startDate,
+        endDate,
+        remark: remarkText,
+        amount: '₹ ' + (planData.price ? Number(planData.price).toLocaleString() : '0'),
+        invoiceNo: invNo,
+        type: action
+      });
+      return;
+    }
 
+    finalizePlanAssignment(m, {
+      planName,
+      startDate,
+      endDate,
+      remark: remarkText,
+      amount: '₹ ' + (planData.price ? Number(planData.price).toLocaleString() : '0'),
+      invoiceNo: assignedInvNo,
+      status: assignedStatus,
+      invoiceType: shouldGenerate && !isFree ? (invType === 'proforma' ? 'Proforma' : 'Final') : '',
+      type: action
+    });
+    
   } else if (action === 'extend') {
     const extDays = parseInt(document.getElementById('pm-ext-days')?.value) || 30;
     const actualPlan = m.assignedPlans.find(p => !['Suspended', 'Reactivated'].includes(p.name)) || {};
@@ -821,10 +860,31 @@ window.submitPlanAction = function (memberId, action) {
     const assignedInvNo = shouldGenerate && !isFree ? invNo : '';
     const assignedStatus = isFree ? 'N/A' : (shouldGenerate ? (invType === 'final' ? 'Paid' : 'UnPaid') : 'N/A');
 
-    m.assignedPlans.unshift({ sr: newSr, name: actualPlan.name, date: fmtDate(today) + ' to ' + fmtDate(extEnd), remark: 'Plan extended by ' + extDays + ' days', invoice: assignedInvNo, status: assignedStatus, invoiceType: shouldGenerate && !isFree ? (invType === 'proforma' ? 'Proforma' : 'Final') : '', type: 'extend', admin: 'Admin User', timestamp });
-    closeModal();
-    showToast('Plan extended by ' + extDays + ' days!', 'success');
+    // NEW LOGIC: If Final Invoice, show the "Mark as Paid" popup first
+    if (shouldGenerate && invType === 'final' && !isFree) {
+      openPaymentStatusModal(m, {
+        planName: actualPlan.name,
+        startDate: today,
+        endDate: extEnd,
+        remark: 'Plan extended by ' + extDays + ' days',
+        amount: '₹ ' + (planData.price ? Number(planData.price).toLocaleString() : '0'),
+        invoiceNo: invNo,
+        type: 'extend'
+      });
+      return;
+    }
 
+    finalizePlanAssignment(m, {
+      planName: actualPlan.name,
+      startDate: today,
+      endDate: extEnd,
+      remark: 'Plan extended by ' + extDays + ' days',
+      amount: '₹ ' + (planData.price ? Number(planData.price).toLocaleString() : '0'),
+      invoiceNo: assignedInvNo,
+      status: assignedStatus,
+      invoiceType: shouldGenerate && !isFree ? (invType === 'proforma' ? 'Proforma' : 'Final') : '',
+      type: 'extend'
+    });
   } else if (action === 'suspend') {
     const reason = document.getElementById('pm-suspend-reason')?.value || 'No reason';
     m.status = 'suspended';
@@ -840,7 +900,165 @@ window.submitPlanAction = function (memberId, action) {
     showToast('Member reactivated!', 'success');
   }
 
-  switchTab(memberId, 'plan');
+  if (action === 'suspend' || action === 'reactivate') {
+    switchTab(memberId, 'plan');
+  }
+}
+
+// Separate functions to finalize and show payment modal
+function finalizePlanAssignment(m, data, bankInfo = null) {
+  const timestamp = new Date().toLocaleString();
+  const newSr = m.assignedPlans.length + 1;
+  
+  if (data.type === 'assign' || data.type === 'upgrade') {
+    m.plan = data.planName.toLowerCase().replace('tk-', '');
+    if (m.status === 'suspended') m.status = 'active';
+  }
+
+  m.assignedPlans.unshift({ 
+    sr: newSr, 
+    name: data.planName, 
+    date: fmtDate(data.startDate) + ' to ' + fmtDate(data.endDate), 
+    remark: data.remark, 
+    invoice: data.invoiceNo, 
+    amount: data.amount,
+    status: data.status, 
+    invoiceType: data.invoiceType, 
+    type: data.type, 
+    admin: 'Admin User', 
+    timestamp,
+    bankInfo: bankInfo || { date: '-', amount: '0', bankName: '', mode: '', refNo: '' }
+  });
+  
+  closeModal();
+  showToast(data.planName + ' ' + (data.type === 'upgrade' ? 'upgraded' : (data.type === 'extend' ? 'extended' : 'assigned')) + ' successfully!', 'success');
+  
+  if (window.renderTable) window.renderTable();
+  if (window.switchTab) window.switchTab(m.id, 'plan');
+}
+
+function openPaymentStatusModal(m, planData) {
+  const modal = document.getElementById('modal-container');
+  const content = document.getElementById('modal-content');
+  if (!modal || !content) return;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  content.innerHTML = `
+    <div class="modal-header-modern" style="padding: 24px; border-bottom: 1px solid #f1f5f9;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+          <h2 style="font-family:'Outfit',sans-serif; font-size: 1.5rem; font-weight: 800; color: #1e293b; margin:0;">Payment Confirmation</h2>
+          <p style="margin: 4px 0 0; color: #64748b; font-weight: 600; font-size: 0.95rem;">Mark this invoice as paid and record bank details.</p>
+        </div>
+        <button onclick="closeModal()" style="background:none; border:none; color:#94a3b8; cursor:pointer;"><span class="material-icons-round">close</span></button>
+      </div>
+    </div>
+
+    <div style="padding: 24px;">
+      <div style="background: #f8fafc; border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Pending Invoice</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: #1e293b;">${planData.invoiceNo}</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Amount to Settle</div>
+          <div style="font-size: 1.1rem; font-weight: 800; color: #4880FF;">${planData.amount}</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <div class="pm-invoice-checkbox checked" id="payment-paid-check" onclick="this.classList.toggle('checked'); document.getElementById('payment-fields-area').classList.toggle('hidden')">
+          <span class="material-icons-round" style="font-size:16px;">done</span>
+        </div>
+        <label style="font-size: 1rem; font-weight: 800; color: #1e293b; cursor: pointer;" onclick="document.getElementById('payment-paid-check').click()">Mark as Paid?</label>
+      </div>
+
+      <div id="payment-fields-area" class="pm-fade-in">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Date</label>
+            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+              <input type="date" id="pm-pay-date" value="${todayStr}" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Payment Mode</label>
+            <div style="position: relative; height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+              <select id="pm-pay-mode" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; appearance: none; cursor: pointer; font-family: 'Nunito Sans', sans-serif;">
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cash">Cash</option>
+                <option value="Check">Check</option>
+                <option value="UPI">UPI / QR</option>
+              </select>
+              <span class="material-icons-round" style="position: absolute; right: 8px; pointer-events: none; color: #94a3b8; font-size: 18px;">expand_more</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Reference Number</label>
+            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+              <input type="text" id="pm-pay-ref" placeholder="TXN..." style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Settlement Amount</label>
+            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+              <input type="text" id="pm-pay-amount" value="${planData.amount.replace('₹ ', '').replace(',', '')}" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; grid-column: span 2;">
+            <label style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Recipient Bank</label>
+            <div style="height: 42px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; padding: 0 12px;">
+              <input type="text" id="pm-pay-bank" placeholder="e.g. HDFC Bank" style="width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.9rem; color: #1e293b; font-family: 'Nunito Sans', sans-serif;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer" style="padding: 20px 24px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px; background: #fff; border-radius: 0 0 20px 20px;">
+      <button class="btn-outline" onclick="closeModal()" style="height: 42px; padding: 0 24px;">Discard</button>
+      <button class="btn-primary" id="btn-confirm-payment" style="height: 42px; padding: 0 24px;">Confirm & Assign</button>
+    </div>
+  `;
+
+  document.getElementById('btn-confirm-payment').onclick = () => {
+    const isPaid = document.getElementById('payment-paid-check').classList.contains('checked');
+    let bankInfo = null;
+    let status = 'UnPaid';
+
+    if (isPaid) {
+      status = 'Paid';
+      bankInfo = {
+        date: document.getElementById('pm-pay-date').value,
+        mode: document.getElementById('pm-pay-mode').value,
+        refNo: document.getElementById('pm-pay-ref').value,
+        amount: document.getElementById('pm-pay-amount').value,
+        bankName: document.getElementById('pm-pay-bank').value
+      };
+    }
+
+    finalizePlanAssignment(m, {
+      ...planData,
+      status,
+      invoiceType: 'Final'
+    }, bankInfo);
+  };
+}
+
+// Helper for custom select in extend view
+window.updateExtendPreviewFromSelect = function(val) {
+  // Find current expiry from UI or member data
+  const currentExpiryStr = document.getElementById('ep-current')?.textContent || '';
+  if (window.updateExtendPreview) {
+    window.updateExtendPreview(currentExpiryStr);
+  } else {
+    // Fallback logic if needed
+    const preview = document.getElementById('pm-ext-preview-date');
+    if (preview && typeof calcNewExpiry === 'function') {
+      preview.textContent = calcNewExpiry(currentExpiryStr, parseInt(val));
+    }
+  }
 };
 
 // ESC key to close modal

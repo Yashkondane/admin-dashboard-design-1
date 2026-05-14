@@ -176,11 +176,11 @@ function openUpdateModal(id) {
           <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 12px;">Update Status</div>
           <div style="display: flex; gap: 24px;">
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #334155; font-weight: 600; font-size: 0.9rem;">
-              <input type="radio" name="status" value="Pending" ${req.status === 'Pending' ? 'checked' : ''} onchange="tempSelectedStatus='Pending'" style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
+              <input type="radio" name="status" value="Pending" ${req.status === 'Pending' ? 'checked' : ''} onchange="tempSelectedStatus='Pending'" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;">
               Pending
             </label>
             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: #334155; font-weight: 600; font-size: 0.9rem;">
-              <input type="radio" name="status" value="Approved" ${req.status === 'Approved' ? 'checked' : ''} onchange="tempSelectedStatus='Approved'" style="width: 18px; height: 18px; accent-color: #2563eb; cursor: pointer;">
+              <input type="radio" name="status" value="Approved" ${req.status === 'Approved' ? 'checked' : ''} onchange="tempSelectedStatus='Approved'" style="width: 18px; height: 18px; accent-color: #4880FF; cursor: pointer;">
               Approved
             </label>
           </div>
@@ -189,7 +189,7 @@ function openUpdateModal(id) {
       
       <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 12px;">
         <button onclick="closeModal()" class="btn-outline" style="height: 42px; padding: 0 24px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; color: #64748b; font-weight: 700; cursor: pointer;">Cancel</button>
-        <button onclick="updateRequestStatus(${req.id}, tempSelectedStatus)" class="btn-primary" style="height: 42px; padding: 0 28px; background: #2563eb; border: none; border-radius: 10px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">Save Changes</button>
+        <button onclick="updateRequestStatus(${req.id}, tempSelectedStatus)" class="btn-primary" style="height: 42px; padding: 0 28px; background: #4880FF; border: none; border-radius: 10px; color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">Save Changes</button>
       </div>
     </div>
   `;
@@ -240,7 +240,7 @@ function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = 'toast';
   let icon = type === 'success' ? 'check_circle' : (type === 'error' ? 'cancel' : 'info');
-  let color = type === 'success' ? '#10b981' : (type === 'error' ? '#ef4444' : '#3b82f6');
+  let color = type === 'success' ? '#10b981' : (type === 'error' ? '#ef4444' : '#4880FF');
 
   toast.innerHTML = `<span class="material-icons-round" style="color: ${color};">${icon}</span> <span>${message}</span>`;
   container.appendChild(toast);

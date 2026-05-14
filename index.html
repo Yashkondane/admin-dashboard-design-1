@@ -7,10 +7,11 @@
   <title>Admin Dashboard — Member Directory</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@700;800&display=swap"
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=26">
+  <link rel="stylesheet" href="dashboard.css?v=2">
 </head>
 
 <body>
@@ -34,7 +35,7 @@
 
       <nav class="sidebar-nav">
         <!-- Dashboard -->
-        <a href="#" class="nav-item"><span class="material-icons-round">grid_view</span><span
+        <a href="dashboard.html" class="nav-item"><span class="material-icons-round">grid_view</span><span
             class="nav-label">Dashboard</span></a>
 
         <!-- Members -->
@@ -110,21 +111,11 @@
     <header class="top-bar">
       <div class="top-bar-left">
         <button class="menu-toggle" id="menu-toggle"><span class="material-icons-round">menu</span></button>
-        <div class="top-bar-search" style="position:relative;"><span class="material-icons-round">search</span><input
-            type="text" placeholder="Search by name, company, email or mobile..." id="top-search-input"
-            style="padding-right:70px;">
-          <div style="position:absolute; right:8px; display:flex; align-items:center; gap:6px;">
-            <span class="material-icons-round" style="font-size:14px; color:#94a3b8; cursor:pointer;"
-              onclick="document.getElementById('top-search-input').value=''; setFilter('all');">close</span>
-            <div
-              style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:0.75rem; font-weight:700; color:#64748b; pointer-events:none;">
-              ⌘ K</div>
-          </div>
-        </div>
+        <div class="top-bar-search"><span class="material-icons-round">search</span><input type="text"
+            placeholder="Search by name, company, email or mobile..." id="top-search-input"></div>
       </div>
       <div class="top-bar-right">
-        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span
-            class="notif-dot"></span></button>
+        <button class="header-icon-btn"><span class="material-icons-round">mail_outline</span><span class="notif-dot"></span></button>
         <button class="header-icon-btn"><span class="material-icons-round">notifications_none</span></button>
         <div class="header-user">
           <img class="header-user-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Jane Cooper">
@@ -135,16 +126,12 @@
       </div>
     </header>
 
-    <div id="directory-view">
-      <div class="page-title-row"
-        style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
-          <h1 class="page-title">Members</h1>
-        </div>
-        <button class="btn-outline"><span class="material-icons-round">filter_list</span> Filter <span
-            class="material-icons-round">expand_more</span></button>
+    <div id="directory-view" class="directory-view">
+      <div class="page-title-row">
+        <h1 class="page-title">Member Directory</h1>
       </div>
 
+      <!-- Filter Tabs -->
       <div class="tabs-container">
         <button class="tab-item" data-filter="all" onclick="setFilter('all')">
           <span>All Members</span>
@@ -152,81 +139,78 @@
         </button>
         <button class="tab-item active" data-filter="active" onclick="setFilter('active')">
           <span>Active</span>
-          <span class="badge badge-active" id="badge-active">0</span>
+          <span class="badge" id="badge-active">0</span>
         </button>
         <button class="tab-item" data-filter="pending" onclick="setFilter('pending')">
           <span>Pending</span>
-          <span class="badge badge-warning" id="badge-pending">0</span>
+          <span class="badge" id="badge-pending">0</span>
         </button>
         <button class="tab-item" data-filter="suspended" onclick="setFilter('suspended')">
           <span>Suspended</span>
-          <span class="badge badge-inactive" id="badge-suspended">0</span>
+          <span class="badge" id="badge-suspended">0</span>
         </button>
         <button class="tab-item" data-filter="incomplete" onclick="setFilter('incomplete')">
           <span>Incomplete</span>
-          <span class="badge badge-incomplete" id="badge-incomplete">0</span>
+          <span class="badge" id="badge-incomplete">0</span>
         </button>
       </div>
 
-      <section class="table-section" style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
-
+      <!-- Table Section -->
+      <div class="table-section">
         <div class="table-scroll-wrap">
           <table class="data-table">
             <thead>
               <tr>
-                <th style="width: 5%; text-align: center;">Sr No</th>
-                <th onclick="toggleSort('member')" style="cursor:pointer; width: 15%;">Member & Company <span
-                    class="material-icons-round sort-icon" id="sort-icon-member">unfold_more</span></th>
-                <th onclick="toggleSort('location')" style="cursor:pointer; width: 12%;">Location <span
-                    class="material-icons-round sort-icon" id="sort-icon-location">unfold_more</span></th>
-                <th onclick="toggleSort('email')" style="cursor:pointer; width: 18%;">Email <span
-                    class="material-icons-round sort-icon" id="sort-icon-email">unfold_more</span></th>
-                <th onclick="toggleSort('mobile')" style="cursor:pointer; width: 12%;">Mobile <span
-                    class="material-icons-round sort-icon" id="sort-icon-mobile">unfold_more</span></th>
-                <th onclick="toggleSort('plan')" style="cursor:pointer; width: 15%;">Plan <span
-                    class="material-icons-round sort-icon" id="sort-icon-plan">unfold_more</span></th>
-                <th onclick="toggleSort('status')" style="cursor:pointer; width: 15%; text-align:center;">Status <span
-                    class="material-icons-round sort-icon" id="sort-icon-status">unfold_more</span></th>
-                <th onclick="toggleSort('date')" style="cursor:pointer; width: 12%;">Joined Date <span
-                    class="material-icons-round sort-icon" id="sort-icon-date">unfold_more</span></th>
+                <th style="width: 60px; text-align: center;">S.No</th>
+                <th onclick="toggleSort('member')">Member &amp; Company <span class="material-icons-round sort-icon" id="sort-icon-member">unfold_more</span></th>
+                <th onclick="toggleSort('location')">Location <span class="material-icons-round sort-icon" id="sort-icon-location">unfold_more</span></th>
+                <th onclick="toggleSort('email')">Email <span class="material-icons-round sort-icon" id="sort-icon-email">unfold_more</span></th>
+                <th onclick="toggleSort('mobile')">Mobile <span class="material-icons-round sort-icon" id="sort-icon-mobile">unfold_more</span></th>
+                <th onclick="toggleSort('plan')">Plan <span class="material-icons-round sort-icon" id="sort-icon-plan">unfold_more</span></th>
+                <th style="text-align: center;" onclick="toggleSort('status')">Status <span class="material-icons-round sort-icon" id="sort-icon-status">unfold_more</span></th>
+                <th onclick="toggleSort('date')">Join Date <span class="material-icons-round sort-icon" id="sort-icon-date">south</span></th>
               </tr>
             </thead>
-            <tbody id="members-tbody"></tbody>
+            <tbody id="members-tbody">
+              <!-- Rows injected by script.js -->
+            </tbody>
           </table>
         </div>
 
-        <div class="table-footer"
-          style="padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-          <div id="showing-text" style="font-size: 0.85rem; font-weight: 600; color: var(--text-soft);">Showing 1 to 10
-            of 15 members</div>
-          <div class="pagination" id="pagination-controls" style="display: flex; align-items: center;"></div>
-          <div>
-            <select id="rows-per-page-bottom" onchange="rowsPerPage=parseInt(this.value); currentPage=1; renderTable();"
-              style="border: none; outline: none; background: transparent; font-size: 0.85rem; font-weight: 600; color: var(--text-mid); cursor: pointer;">
-              <option value="10">10 / page</option>
-              <option value="20">20 / page</option>
+        <div class="table-footer">
+          <div class="showing-text" id="showing-text">Showing 1 to 10 of 15 members</div>
+          <div class="pagination" id="pagination-controls">
+            <!-- Pagination injected by script.js -->
+          </div>
+          <div class="rows-per-page">
+            <span>Rows per page:</span>
+            <select onchange="rowsPerPage = parseInt(this.value); currentPage = 1; renderTable();">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
             </select>
           </div>
         </div>
-      </section>
+      </div>
     </div>
 
-    <div id="profile-view" class="profile-view hidden"></div>
+    <div id="profile-view" class="profile-view hidden">
+      <!-- Profile content injected by script.js -->
+    </div>
   </main>
 
+  <!-- Modal Container -->
   <div id="modal-container" class="modal-overlay hidden">
-    <div class="modal-content" id="modal-content"></div>
+    <div class="modal-content" id="modal-content" style="max-width: 800px; padding: 0;">
+      <!-- Modal content will be injected by script.js -->
+    </div>
   </div>
+
   <div id="toast-container" class="toast-container"></div>
+
   <script src="plans.js"></script>
   <script src="plan-modals.js"></script>
-  <script src="script.js?v=19"></script>
-  <script>
-    // Fallback: guarantee table renders even if DOMContentLoaded timing is off
-    if (typeof renderTable === 'function') {
-      renderTable();
-    }
-  </script>
+  <script src="script.js?v=22"></script>
 </body>
 
 </html>
