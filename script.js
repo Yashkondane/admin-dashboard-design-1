@@ -1002,19 +1002,103 @@ function renderProfileTab(m, tab) {
                   </tr>
                 </thead>
                 <tbody>
-                  ${assignedPlans.map(p => `
-                    <tr style="transition: all 0.1s;" onmouseover="this.style.background='#fcfcfc'" onmouseout="this.style.background='transparent'">
-                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: #64748b;">${p.sr}</td>
-                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
-                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
-                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
-                      <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
-                        <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b')}; background: ${p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb')}; border: 1px solid ${p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7')}; padding: 4px 10px; border-radius: 4px;">
-                          ${p.status}
-                        </span>
-                      </td>
-                    </tr>
-                  `).join('')}
+                  ${assignedPlans.map(p => {
+                    const safeInvId = `inv-${p.sr}`;
+                    const statusColor = p.status === 'Paid' ? '#16a34a' : (p.status === 'N/A' ? '#94a3b8' : '#f59e0b');
+                    const statusBg = p.status === 'Paid' ? '#f0fdf4' : (p.status === 'N/A' ? '#f8fafc' : '#fffbeb');
+                    const statusBorder = p.status === 'Paid' ? '#bbf7d0' : (p.status === 'N/A' ? '#e2e8f0' : '#fef3c7');
+                    
+                    // Parse validity from date field
+                    const dateParts = p.date.split(' to ');
+                    const startDate = dateParts[0] || '';
+                    const endDate = dateParts[1] || '';
+                    
+                    return `
+                      <!-- Main Invoice Row -->
+                      <tr class="invoice-accordion-row" id="inv-row-${safeInvId}" onclick="window.toggleInvoiceAccordion('${safeInvId}', this)" style="transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="if(!this.classList.contains('active-edit')) this.style.background='transparent'">
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: #64748b;">${p.sr}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 800; color: #1e293b;">${p.name}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 600; color: #64748b;">${p.date}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.82rem; font-weight: 700; color: var(--blue); font-family: monospace;">${p.invoice || '—'}</td>
+                        <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center;">
+                          <div style="display:flex; align-items:center; justify-content:center; gap:12px;">
+                            <span style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusBorder}; padding: 4px 10px; border-radius: 4px;">
+                              ${p.status}
+                            </span>
+                            <span class="material-icons-round inv-chevron" style="font-size:18px; color:#94a3b8; transition: all 0.2s;">chevron_right</span>
+                          </div>
+                        </td>
+                      </tr>
+                      
+                      <!-- Expansion (Dropdown) Row -->
+                      <tr id="inv-expand-${safeInvId}" style="display:none;">
+                        <td colspan="5" style="padding: 0 24px 16px 24px; border-bottom: 1px solid var(--border);">
+                          <div style="padding: 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; animation: slideDown 0.2s ease;">
+                            
+                            <!-- Header -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #e2e8f0;">
+                              <div style="display:flex; align-items:center; gap:12px;">
+                                <span class="material-icons-round" style="font-size:22px; color:var(--blue);">receipt_long</span>
+                                <span style="font-size:1rem; font-weight:900; color:#1e293b;">${p.name} — Record #${p.sr}</span>
+                              </div>
+                              <div style="display:flex; gap:8px;">
+                                <button class="btn-outline" onclick="event.stopPropagation(); showToast('Editing record #${p.sr}', 'info')" style="padding:6px 16px; font-size:0.8rem; border-radius:8px; display:flex; align-items:center; gap:6px; font-weight:800;">
+                                  <span class="material-icons-round" style="font-size:16px;">edit</span> Edit
+                                </button>
+                                ${p.invoice ? '<button class="btn-outline" onclick="event.stopPropagation(); showToast(\\\'Downloading invoice\\\', \\\'info\\\')" style="padding:6px 16px; font-size:0.8rem; border-radius:8px; display:flex; align-items:center; gap:6px; font-weight:800;"><span class="material-icons-round" style="font-size:16px;">download</span> PDF</button>' : ''}
+                              </div>
+                            </div>
+                            
+                            <!-- Details Grid -->
+                            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:20px;">
+                              <div>
+                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Validity Start</div>
+                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${startDate}</div>
+                              </div>
+                              <div>
+                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Validity End</div>
+                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${endDate}</div>
+                              </div>
+                              <div>
+                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Invoice Type</div>
+                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${p.invoiceType || 'N/A'}</div>
+                              </div>
+                              <div>
+                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Assigned By</div>
+                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${p.admin || 'System'}</div>
+                              </div>
+                              <div>
+                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Timestamp</div>
+                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b;">${p.timestamp || '—'}</div>
+                              </div>
+                              <div>
+                                <div style="font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.1em; color:#94a3b8; margin-bottom:6px;">Action Type</div>
+                                <div style="font-size:0.9rem; font-weight:800; color:#1e293b; text-transform:capitalize;">${p.type || '—'}</div>
+                              </div>
+                            </div>
+                            
+                            <!-- Banking History -->
+                            <div style="background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:16px;">
+                              <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                                <span class="material-icons-round" style="font-size:18px; color:var(--blue);">account_balance</span>
+                                <span style="font-size:0.85rem; font-weight:900; color:#1e293b;">Banking History</span>
+                              </div>
+                              ${p.status === 'Paid' ? 
+                                '<div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px;"><div><div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#94a3b8; margin-bottom:4px;">Payment Mode</div><div style="font-size:0.85rem; font-weight:800; color:#1e293b;">NEFT / Bank Transfer</div></div><div><div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#94a3b8; margin-bottom:4px;">Transaction ID</div><div style="font-size:0.85rem; font-weight:800; color:#1e293b; font-family:monospace;">TXN' + p.sr + '00489</div></div><div><div style="font-size:0.7rem; font-weight:800; text-transform:uppercase; color:#94a3b8; margin-bottom:4px;">Paid On</div><div style="font-size:0.85rem; font-weight:800; color:#1e293b;">' + (p.timestamp || '—') + '</div></div></div>' 
+                                : '<div style="font-size:0.85rem; font-weight:700; color:#94a3b8; font-style:italic;">No payment recorded for this entry.</div>'
+                              }
+                            </div>
+                            
+                            <!-- Remark -->
+                            <div style="font-size:0.82rem; font-weight:700; color:#64748b;">
+                              <span style="font-weight:900; color:#475569;">Remark:</span> ${p.remark}
+                            </div>
+                            
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
                 </tbody>
               </table>
             </div>
@@ -2594,8 +2678,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Check for deep links (Profile view, etc.)
-    checkUrlParams();
-    
+    if (typeof checkUrlParams === 'function') {
+        checkUrlParams();
+    }
+
     // Setup sidebar and menu toggles
     setupSidebarToggles();
 
@@ -2611,7 +2697,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Handle browser back/forward buttons
-window.addEventListener('popstate', checkUrlParams);
+window.addEventListener('popstate', () => {
+  if (typeof checkUrlParams === 'function') checkUrlParams();
+});
 
 window.closeModal = function() {
   const modal = document.getElementById('modal-container');
@@ -2697,6 +2785,54 @@ window.saveAccordionEdit = function(cat, event) {
   showToast(`${cat} Configuration Updated`, 'success');
   const safeId = cat.replace(/\s+/g, '-');
   window.toggleBroadcastAccordion(safeId, document.getElementById(`row-${safeId}`));
+};
+
+// ===== INVOICE ACCORDION (DROPDOWN) =====
+window.toggleInvoiceAccordion = function(safeInvId, rowEl) {
+  const expandRow = document.getElementById(`inv-expand-${safeInvId}`);
+  if (!expandRow) return;
+
+  const isOpening = expandRow.style.display === 'none';
+
+  // 1. Close all other invoice accordions
+  document.querySelectorAll('[id^="inv-expand-"]').forEach(row => {
+    if (row.id !== `inv-expand-${safeInvId}`) {
+      row.style.display = 'none';
+      const parentId = row.id.replace('inv-expand-', 'inv-row-');
+      const parent = document.getElementById(parentId);
+      if (parent) {
+        parent.classList.remove('active-edit');
+        parent.style.background = 'transparent';
+        const chevron = parent.querySelector('.inv-chevron');
+        if (chevron) {
+          chevron.textContent = 'chevron_right';
+          chevron.style.color = '#94a3b8';
+        }
+      }
+    }
+  });
+
+  // 2. Toggle current
+  if (isOpening) {
+    expandRow.style.display = 'table-row';
+    rowEl.classList.add('active-edit');
+    rowEl.style.background = 'var(--blue-light)';
+    const chevron = rowEl.querySelector('.inv-chevron');
+    if (chevron) {
+      chevron.textContent = 'expand_more';
+      chevron.style.color = 'var(--blue)';
+    }
+    expandRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    expandRow.style.display = 'none';
+    rowEl.classList.remove('active-edit');
+    rowEl.style.background = 'transparent';
+    const chevron = rowEl.querySelector('.inv-chevron');
+    if (chevron) {
+      chevron.textContent = 'chevron_right';
+      chevron.style.color = '#94a3b8';
+    }
+  }
 };
 
 
